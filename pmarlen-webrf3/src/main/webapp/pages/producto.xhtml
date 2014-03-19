@@ -1,0 +1,525 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                
+                template="/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+		<h:outputFormat value=" {0} >> {1} ">
+			<f:param value="#{UIMessages.MAIN_SHORT_TITLE}" />
+			<f:param value="#{UIMessages.MENU_PRODUCTOS}" />
+		</h:outputFormat>		
+    </ui:define>
+
+    <ui:define name="location">
+
+		<h:outputFormat value=" {0} > {1} > {2}">
+			<f:param value="#{UIMessages.MENU_ADMINISTRATION}" />
+			<f:param value="#{UIMessages.MENU_CATALOGS}" />
+			<f:param value="#{UIMessages.MENU_PRODUCTOS}" />
+		</h:outputFormat>			
+
+    </ui:define>
+
+    <ui:define name="body">
+
+		<a4j:keepAlive beanName="productoMB"/>		
+
+		<h:form id="principalForm">
+
+			<h:panelGrid id="panelGridPrincipal"
+						 width="100%" 
+						 columns="1">
+
+
+				<rich:messages passedLabel="OK" layout="list" globalOnly="true" 
+							   showDetail="true"
+							   showSummary="true"
+							   tooltip="true" 
+							   infoClass="littleInfoMessage_bold"
+							   warnClass="littleWarnMessage_bold"
+							   errorClass="littleErrorMessage_bold">
+					<f:facet name="infoMarker">
+						<h:graphicImage  value="/images/info16x16.gif" /> 
+					</f:facet>
+					<f:facet name="warnMarker">
+						<h:graphicImage value="/images/alerta16x16.gif" />   
+					</f:facet>
+					<f:facet name="errorMarker">
+						<h:graphicImage value="/images/error16x16.gif" />   
+					</f:facet>
+				</rich:messages>
+
+				<rich:dataTable id="entitiListTable"
+								columnClasses="columnWidth5 centerAlign,columnWidth5 centerAlign, 
+								columnWidth10 leftAlign, columnWidth20 leftAlign, columnWidth15 leftAlign, columnWidth15 leftAlign, columnWidth10 rightAlign, 
+								columnWidth10 rightAlign, columnWidth10 rightAlign, columnWidth10 rightAlign"
+								value="#{productoMB.entityList}"
+								var="producto"
+								rows="#{productoMB.numRecShow}"
+								width="100%" >
+					<f:facet name="header">
+						<h:panelGroup style="display:block; text-align:left; background-color:transparent; width: 100%;" >
+							<h:outputText value="#{UIMessages.COMMON_ACTIONS} : " />
+							<rich:spacer width="10"/>
+							<a4j:commandButton	rendered="#{sessionUserMB.adminUser}"
+											   id="commandButtonPreparar"
+											   value="#{UIMessages.COMMON_ADD_NEW} #{UIEntityLabels.LABEL_PRODUCTO}" 
+											   actionListener="#{productoMB.preparaNuevoRegistro}"
+											   ignoreDupResponses="true"
+											   oncomplete="#{rich:component('entityEditionModalPanel')}.show(); #{rich:component('inputTextNombre')}.focus(); return false;"
+											   reRender="entityEditionModalPanel"/> 
+
+							<rich:spacer width="10"/>
+
+							<h:outputText value="#{UIMessages.COMMON_VIEW_REG_PAGE} : " />
+
+							[
+							<h:outputText value="10" rendered="#{productoMB.numRecShow eq 10}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{productoMB.updateRecShow}" rendered="#{productoMB.numRecShow ne 10}">
+								<f:param name="numRecShowToSet" value="10"/>
+								<h:outputText value="10" /> 
+							</a4j:commandLink>
+							|
+							<h:outputText value="25" rendered="#{productoMB.numRecShow eq 25}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{productoMB.updateRecShow}" rendered="#{productoMB.numRecShow ne 25}">
+								<f:param name="numRecShowToSet" value="25"/>
+								<h:outputText value="25" /> 
+							</a4j:commandLink>
+							|
+							<h:outputText value="100" rendered="#{productoMB.numRecShow eq 100}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{productoMB.updateRecShow}" rendered="#{productoMB.numRecShow ne 100}">
+								<f:param name="numRecShowToSet" value="100"/>
+								<h:outputText value="100" /> 
+							</a4j:commandLink>				
+							|
+							<h:outputText value="500" rendered="#{productoMB.numRecShow eq 500}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{productoMB.updateRecShow}" rendered="#{productoMB.numRecShow ne 500}">
+								<f:param name="numRecShowToSet" value="500"/>
+								<h:outputText value="500" /> 
+							</a4j:commandLink>
+							]
+						</h:panelGroup>
+                    </f:facet>
+					<rich:column rendered="#{sessionUserMB.adminUser}">
+						<f:facet name="header">
+							<h:outputText value="#{UIMessages.COMMON_OPTIONS}"/>
+						</f:facet>
+						<a4j:commandLink   id="commandButtonEdit" 
+										   actionListener="#{productoMB.editarRegistro}"
+										   ignoreDupResponses="true"
+										   oncomplete="if (#{empty facesContext.maximumSeverity}) { #{rich:component('entityEditionModalPanel')}.show(); return false; }"
+
+										   reRender="entitiListTable,entityEditionModalPanel">
+							<f:param name="entityId" value="#{producto.id}"/>
+							<h:graphicImage value="/images/editar.gif" title="#{UIMessages.COMMON_EDIT}"/>
+						</a4j:commandLink>
+						<rich:spacer width="10"/>
+						<a4j:commandLink   id="commandButtonDelete" 
+										   actionListener="#{productoMB.preparEliminarRegistro}"
+										   ignoreDupResponses="true"
+										   oncomplete="if (#{empty facesContext.maximumSeverity}) { #{rich:component('confirmDeleteModalPanel')}.show(); return false; }"										   
+										   >
+							<f:param name="entityId" value="#{producto.id}"/>
+							<h:graphicImage value="/images/eliminar.gif" title="#{UIMessages.COMMON_DELETE}"/>
+						</a4j:commandLink>						
+					</rich:column>
+
+
+					<rich:column rendered="#{sessionUserMB.adminUser}" sortBy="#{producto.id}">
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO_ID}"/>
+						</f:facet>
+
+						<h:outputText value="#{producto.id}"/>
+					</rich:column>
+
+					<rich:column sortBy="#{producto.codigoBarras}">
+						<f:facet name="header">
+							<h:outputText value="CODIGO"/>
+						</f:facet>
+						<h:outputText value="#{producto.codigoBarras}"/>
+					</rich:column>
+
+
+					<rich:column sortBy="#{producto.nombre}">
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO_NOMBRE}"/>
+						</f:facet>
+						<h:outputText value="#{producto.nombre}"/>
+					</rich:column>
+
+					<rich:column sortBy="#{producto.presentacion}">
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO_PRESENTACION}"/>
+						</f:facet>
+						<h:outputText value="#{producto.presentacion}"/>
+					</rich:column>
+
+					<rich:column sortBy="#{producto.marca.nombre}">
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_MARCA}"/>
+						</f:facet>
+						<h:outputText value="#{producto.marca.nombre}"/>
+					</rich:column>
+
+					<rich:column sortBy="#{producto.unidadesPorCaja}">
+						<f:facet name="header">
+							<h:outputText value="U. x C."/>
+						</f:facet>
+						<h:outputText value="#{producto.unidadesPorCaja}"/>
+					</rich:column>
+
+					<rich:column sortBy="#{producto.unidadMedida}">
+						<f:facet name="header">
+							<h:outputText value="U. MEDIDA"/>
+						</f:facet>
+						<h:outputText value="#{producto.unidadMedida}"/>
+					</rich:column>
+
+					<rich:column sortBy="#{producto.costo}">
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO_COSTO}"/>
+						</f:facet>
+						<h:outputText value="#{producto.costo}">
+							<f:convertNumber integerOnly="false" pattern="$ ##,###,##0.00" locale="es_MX"/>							
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{producto.costoVenta}">
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO_COSTOVENTA}"/>
+						</f:facet>
+						<h:outputText value="#{producto.costoVenta}">
+							<f:convertNumber integerOnly="false" pattern="$ ##,###,##0.00" locale="es_MX"/>							
+						</h:outputText>
+					</rich:column>
+
+                    <f:facet name="footer">                
+                        <h:outputText value="#{UIMessages.COMMON_TOTAL_REC_COUND} : #{productoMB.entityCount}."/>
+                    </f:facet>				
+
+				</rich:dataTable>
+
+				<rich:datascroller	rendered="#{productoMB.entityCount ge 11}"
+								   align="center" for="entitiListTable" 
+								   maxPages="10" 
+								   page="#{productoMB.scrollerPage}" 									
+								   id="sc1" />
+			</h:panelGrid>
+
+		</h:form>	
+
+		<rich:modalPanel id="confirmDeleteModalPanel" width="200" height="100">
+
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText value="#{UIMessages.COMMON_DELETE}"/>
+				</h:panelGroup>
+			</f:facet>
+
+			<h:form id="formConfirm">
+
+				<h:outputText class="centerAlign" 
+							  value="#{UIMessages.COMMON_CONFIRM_DELETE_MSG}"/>
+
+				<h:panelGrid id="panelGridBotones"
+							 width="100%" 
+							 columns="2"
+							 columnClasses="columnWidth50 rightAlign, columnWidth50 leftAlign">
+					<a4j:commandButton id="commandButtonGuardar"
+									   value="#{UIMessages.COMMON_OK}"
+									   actionListener="#{productoMB.eliminarRegistro}"
+									   action="test"
+									   ignoreDupResponses="true"
+									   oncomplete="#{rich:component('confirmDeleteModalPanel')}.hide();"
+									   reRender="entitiListTable"/> 
+
+					<a4j:commandButton id="commandButtonCancelar"
+									   value="#{UIMessages.COMMON_CANCEL}" 
+									   action="test"
+									   ignoreDupResponses="true"
+									   immediate="true"
+									   oncomplete="#{rich:component('confirmDeleteModalPanel')}.hide();"
+									   reRender="entitiListTable"/> 
+
+				</h:panelGrid>
+
+
+			</h:form>
+		</rich:modalPanel>		
+
+		<rich:modalPanel id="entityEditionModalPanel" width="900" height="450">
+
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText value="#{UIMessages.DETAIL_PRODUCTO}"/>
+				</h:panelGroup>
+			</f:facet>
+
+			<h:form id="formSecundario">
+				<a4j:outputPanel layout="block" style="width:880px;height:420px;overflow:auto;">
+					<rich:messages layout="list" globalOnly="true" 
+								   showDetail="true"
+								   showSummary="true"
+								   infoClass="littleInfoMessage_bold"
+								   warnClass="littleWarnMessage_bold"
+								   errorClass="littleErrorMessage_bold">
+
+						<f:facet name="infoMarker">
+							<h:graphicImage  value="/images/info16x16.gif" /> 
+						</f:facet>
+						<f:facet name="warnMarker">
+							<h:graphicImage value="/images/alerta16x16.gif" />   
+						</f:facet>
+						<f:facet name="errorMarker">
+							<h:graphicImage value="/images/error16x16.gif" />   
+						</f:facet>
+					</rich:messages>
+
+					<h:panelGrid id="panelGridCampos"
+								 width="100%" 
+								 columns="2" border="0"
+								 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign">
+
+						<h:outputLabel	value="#{UIEntityLabels.LABEL_PRODUCTO_ID}:" for="inputTextId"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_ID}"
+									   rendered="#{not empty productoMB.entity.id}"/>
+
+						<h:panelGroup	 rendered="#{not empty productoMB.entity.id}">
+							<h:inputText id="inputTextId"
+										 readonly="#{not empty productoMB.entity.id}"
+										 value="#{productoMB.entity.id}" 
+										 label="Id"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_ID}"
+										 size="4"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_PRODUCTO_ID}" >
+							</h:inputText>
+
+							<rich:message for="inputTextId" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_PRODUCTO_CODIGOBARRAS}:" for="inputTextCodigoBarras" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_CODIGOBARRAS}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextCodigoBarras"
+										 value="#{productoMB.entity.codigoBarras}" 
+										 label="#{UIEntityLabels.LABEL_PRODUCTO_CODIGOBARRAS}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_CODIGOBARRAS}"
+										 size="13"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_PRODUCTO_CODIGOBARRAS}">
+								<f:validateLength minimum="8" maximum="#{UIEntityLabels.TEXT_MAXCHARS_PRODUCTO_CODIGOBARRAS}"/>
+								<f:validator validatorId="NumberValidator"/>
+							</h:inputText>
+							<rich:message for="inputTextCodigoBarras" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+
+						<h:outputText value="#{UIEntityLabels.LABEL_MARCA}:" 
+									  class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_MARCAID}"/>
+						<h:panelGroup >
+							<h:selectOneMenu id="selectOneMenuMarca"
+											 value="#{productoMB.entity.marca.id}"
+											 required="#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_MARCAID}">
+								<f:selectItems  value="#{productoMB.marcaList}"/>
+							</h:selectOneMenu>
+							<rich:message for="selectOneMenuMarca" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_PRODUCTO_NOMBRE}:" for="inputTextNombre" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_NOMBRE}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextNombre"
+										 value="#{productoMB.entity.nombre}" 
+										 label="#{UIEntityLabels.LABEL_PRODUCTO_NOMBRE}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_NOMBRE}"
+										 size="35"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_PRODUCTO_NOMBRE}">
+								<f:validateLength minimum="2" maximum="#{UIEntityLabels.TEXT_MAXCHARS_PRODUCTO_NOMBRE}"/>
+								<f:validator validatorId="AlphanumericNameValidator"/>
+							</h:inputText>
+							<rich:message for="inputTextNombre" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_PRODUCTO_PRESENTACION}:" for="inputTextPresentacion"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_PRESENTACION}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextPresentacion"
+										 value="#{productoMB.entity.presentacion}" 
+										 label="#{UIEntityLabels.LABEL_PRODUCTO_PRESENTACION}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_PRESENTACION}"
+										 size="35"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_PRODUCTO_PRESENTACION}">
+								<f:validateLength minimum="2" maximum="#{UIEntityLabels.TEXT_MAXCHARS_PRODUCTO_PRESENTACION}"/>
+								<f:validator validatorId="AlphanumericNameValidator"/>
+							</h:inputText>
+							<rich:message for="inputTextPresentacion" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_PRODUCTO_UNIDADESPORCAJA}:" for="inputTextUnidadesPorCaja" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_UNIDADESPORCAJA}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextUnidadesPorCaja"
+										 value="#{productoMB.entity.unidadesPorCaja}" 
+										 label="#{UIEntityLabels.LABEL_PRODUCTO_UNIDADESPORCAJA}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_UNIDADESPORCAJA}"
+										 size="2"
+										 maxlength="3">
+								<f:convertNumber integerOnly="true"/>
+								<f:validateLongRange minimum="3" maximum="999"/>
+							</h:inputText>
+							<rich:message for="inputTextUnidadesPorCaja" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_PRODUCTO_UNIDADMEDIDA}:" for="inputTextUnidadMedida"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_UNIDADMEDIDA}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextUnidadMedida"
+										 value="#{productoMB.entity.unidadMedida}" 
+										 label="#{UIEntityLabels.LABEL_PRODUCTO_UNIDADMEDIDA}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_UNIDADMEDIDA}"
+										 size="4"
+										 maxlength="5">
+								<f:validateLength minimum="2"/>
+							</h:inputText>
+							<rich:message for="inputTextUnidadMedida" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+						<h:outputLabel value="#{UIEntityLabels.LABEL_PRODUCTO_COSTO}:" for="inputTextCosto"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_COSTO}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextCosto"
+										 value="#{productoMB.entity.costo}" 
+										 label="#{UIEntityLabels.LABEL_PRODUCTO_COSTO}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_COSTO}"
+										 size="4"
+										 maxlength="5">
+								<f:convertNumber integerOnly="false" pattern="#######0.00" locale="es_MX"/>
+								<f:validateDoubleRange minimum="1.00" maximum="99999.99"/>							
+							</h:inputText>
+							<rich:message for="inputTextCosto" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>					
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_PRODUCTO_COSTOVENTA}:" for="inputTextCostoVenta"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_COSTOVENTA}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextCostoVenta"
+										 value="#{productoMB.entity.costoVenta}" 
+										 label="#{UIEntityLabels.LABEL_PRODUCTO_COSTOVENTA}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_COSTOVENTA}"
+										 size="4"
+										 maxlength="5">
+								<f:convertNumber integerOnly="false" pattern="#######0.00" locale="es_MX"/>
+								<f:validateDoubleRange minimum="1.0" maximum="100000.00"/>							
+							</h:inputText>
+							<rich:message for="inputTextCostoVenta" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_PRODUCTO_CONTENIDO}:" for="inputTextContenido"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_CONTENIDO}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextContenido"
+										 value="#{productoMB.entity.contenido}" 
+										 label="#{UIEntityLabels.LABEL_PRODUCTO_CONTENIDO}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_CONTENIDO}"
+										 size="4"
+										 maxlength="8">
+								<f:validateDoubleRange minimum="1.0" maximum="99999.99"/>
+							</h:inputText>
+							<rich:message for="inputTextContenido" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_PRODUCTO_ABREBIATURA}:" for="inputTextAbrebiatura"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_ABREBIATURA}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextAbrebiatura"
+										 value="#{productoMB.entity.abrebiatura}" 
+										 label="#{UIEntityLabels.LABEL_PRODUCTO_ABREBIATURA}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_PRODUCTO_ABREBIATURA}"
+										 size="15"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_PRODUCTO_ABREBIATURA}">
+								<f:validateLength minimum="2" maximum="#{UIEntityLabels.TEXT_MAXCHARS_PRODUCTO_ABREBIATURA}"/>
+								<f:validator validatorId="AlphanumericNameValidator"/>
+							</h:inputText>
+							<rich:message for="inputTextAbrebiatura" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+					</h:panelGrid>
+
+					<br/>
+
+					<h:panelGrid id="panelGridBotones"
+								 width="100%" 
+								 columns="2"
+								 columnClasses="columnWidth50 rightAlign, columnWidth50 leftAlign">
+
+						<a4j:commandButton id="commandButtonGuardar"
+										   value="#{UIMessages.COMMON_SAVE}"
+										   actionListener="#{productoMB.aceptarGuardar}"
+										   action="test"
+										   ignoreDupResponses="true"
+										   oncomplete="if (#{facesContext.maximumSeverity == 'INFO 0'}) { #{rich:component('entityEditionModalPanel')}.hide(); }"
+										   reRender="entitiListTable"/> 
+
+						<a4j:commandButton id="commandButtonCancelar"
+										   value="#{UIMessages.COMMON_CANCEL}" 
+										   actionListener="#{productoMB.cancelarGuardar}"
+										   action="test"
+										   ignoreDupResponses="true"
+										   immediate="true"
+										   oncomplete="#{rich:component('entityEditionModalPanel')}.hide();"
+										   reRender="entitiListTable,entityEditionModalPanel"/> 
+
+					</h:panelGrid>							
+				</a4j:outputPanel>
+			</h:form>
+		</rich:modalPanel>
+
+    </ui:define>
+
+</ui:composition>

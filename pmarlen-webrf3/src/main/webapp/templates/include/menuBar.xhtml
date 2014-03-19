@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<h:form xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:a4j="http://richfaces.org/a4j"
+        xmlns:rich="http://richfaces.org/rich"
+
+		id="menuBarForm"
+		rendered="#{not navigationMB.renderedForMobile}">
+
+	<rich:toolBar>
+
+		<rich:dropDownMenu >
+			<f:facet name="label"> 
+				<h:panelGroup>
+					<h:graphicImage value="/images/almacen_rack_16x16.gif" styleClass="pic"/>
+					<h:outputText value="#{UIMessages.MENU_OPERATION}"/>
+				</h:panelGroup>
+			</f:facet>
+			
+			<rich:menuGroup value="VENTAS">
+				<rich:menuItem value="#{UIMessages.MENU_SALES_ORDER}" action="#{navigationMB.pedidoNuevo}"/>			
+				
+				<rich:menuItem value="PEDIDOS EN PROCESO" action="#{navigationMB.pedidosVentasView}"/>
+				
+			</rich:menuGroup>
+
+			<rich:menuGroup value="COMPRAS">
+				<rich:menuItem value="ENTRADA DE COMPRA" action="#{navigationMB.compra}"/>				
+				<!--				
+				<rich:menuItem value="ENTRADA DE COMPRA" action="#{navigationMB.home}"/>			
+				-->
+			</rich:menuGroup>
+			
+		</rich:dropDownMenu>
+
+		<rich:dropDownMenu rendered="#{sessionUserMB.stockUser or sessionUserMB.adminUser}">
+			<f:facet name="label"> 
+				<h:panelGroup>
+					<h:graphicImage value="/images/building.gif" styleClass="pic"/>
+					<h:outputText value="#{UIMessages.MENU_ADMINISTRATION}" />
+				</h:panelGroup>
+			</f:facet>
+			<rich:menuGroup value="#{UIMessages.MENU_CATALOGS}">
+
+				<rich:menuItem value="#{UIEntityLabels.MENU_CRUD_LINEA}" action="#{navigationMB.catalogoLinea}"/>
+
+				<rich:menuItem value="#{UIEntityLabels.MENU_CRUD_INDUSTRIA}" action="#{navigationMB.catalogoIndustria}" />
+
+				<rich:menuItem value="#{UIEntityLabels.MENU_CRUD_MARCA}" action="#{navigationMB.catalogoMarca}" />
+
+				<rich:menuItem value="#{UIEntityLabels.MENU_CRUD_CLIENTE}" action="#{navigationMB.catalogoCliente}" />
+
+				<rich:menuItem value="#{UIEntityLabels.MENU_CRUD_PROVEEDOR}" action="#{navigationMB.catalogoProveedor}" />
+
+				<rich:menuItem value="#{UIEntityLabels.MENU_CRUD_SUCURSAL}" action="#{navigationMB.catalogoSucursal}" rendered="#{sessionUserMB.adminUser}" />
+				<!--
+				<rich:menuItem value="Método de Pago" action="#{navigationMB.home}" />
+
+				<rich:menuItem value="Forma de Pago" action="#{navigationMB.home}" />
+				-->
+				<rich:menuItem value="#{UIEntityLabels.MENU_CRUD_USUARIO}" action="#{navigationMB.catalogoUsuario}" />
+
+				<rich:menuItem value="#{UIEntityLabels.MENU_CRUD_PRODUCTO}" action="#{navigationMB.catalogoProducto}" />
+
+			</rich:menuGroup>
+
+			<rich:menuGroup value="INVENTARIOS">
+				
+				<rich:menuItem value="INVENTARIOS ACTUALES" action="#{navigationMB.inventariosView}" />
+				<!--
+				<rich:menuItem value="TRASPASOS A SURSAL" action="#{navigationMB.home}"/>
+				-->
+			</rich:menuGroup>
+
+		</rich:dropDownMenu>
+
+		<rich:dropDownMenu  rendered="#{sessionUserMB.adminUser}">
+
+			<f:facet name="label"> 
+				<h:panelGroup>
+					<h:graphicImage value="/images/building.gif" styleClass="pic"/>
+					<h:outputText value="#{UIMessages.MENU_CONTROL}" />
+				</h:panelGroup>
+			</f:facet>
+
+			<rich:menuItem value="#{UIMessages.MENU_SESSION_INFO}" action="#{navigationMB.activeSessions}" />
+
+			<rich:menuItem value="CONFIGURACIONES" action="#{navigationMB.home}" />
+
+		</rich:dropDownMenu>
+
+		<rich:dropDownMenu rendered="#{sessionUserMB.stockUser or sessionUserMB.adminUser}">
+			<f:facet name="label"> 
+				<h:panelGroup>
+					<h:graphicImage value="/images/icon_message_info_sm.gif" styleClass="pic"/>
+					<h:outputText value="#{UIMessages.MENU_HELP}" />
+				</h:panelGroup>
+			</f:facet>
+			
+			<rich:menuItem value="SICOFI" action="#{navigationMB.home}" />
+
+			<rich:menuItem value="ACERCA DE ESTE SISTEMA" action="#{navigationMB.home}" />
+
+			<rich:menuItem value="CICLO DE VIDA DE UN PEDIDO" action="#{navigationMB.home}" />
+
+		</rich:dropDownMenu>
+
+	</rich:toolBar>
+
+</h:form>

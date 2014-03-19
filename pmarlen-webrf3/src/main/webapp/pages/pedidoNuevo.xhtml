@@ -1,0 +1,435 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+
+                template="/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+		<h:outputFormat value=" {0} >> {1} ">
+			<f:param value="#{UIMessages.MAIN_SHORT_TITLE}" />
+			<f:param value="#{UIMessages.MENU_SALES_ORDER}" />
+		</h:outputFormat>		
+    </ui:define>
+
+    <ui:define name="location">
+
+		<h:outputFormat value=" {0} > {1}">
+			<f:param value="#{UIMessages.MENU_OPERATION}" />
+			<f:param value="#{UIMessages.MENU_SALES_ORDER}" />
+		</h:outputFormat>
+
+    </ui:define>
+
+    <ui:define name="body">
+
+		<style>
+			.tooltip {
+				background-color:#{richSkin.generalBackgroundColor};
+				border-width:3px;
+				padding:10px;
+			}
+			.tooltip-text {
+				width:100%;
+				height:100%;
+				cursor:url;
+				border-width:0px;
+				text-align:center;
+				display: table-cell;
+				vertical-align: middle;
+			}
+			.tooltipData {
+				font-weight: bold;
+			}
+		</style>
+
+        <a4j:form id="listarPedidoNuevoForm">
+
+			<h:panelGrid id="panelGridPrincipal"
+						 width="100%" 
+						 columns="1">
+
+				<rich:messages passedLabel="OK" layout="list" globalOnly="true" 
+							   showDetail="true"
+							   infoClass="littleInfoMessage_bold"
+							   warnClass="littleWarnMessage_bold"
+							   errorClass="littleErrorMessage_bold">
+					<f:facet name="infoMarker">
+                        <h:graphicImage  value="/images/info16x16.gif" /> 
+                    </f:facet>
+                    <f:facet name="warnMarker">
+                        <h:graphicImage value="/images/alerta16x16.gif" />   
+                    </f:facet>
+					<f:facet name="errorMarker">
+                        <h:graphicImage value="/images/error16x16.gif" />   
+                    </f:facet>
+                </rich:messages>
+
+				<h:panelGrid	columns="2" styleClass="center" width="100%" 
+							 border="0" 
+							 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign" >
+
+					<h:outputText		value="#{UIEntityLabels.LABEL_ALMACEN}:" 
+								   styleClass="label_bold_right"/>
+					<h:panelGroup rendered="#{pedidoNuevoMB.pedidoVentaActualSize eq 0}">
+
+						<h:selectOneRadio id="selectOneRadioAlmacen"
+										  value="#{pedidoNuevoMB.modoVenta}" 
+										  valueChangeListener="#{pedidoNuevoMB.almacenSelected}">
+							<a4j:support	reRender="principalForm" event="onchange"/>
+							<f:selectItems  value="#{pedidoNuevoMB.tipoAlmacenList}"/>
+						</h:selectOneRadio>
+						<rich:message for="selectOneRadioAlmacen" errorClass="littleErrorMessage_bold">
+							<f:facet name="errorMarker">
+								<h:graphicImage value="/images/error16x16.gif" />   
+							</f:facet>
+						</rich:message>
+					</h:panelGroup>
+					<h:outputText	value="#{pedidoNuevoMB.tipoAlmacenSeleccionado}" 
+								  rendered="#{pedidoNuevoMB.pedidoVentaActualSize gt 0}"/>					
+
+					<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO_NOMBRE} / #{UIEntityLabels.LABEL_PRODUCTO_PRESENTACION}:" styleClass="label_bold_right"/>
+					<h:panelGroup>
+						<h:inputText value="#{pedidoNuevoMB.nombreDescripcion}"
+									 valueChangeListener="#{pedidoNuevoMB.nombreDescripcionChanged}">
+							<a4j:support event="onchange" reRender="listarPedidoNuevoForm" />
+						</h:inputText>									
+					</h:panelGroup>
+
+					<rich:spacer  rendered="#{empty pedidoNuevoMB.productoConNombreDescripcion}" 
+								  rendererType="ajax" width="10" height="28" />
+
+					<h:outputText value="CANTIDAD x PRODUCTO:" styleClass="label_bold_right"
+								  rendered="#{not empty pedidoNuevoMB.productoConNombreDescripcion}"/>
+
+					<rich:spacer  rendered="#{empty pedidoNuevoMB.productoConNombreDescripcion}" 
+								  rendererType="ajax"  width="10" height="28" />
+
+					<h:panelGroup rendered="#{not empty pedidoNuevoMB.productoConNombreDescripcion}">
+
+						<h:inputText id="cantidadAgregarDesc" value="#{pedidoNuevoMB.cantidadAgregar}" size="2" class="inputCant">
+							<f:convertNumber integerOnly="true"/>
+							<f:validateLongRange minimum="1" maximum="9999"/>
+						</h:inputText>
+						<h:outputText value=" x " />
+						<h:selectOneMenu id="resultProductoByNombreDescripcion"
+										 value="#{pedidoNuevoMB.productoSelected}" >
+							<f:selectItems  value="#{pedidoNuevoMB.productoConNombreDescripcion}"/>						
+						</h:selectOneMenu>
+
+						<a4j:commandButton   value="+"
+											 id="agregarPorNombreBtn"
+											 actionListener="#{pedidoNuevoMB.agregarNProductoBuscado}"
+											 reRender="listarPedidoNuevoForm"
+											 ignoreDupResponses="true">
+						</a4j:commandButton>
+
+					</h:panelGroup>
+
+					<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO_CODIGOBARRAS}:" styleClass="label_bold_right"/>
+					<h:panelGroup >
+						<h:inputText id="cantidadAgregarCB" value="#{pedidoNuevoMB.cantidadCBAgregar}" size="2" class="inputCant">
+							<f:convertNumber integerOnly="true"/>
+							<f:validateLongRange minimum="1" maximum="9999"/>
+						</h:inputText>
+						<h:outputText value=" x " />																	
+						<h:inputText value="#{pedidoNuevoMB.codigoBuscar}" id="codigoBuscar" size="12" maxlength="18" class="inputCant">
+
+							<a4j:support	event="onchange" actionListener="#{pedidoNuevoMB.buscarNProductoPorCodigo}"
+										 reRender="listarPedidoNuevoForm"
+										 oncomplete="#{rich:element('listarPedidoNuevoForm:codigoBuscar')}.text='';#{rich:element('listarPedidoNuevoForm:codigoBuscar')}.focus();"/>
+
+						</h:inputText>					
+						<a4j:commandButton value="+"
+										   actionListener="#{pedidoNuevoMB.buscarNProductoPorCodigo}"
+										   reRender="listarPedidoNuevoForm"									   
+										   ignoreDupResponses="true">
+						</a4j:commandButton>
+
+					</h:panelGroup>
+				</h:panelGrid>
+
+				<rich:dataTable value="#{pedidoNuevoMB.pedidoVentaDetalleList}"
+								id="pedidoVentaDetalleListTable"
+								var="dvp"
+								width="100%"  
+								styleClass="center" columnClasses="columnWidth5 centerAlign,columnWidth10 rightAlign,columnWidth15 centerAlign,columnWidth10 centerAlign valign_td,columnWidth40 leftAlign,columnWidth10 rightAlign,columnWidth10 rightAlign" >
+
+					<f:facet name="header">
+						<h:panelGroup style="display:block; text-align:left; background-color:transparent;" >
+							<h:outputText value="ACCIONES DEL PEDIDO (#{pedidoNuevoMB.pedidoVentaActualSize} elem.): " />
+							<rich:spacer width="10"/>
+							<a4j:commandButton value="PROCEDER" 
+											   rendered="#{pedidoNuevoMB.pedidoVentaActualSize gt 0}"
+											   action="#{pedidoNuevoMB.confirmarPedido}"/>
+							<rich:spacer width="10"/>
+							<a4j:commandButton	value="CANCELAR" 
+											   actionListener="#{pedidoNuevoMB.cancelarPedidoVenta}" 
+											   reRender="listarPedidoNuevoForm"
+											   ignoreDupResponses="true"/>
+						</h:panelGroup>
+
+					</f:facet>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<h:panelGroup >
+							<a4j:commandLink actionListener="#{pedidoNuevoMB.eliminarProducto}"
+											 reRender="listarPedidoNuevoForm,panelEditarCantidad"
+											 ignoreDupResponses="true">
+								<h:graphicImage style="border-style:none;" value="/images/eliminar.gif" title="#{UIMessages.COMMON_DELETE}"/>
+								<f:param name="productoId" value="#{dvp.producto.id}"/>
+							</a4j:commandLink>
+
+						</h:panelGroup>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="CODIGO" />
+						</f:facet>
+						<h:outputText value="#{dvp.producto.codigoBarras}" />                    
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="D.D. / O.P.|  MAX." />
+						</f:facet>
+						<h:panelGroup>
+							<h:panelGrid	width="100%" columns="3"
+										 columnClasses="columnWidth45 centerAlign, columnWidth10  centerAlign,columnWidth45 centerAlign">
+
+								<h:outputText   rendered="#{dvp.cantDemanda gt 0}"
+												value="#{dvp.cantDemanda} / #{dvp.otrosPedidos}"/>									
+								<rich:spacer	width="10" 
+											 rendered="#{dvp.cantDemanda eq 0}" />
+
+								<h:outputText   value="|"/>
+
+								<h:outputText   value="#{dvp.cantMax}"/>
+							</h:panelGrid>
+
+
+						</h:panelGroup>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="CANT." />
+						</f:facet>
+						<h:inputText value="#{dvp.cantidad}" size="3" class="inputCant" >
+							<f:convertNumber integerOnly="true"/>
+							<f:validateLongRange minimum="1" maximum="9999"/>
+						</h:inputText>
+						<a4j:commandLink	actionListener="#{pedidoNuevoMB.cantidadDetalleBtnChanged}"
+										 reRender="listarPedidoNuevoForm"
+										 ignoreDupResponses="true">
+							<h:graphicImage class="valign_td" value="/images/update.gif" 
+											title="#{UIMessages.COMMON_UPDATE}"/>
+							<f:param name="productoId" value="#{dvp.producto.id}"/>
+						</a4j:commandLink>
+					</rich:column>
+
+					<rich:column  >
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO} / #{UIEntityLabels.LABEL_PRODUCTO_PRESENTACION}" />
+						</f:facet>
+						<h:outputText value="#{dvp.producto.nombre} / #{dvp.producto.presentacion}"/><br/>
+						<h:outputText value="( #{dvp.producto.contenido} #{dvp.producto.unidadMedida} / #{dvp.producto.unidadesPorCaja} UxCj.)"/>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_PEDIDOVENTADETALLE_PRECIOVENTA}" />
+						</f:facet>
+						<h:outputText value="#{dvp.precioVenta}">
+							<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+						</h:outputText>
+
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="IMPORTE" />
+						</f:facet>
+						<h:outputText value="#{dvp.precioVenta * dvp.cantidad}">
+							<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+						</h:outputText>
+
+					</rich:column>
+
+				</rich:dataTable>
+
+				<h:panelGrid	
+					id="panelGridResumen"
+					width="100%" 
+					columns="2"
+					columnClasses="columnWidth90 rightAlign, columnWidth10 rightAlign">
+					<h:outputText value="SUBTOTAL:"/>
+					<rich:panel  style="border-width:1px; background-color:transparent; width: 100%" >
+
+						<h:outputText value="#{pedidoNuevoMB.pedidoFooter.subtotal}">
+							<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+						</h:outputText>
+					</rich:panel>
+
+					<h:outputText value="I.V.A. :"/>
+					<rich:panel  style="border-width:1px; background-color:transparent; width: 100%" >
+
+						<h:outputText   value="#{pedidoNuevoMB.pedidoFooter.impuesto}">
+							<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+						</h:outputText>
+					</rich:panel>
+
+					<h:outputText value="DESCUENTO:"/>
+
+					<rich:panel  style="border-width:1px; background-color:transparent; width: 100%" >
+
+						<h:outputText value="#{pedidoNuevoMB.pedidoFooter.descuento}">
+							<f:convertNumber maxFractionDigits="2" pattern="$ -###,###,##0.00" locale="es_MX"/>
+						</h:outputText>
+
+						<rich:toolTip direction="top-right" mode="ajax" 
+									  styleClass="tooltip" layout="block" showEvent="onclick">						
+							<strong>DESCUENTO APLICADO</strong>
+							<h:panelGrid columns="2" styleClass="center" width="100%" columnClasses="columnWidth50 rightAlign,columnWidth50 leftAlign">
+								<h:outputText value="#{pedidoNuevoMB.descuentoCalculado}%" />
+								<h:outputText value=" + #{pedidoNuevoMB.descuentoEspecial}%" />
+							</h:panelGrid>
+						</rich:toolTip>
+					</rich:panel>
+
+					<h:outputText value="TOTAL:" styleClass="label_bold_right"/>
+					<rich:panel  style="border-width:1px; background-color:transparent; width: 100%" >
+
+						<h:outputText value="#{pedidoNuevoMB.pedidoFooter.total}" styleClass="label_bold_right">
+							<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+						</h:outputText>
+					</rich:panel>
+				</h:panelGrid>
+
+				<h:panelGrid	columns="2" styleClass="center" width="100%" 
+							 border="0" 
+							 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign" >
+
+					<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE}:" 
+								  class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PEDIDOVENTA_CLIENTEID}"/>
+
+					<h:panelGrid columns="2" border="0" styleClass="center" width="100%" columnClasses="columnWidth50 leftAlign,columnWidth50 leftAlign">
+						<h:selectOneMenu id="clientePedido"
+										 value="#{pedidoNuevoMB.clienteId}"
+										 required="false">
+							<f:selectItems  value="#{pedidoNuevoMB.clienteList}"/>							
+							<a4j:support	reRender="listarPedidoNuevoForm" event="onchange"/>						
+						</h:selectOneMenu>
+
+						<rich:panel  id="sample3" styleClass="tooltip-text" bodyClass="rich-laguna-panel-no-header no_padding">
+
+							<h:graphicImage style="border-style:none;" value="/images/vcard.gif" title="Ver detalles del Cliente"/>
+
+							<rich:toolTip rendered="#{not empty pedidoNuevoMB.clienteSelected}"
+										  direction="top-right" mode="ajax" styleClass="tooltip" layout="block" event="onclick">
+								<f:facet name="defaultContent">
+									<strong>Recuperando Datos del Cliente, espere un momento ...</strong>
+								</f:facet>
+								<h:panelGrid columns="2" styleClass="center" width="100%" columnClasses="columnWidth30 rightAlign,columnWidth70 leftAlign"
+											 rendered="#{not empty pedidoNuevoMB.clienteSelected}">
+
+									<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_RAZONSOCIAL}:" />
+									<h:outputText value="#{pedidoNuevoMB.clienteSelected.razonSocial}"/>
+
+									<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_NOMBREESTABLECIMIENTO}:" />
+									<h:outputText value="#{pedidoNuevoMB.clienteSelected.nombreEstablecimiento}"/>
+
+									<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_RFC}:" />
+									<h:outputText value="#{pedidoNuevoMB.clienteSelected.rfc}"/>
+
+									<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_CONTACTO}:" />
+									<h:outputText value="#{pedidoNuevoMB.clienteSelected.contacto}"/>
+
+									<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_TELEFONOS}:" />
+									<h:outputText value="#{pedidoNuevoMB.clienteSelected.telefonos}"/>
+
+									<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_EMAIL}:" />
+									<h:outputText value="#{pedidoNuevoMB.clienteSelected.email}"/>
+
+									<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_CALLE}:" />
+									<h:outputText value="#{pedidoNuevoMB.clienteSelected.calle}"/>
+
+									<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_NUMEXTERIOR}:" />									
+									<h:outputText value="#{pedidoNuevoMB.clienteSelected.numExterior}"/>
+
+									<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_NUMINTERIOR}:" />									
+									<h:outputText value="#{pedidoNuevoMB.clienteSelected.numInterior}"/>
+
+									<h:outputText value="#{UIEntityLabels.LABEL_POBLACION}:" />									
+									<h:outputText value="#{pedidoNuevoMB.clienteSelected.poblacion.nombre}"/>
+
+									<h:outputText value="#{UIEntityLabels.LABEL_POBLACION_MUNICIPIOODELEGACION}:" />									
+									<h:outputText value="#{pedidoNuevoMB.clienteSelected.poblacion.municipioODelegacion}"/>
+
+									<h:outputText value="#{UIEntityLabels.LABEL_POBLACION_ENTIDADFEDERATIVA}:" />
+									<h:outputText value="#{pedidoNuevoMB.clienteSelected.poblacion.entidadFederativa}"/>
+
+									<h:outputText value="#{UIEntityLabels.LABEL_POBLACION_CODIGOPOSTAL}:" />
+									<h:outputText value="#{pedidoNuevoMB.clienteSelected.poblacion.codigoPostal}"/>									
+								</h:panelGrid>
+
+							</rich:toolTip>	
+						</rich:panel>
+					</h:panelGrid>
+					
+					<h:outputText value="#{UIEntityLabels.LABEL_FORMADEPAGO}:" 
+								  class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PEDIDOVENTA_FORMADEPAGOID}"/>
+					<h:selectOneMenu id="formaDePago"
+									 value="#{pedidoNuevoMB.formaDePagoId}"
+									 required="false">
+						<f:selectItems  value="#{pedidoNuevoMB.formaDePagoList}"/>
+					</h:selectOneMenu>
+					
+					<h:outputText value="#{UIEntityLabels.LABEL_METODODEPAGO}:" 
+								  class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PEDIDOVENTA_METODODEPAGOID}"/>
+					<h:selectOneMenu id="metodoDePago"
+									 value="#{pedidoNuevoMB.metodoDePagoId}"
+									 required="false">
+						<f:selectItems  value="#{pedidoNuevoMB.metodoDePagoList}"/>
+					</h:selectOneMenu>
+
+					<h:outputText value="DESCUENTO EXTRA ESPECIAL:"
+								  rendered="#{rich:isUserInRole('admin')}"/>
+
+					<h:selectOneMenu	id="descuentoEspecial"
+									 rendered="#{rich:isUserInRole('admin')}"
+									 value="#{pedidoNuevoMB.descuentoEspecial}"
+									 required="false">
+						<a4j:support		reRender="listarPedidoNuevoForm" event="onchange"/>
+						<f:selectItems	value="#{pedidoNuevoMB.descuentosPosiblesList}"/>
+					</h:selectOneMenu>
+
+					
+					<h:outputLabel value="#{UIEntityLabels.LABEL_PEDIDOVENTA_COMENTARIOS}:" for="inputTextComentarios"
+								   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PEDIDOVENTA_COMENTARIOS}"/>
+					<h:panelGroup>
+						<h:inputText id="inputTextComentarios"
+									 value="#{pedidoNuevoMB.pedidoVenta.comentarios}" 
+									 label="#{UIEntityLabels.LABEL_PEDIDOVENTA_COMENTARIOS}"
+									 required="false"
+									 size="55"
+									 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_PEDIDOVENTA_COMENTARIOS}">
+							<f:validateLength minimum="3" maximum="#{UIEntityLabels.TEXT_MAXCHARS_PEDIDOVENTA_COMENTARIOS}"/>								
+						</h:inputText>
+						<rich:message for="inputTextComentarios" errorClass="littleErrorMessage_bold">
+							<f:facet name="errorMarker">
+								<h:graphicImage value="/images/error16x16.gif" />   
+							</f:facet>
+						</rich:message>
+					</h:panelGroup>
+					
+				</h:panelGrid>
+			</h:panelGrid>
+        </a4j:form>
+    </ui:define>
+
+</ui:composition>

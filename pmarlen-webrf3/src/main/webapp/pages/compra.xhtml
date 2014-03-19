@@ -1,0 +1,243 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+
+                template="/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+		<h:outputFormat value=" {0} >> {1} ">
+			<f:param value="#{UIMessages.MAIN_SHORT_TITLE}" />
+			<f:param value="COMPRA" />
+		</h:outputFormat>		
+    </ui:define>
+
+    <ui:define name="location">
+
+		<h:outputFormat value=" {0} > {1}">
+			<f:param value="#{UIMessages.MENU_OPERATION}" />
+			<f:param value="COMPRA" />
+		</h:outputFormat>
+
+    </ui:define>
+
+    <ui:define name="body">
+
+		<style>
+			.tooltip {
+				background-color:#{richSkin.generalBackgroundColor};
+				border-width:3px;
+				padding:10px;
+			}
+			.tooltip-text {
+				width:100%;
+				height:100%;
+				cursor:url;
+				border-width:0px;
+				text-align:center;
+				display: table-cell;
+				vertical-align: middle;
+			}
+			.tooltipData {
+				font-weight: bold;
+			}
+		</style>
+
+        <a4j:form id="listarCOMPRANuevoForm">
+
+			<h:panelGrid id="panelGridPrincipal"
+						 width="100%" 
+						 columns="1">
+
+				<rich:messages passedLabel="OK" layout="list" globalOnly="true" 
+							   showDetail="true"
+							   infoClass="littleInfoMessage_bold"
+							   warnClass="littleWarnMessage_bold"
+							   errorClass="littleErrorMessage_bold">
+					<f:facet name="infoMarker">
+                        <h:graphicImage  value="/images/info16x16.gif" /> 
+                    </f:facet>
+                    <f:facet name="warnMarker">
+                        <h:graphicImage value="/images/alerta16x16.gif" />   
+                    </f:facet>
+					<f:facet name="errorMarker">
+                        <h:graphicImage value="/images/error16x16.gif" />   
+                    </f:facet>
+                </rich:messages>
+
+				<h:panelGrid	columns="2" styleClass="center" width="100%" 
+							 border="0" 
+							 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign" >
+
+					<h:outputText		value="#{UIEntityLabels.LABEL_ALMACEN}:" 
+								   styleClass="label_bold_right"/>
+					<h:panelGroup rendered="#{compraMB.entradaAlmacenDetalleListSize eq 0}">
+
+						<h:selectOneRadio id="selectOneRadioAlmacen"
+										  value="#{compraMB.modoVenta}" 
+										  valueChangeListener="#{compraMB.almacenSelected}">
+							<a4j:support	reRender="principalForm" event="onchange"/>
+							<f:selectItems  value="#{compraMB.tipoAlmacenList}"/>
+						</h:selectOneRadio>
+						<rich:message for="selectOneRadioAlmacen" errorClass="littleErrorMessage_bold">
+							<f:facet name="errorMarker">
+								<h:graphicImage value="/images/error16x16.gif" />   
+							</f:facet>
+						</rich:message>
+					</h:panelGroup>
+					<h:outputText	value="#{compraMB.tipoAlmacenSeleccionado}" 
+								  rendered="#{compraMB.entradaAlmacenDetalleListSize gt 0}"/>					
+
+					<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO_NOMBRE} / #{UIEntityLabels.LABEL_PRODUCTO_PRESENTACION}:" styleClass="label_bold_right"/>
+					<h:panelGroup>
+						<h:inputText value="#{compraMB.nombreDescripcion}"
+									 valueChangeListener="#{compraMB.nombreDescripcionChanged}">
+							<a4j:support event="onchange" reRender="listarCOMPRANuevoForm" />
+						</h:inputText>									
+					</h:panelGroup>
+
+					<rich:spacer  rendered="#{empty compraMB.productoConNombreDescripcion}" 
+								  rendererType="ajax" width="10" height="28" />
+						
+					<h:outputText value="SELCCIONE PRODUCTO Y CANTIDAD:" styleClass="label_bold_right"
+								  rendered="#{not empty compraMB.productoConNombreDescripcion}"/>
+
+					<rich:spacer  rendered="#{empty compraMB.productoConNombreDescripcion}" 
+								  rendererType="ajax"  width="10" height="28" />
+					
+					<h:panelGroup rendered="#{not empty compraMB.productoConNombreDescripcion}">
+
+						<h:selectOneMenu id="resultProductoByNombreDescripcion"
+										 value="#{compraMB.productoSelected}" >
+							<f:selectItems  value="#{compraMB.productoConNombreDescripcion}"/>						
+						</h:selectOneMenu>
+						
+						<h:inputText value="#{compraMB.cantidadAgregar}" size="2">
+							<f:convertNumber integerOnly="true"/>
+							<f:validateLongRange minimum="1" maximum="9999"/>
+						</h:inputText>
+
+						<a4j:commandButton   value="+"
+											 id="agregarPorNombreBtn"
+											 actionListener="#{compraMB.agregarNProductoBuscado}"
+											 reRender="listarCOMPRANuevoForm"
+											 ignoreDupResponses="true">
+						</a4j:commandButton>
+
+					</h:panelGroup>
+
+					<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO_CODIGOBARRAS}:" styleClass="label_bold_right"/>
+					<h:panelGroup >
+						<h:inputText value="#{compraMB.codigoBuscar}" id="codigoBuscar" size="12" maxlength="18" class="inputCant">
+
+							<a4j:support	event="onchange" actionListener="#{compraMB.buscarProductoPorCodigo}"
+										 reRender="listarCOMPRANuevoForm"
+										 oncomplete="#{rich:element('listarCOMPRANuevoForm:codigoBuscar')}.text='';#{rich:element('listarCOMPRANuevoForm:codigoBuscar')}.focus();"/>
+
+						</h:inputText>
+						<a4j:commandButton value="+"
+										   actionListener="#{compraMB.buscarProductoPorCodigo}"
+										   reRender="listarCOMPRANuevoForm"									   
+										   ignoreDupResponses="true">
+						</a4j:commandButton>
+
+					</h:panelGroup>
+				</h:panelGrid>
+
+				<rich:dataTable value="#{compraMB.entradaAlmacenDetalleList}"
+								id="COMPRAVentaDetalleListTable"
+								var="dvp"
+								width="100%"  
+								styleClass="center" columnClasses="columnWidth5 centerAlign,columnWidth10 rightAlign,columnWidth15 centerAlign,columnWidth10 centerAlign,columnWidth40 leftAlign,columnWidth10 rightAlign,columnWidth10 rightAlign" >
+
+					<f:facet name="header">
+						<h:panelGroup style="display:block; text-align:left; background-color:transparent;" >
+							<h:outputText value="ACCIONES DEL COMPRA : " />
+							<rich:spacer width="10"/>
+							<a4j:commandButton value="PROCEDER" 
+											   rendered="#{compraMB.entradaAlmacenDetalleListSize gt 0}"
+											   action="#{compraMB.confirmarCompra}"/>
+							<rich:spacer width="10"/>
+							<a4j:commandButton	value="CANCELAR" 
+											   actionListener="#{compraMB.cancelarCompra}" 
+											   reRender="listarCOMPRANuevoForm"
+											   ignoreDupResponses="true"/>
+						</h:panelGroup>
+
+					</f:facet>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<h:panelGroup >
+							<a4j:commandLink actionListener="#{compraMB.eliminarProducto}"
+											 reRender="listarCOMPRANuevoForm,panelEditarCantidad"
+											 ignoreDupResponses="true">
+								<h:graphicImage style="border-style:none;" value="/images/eliminar.gif" title="#{UIMessages.COMMON_DELETE}"/>
+								<f:param name="productoId" value="#{dvp.producto.id}"/>
+							</a4j:commandLink>
+
+						</h:panelGroup>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="CODIGO" />
+						</f:facet>
+						<h:outputText value="#{dvp.producto.codigoBarras}" />                    
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="CANT." />
+						</f:facet>
+						<h:inputText value="#{dvp.cantidad}" class="inputCant"
+									 size="4" >
+							<f:convertNumber integerOnly="true"/>
+						</h:inputText>
+						<a4j:commandLink actionListener="#{compraMB.cantidadDetalleBtnChanged}"
+										 reRender="listarCOMPRANuevoForm"
+										 ignoreDupResponses="true">
+							<h:graphicImage style="border-style:none;" value="/images/update.gif" 
+											title="#{UIMessages.COMMON_UPDATE}"/>
+							<f:param name="productoId" value="#{dvp.producto.id}"/>
+						</a4j:commandLink>
+					</rich:column>
+
+					<rich:column  >
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO} / #{UIEntityLabels.LABEL_PRODUCTO_PRESENTACION}" />
+						</f:facet>
+						<h:outputText value="#{dvp.producto.nombre} / #{dvp.producto.presentacion}"/><br/>
+						<h:outputText value="( #{dvp.producto.contenido} #{dvp.producto.unidadMedida} / #{dvp.producto.unidadesPorCaja} UxCj.)"/>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="PRECIO VENTA" />
+						</f:facet>
+						<h:outputText value="#{dvp.precioVenta}">
+							<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+						</h:outputText>
+
+					</rich:column>
+					
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="IMPORTE" />
+						</f:facet>
+						<h:outputText value="#{dvp.precioVenta * dvp.cantidad}">
+							<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+						</h:outputText>
+
+					</rich:column>
+
+				</rich:dataTable>
+
+			</h:panelGrid>
+        </a4j:form>
+    </ui:define>
+
+</ui:composition>

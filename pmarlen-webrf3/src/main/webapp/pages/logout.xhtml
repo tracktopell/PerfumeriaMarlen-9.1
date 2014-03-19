@@ -1,0 +1,31 @@
+<ui:composition	xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                
+                template="/templates/mainWithMenu.xhtml">
+
+    <ui:define name="body">		
+
+        <script>
+		
+        window.onload=function() {				
+                document.getElementById('formLogout:commandButtonLogout').click();
+        }					
+			
+        </script>
+
+        <a4j:form id="formLogout">		
+
+            <a4j:commandButton	id="commandButtonLogout"
+                                value="-"
+                                action="#{sessionUserMB.logout}"
+                                style="display: none;" />
+
+        </a4j:form>
+
+    </ui:define>
+
+</ui:composition>

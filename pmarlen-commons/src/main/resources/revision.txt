@@ -1,0 +1,2 @@
+maven_build_timestamp=${maven_build_timestamp}
+

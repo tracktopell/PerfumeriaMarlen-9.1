@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                
+                template="/templates/mainWithMenu.xhtml">
+    <ui:define name="title">
+		<h:outputFormat value=" {0} - {1} ">
+			<f:param value="#{UIMessages.MAIN_SHORT_TITLE}" />
+			<f:param value="#{UIMessages.MENU_HOME}" />
+		</h:outputFormat>
+    </ui:define>
+
+    <ui:define name="location">
+
+		<h:outputFormat value=" {0} : {1} ">
+			<f:param value="#{UIMessages.MENU_HOME}" />
+			<f:param value="#{UIMessages.HOME_WELCOME_MESSAGE}" />
+		</h:outputFormat>
+    </ui:define>
+	
+    <ui:define name="body">
+
+		<h:form id="formPrincipal">
+
+			<table cellpadding="0" cellspacing="0" border="0" width="100%" align="center">
+				<tr>
+					<td height="400px" align="center" valign="middle" width="60%">
+						<img src="${facesContext.externalContext.requestContextPath}/images/icono_sistema_Q25.jpg"/>
+					</td>
+					<td align="center"  valign="middle" >
+						<h2>
+							Este sistema tiene por objetivo el flujo de ciclo 
+							de vida de un Pedido, en Perfumeria Marlen.
+						</h2>
+						
+						<h2>
+							La administración de Materiales y Procedimientos de Venta.
+						</h2>
+						
+						<h2>
+							Los Reportes estadisticos de Pedidos.
+						</h2>
+					</td>
+				</tr>
+			</table>
+
+
+		</h:form>
+
+    </ui:define>
+
+</ui:composition>

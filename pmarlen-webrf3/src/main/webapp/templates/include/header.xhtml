@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<h:form xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:a4j="http://richfaces.org/a4j"
+        xmlns:rich="http://richfaces.org/rich" 
+		id="headerForm">
+
+	<h:panelGrid columns="3" width="100%" 
+				 columnClasses="columnWidth5 leftAlign,columnWidth65 leftAlign,columnWidth30 rightAlign">
+
+		<h:outputLink value="${facesContext.externalContext.requestContextPath}/">
+			<h:graphicImage value="/images/Logo_T1_Q25.jpg"/>
+		</h:outputLink>
+
+		<h:panelGrid columns="1">
+			<h:outputText value="#{UIMessages.MAIN_LEGEND}" style="font-family: verdana; font-size: large"/>
+			<h:outputText value="#{UIMessages.MAIN_SUBLEGEND}" style="font-family: verdana; font-size: medium"/>
+			<h:outputText value="#{UIMessages.MAIN_SYSTEM_NAME}" style="font-family: verdana; font-size: small"/>								
+		</h:panelGrid>
+
+		<h:panelGrid width="100%" 
+					 columnClasses="columnWidth35 rightAlign,columnWidth65 leftAlign"
+					 columns="1"
+					 border="0">
+
+			<h:panelGroup>			
+				<h:outputText value="BIENVENIDO" class="common_component_bold"/>				        
+				<h:outputText rendered="#{not empty sessionUserMB.usuarioAuthenticated}" 
+							  value="  #{sessionUserMB.usuarioAuthenticated.nombreCompleto}" 
+							  class="common_component_bold"/>				        
+			</h:panelGroup>
+			
+			<!--
+			<a4j:repeat var="perfil" value="#{sessionUserMB.usuarioAuthenticated.perfilCollection}">
+				[<h:graphicImage id="graphicImageUser" value="/images/Perfil_#{perfil.id}_icon.gif" title="#{perfil.descripcion}" />]
+			</a4j:repeat>
+			-->
+			
+			<h:outputLink value="${facesContext.externalContext.requestContextPath}/logout">
+				<h:graphicImage value="/images/door_in.gif" title="#{UIMessages.COMMON_EXIT}"/>
+			</h:outputLink>
+			
+			<h:commandLink rendered="#{navigationMB.renderedForMobile}" 
+						   action="#{navigationMB.swapMenuStyle}"
+						   style="font-family: Arial; font-size : 8px;font-weight : bold;">
+				<h:graphicImage value="/images/menubar_icon.gif" 
+								title="Cambiar a barra de Menú" alt="Barra de Menú"/>
+			</h:commandLink>
+
+			<h:commandLink rendered="#{not navigationMB.renderedForMobile}" 
+						   action="#{navigationMB.swapMenuStyle}"
+						   style="font-family: Arial; font-size : 8px;font-weight : bold;">
+				<h:graphicImage value="/images/panelmenu_icon.gif" 
+								title="Cambiar a Menú lateral fijo" alt="Menú lateral fijo"/>
+			</h:commandLink>
+<!--
+			<h:panelGroup>
+				<a4j:repeat var="locale" value="#{navigationMB.supportedLocales}">
+
+					<h:graphicImage rendered="#{navigationMB.locale eq locale}"
+									value="/images/flag-#{locale}-selected.gif" 
+									title="#{locale.displayLanguage}" alt=" [ #{locale.displayLanguage} ] "/>
+
+					<h:commandLink	rendered="#{navigationMB.locale ne locale}"
+								   action="#{navigationMB.changeLocale}">
+						<h:graphicImage value="/images/flag-#{locale}.gif" 
+										title="#{locale.displayLanguage}" alt="#{locale.displayLanguage}"/>
+						<f:param name="localeToChange" value="#{locale}"/>							
+					</h:commandLink>
+
+					<h:outputText value=" "/>
+
+				</a4j:repeat>	
+			</h:panelGroup>
+-->
+		</h:panelGrid>
+
+	</h:panelGrid>
+
+</h:form>

@@ -1,0 +1,303 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                
+                template="/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+		<h:outputFormat value=" {0} >> {1} ">
+			<f:param value="#{UIMessages.MAIN_SHORT_TITLE}" />
+			<f:param value="#{UIEntityLabels.MENU_CRUD_LINEA}" />
+		</h:outputFormat>		
+    </ui:define>
+
+    <ui:define name="location">
+
+		<h:outputFormat value=" {0} > {1} > {2}">
+			<f:param value="#{UIMessages.MENU_ADMINISTRATION}" />
+			<f:param value="#{UIMessages.MENU_CATALOGS}" />
+			<f:param value="#{UIEntityLabels.MENU_CRUD_LINEA}" />
+		</h:outputFormat>
+
+    </ui:define>
+
+    <ui:define name="body">
+
+		<a4j:keepAlive beanName="lineaMB"/>
+
+		<h:form id="principalForm">
+
+			<h:panelGrid id="panelGridPrincipal"
+						 width="100%" 
+						 columns="1">
+
+				<rich:messages passedLabel="OK" layout="list" globalOnly="true" 
+							   showDetail="true"
+							   infoClass="littleInfoMessage_bold"
+							   warnClass="littleWarnMessage_bold"
+							   errorClass="littleErrorMessage_bold">
+					<f:facet name="infoMarker">
+                        <h:graphicImage  value="/images/info16x16.gif" /> 
+                    </f:facet>
+                    <f:facet name="warnMarker">
+                        <h:graphicImage value="/images/alerta16x16.gif" />   
+                    </f:facet>
+					<f:facet name="errorMarker">
+                        <h:graphicImage value="/images/error16x16.gif" />   
+                    </f:facet>
+                </rich:messages>
+
+				<rich:dataTable id="entitiListTable"
+								columnClasses="columnWidth10 centerAlign, columnWidth10 centerAlign, columnWidth80 leftAlign"
+								value="#{lineaMB.entityList}"
+								var="linea"
+								rows="#{lineaMB.numRecShow}"
+								width="100%" >
+					<f:facet name="header">
+						<h:panelGroup style="display:block; text-align:left; background-color:transparent; width: 100%;" >
+							<h:outputText value="#{UIMessages.COMMON_ACTIONS} : " />
+							<rich:spacer width="10"/>
+							<a4j:commandButton	rendered="#{sessionUserMB.adminUser}"
+											   id="commandButtonPreparar"
+											   value="#{UIMessages.COMMON_ADD_NEW} #{UIEntityLabels.LABEL_LINEA}" 
+											   actionListener="#{lineaMB.preparaNuevoRegistro}"
+											   ignoreDupResponses="true"
+											   oncomplete="#{rich:component('entityEditionModalPanel')}.show(); #{rich:component('inputTextNombre')}.focus(); return false;"
+											   reRender="entityEditionModalPanel"/> 
+
+							<rich:spacer width="10"/>
+
+							<h:outputText value="#{UIMessages.COMMON_VIEW_REG_PAGE} : " />
+
+							[
+							<h:outputText value="10" rendered="#{lineaMB.numRecShow eq 10}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{lineaMB.updateRecShow}" rendered="#{lineaMB.numRecShow ne 10}">
+								<f:param name="numRecShowToSet" value="10"/>
+								<h:outputText value="10" /> 
+							</a4j:commandLink>
+							|
+							<h:outputText value="25" rendered="#{lineaMB.numRecShow eq 25}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{lineaMB.updateRecShow}" rendered="#{lineaMB.numRecShow ne 25}">
+								<f:param name="numRecShowToSet" value="25"/>
+								<h:outputText value="25" /> 
+							</a4j:commandLink>
+							|
+							<h:outputText value="100" rendered="#{lineaMB.numRecShow eq 100}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{lineaMB.updateRecShow}" rendered="#{lineaMB.numRecShow ne 100}">
+								<f:param name="numRecShowToSet" value="100"/>
+								<h:outputText value="100" /> 
+							</a4j:commandLink>				
+							|
+							<h:outputText value="500" rendered="#{lineaMB.numRecShow eq 500}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{lineaMB.updateRecShow}" rendered="#{lineaMB.numRecShow ne 500}">
+								<f:param name="numRecShowToSet" value="500"/>
+								<h:outputText value="500" /> 
+							</a4j:commandLink>
+							]
+						</h:panelGroup>
+                    </f:facet>				
+
+					<rich:column rendered="#{sessionUserMB.adminUser}">
+						<f:facet name="header">
+							<h:outputText value="#{UIMessages.COMMON_OPTIONS}"/>
+						</f:facet>
+						<a4j:commandLink   id="commandButtonEdit" 
+										   actionListener="#{lineaMB.editarRegistro}"
+										   ignoreDupResponses="true"
+										   oncomplete="if (#{empty facesContext.maximumSeverity or facesContext.maximumSeverity eq 'INFO 0'}) { #{rich:component('entityEditionModalPanel')}.show(); return false; }"
+										   reRender="entitiListTable,entityEditionModalPanel">
+							<f:param name="entityId" value="#{linea.id}"/>
+							<h:graphicImage value="/images/editar.gif" title="#{UIMessages.COMMON_EDIT}"/>
+						</a4j:commandLink>
+						<rich:spacer width="10"/>
+						<a4j:commandLink   id="commandButtonDelete" 
+										   actionListener="#{lineaMB.preparEliminarRegistro}"
+										   ignoreDupResponses="true"
+										   oncomplete="if (#{empty facesContext.maximumSeverity or facesContext.maximumSeverity eq 'INFO 0'}) { #{rich:component('confirmDeleteModalPanel')}.show(); return false; }"										   
+										   reRender="entitiListTable,entityEditionModalPanel">
+							<f:param name="entityId" value="#{linea.id}"/>
+							<h:graphicImage value="/images/eliminar.gif" title="#{UIMessages.COMMON_DELETE}"/>
+						</a4j:commandLink>						
+					</rich:column>
+
+					<rich:column rendered="#{sessionUserMB.adminUser}" sortBy="#{linea.id}">
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_LINEA_ID}"/>
+						</f:facet>
+
+						<h:outputText value="#{linea.id}"/>
+
+					</rich:column>
+
+					<rich:column sortBy="#{linea.id}">
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_LINEA_ID}"/>
+						</f:facet>
+						<h:outputText value="#{linea.nombre}"/>
+					</rich:column>
+
+                    <f:facet name="footer">                
+                        <h:outputText value="#{UIMessages.COMMON_TOTAL_REC_COUND} : #{lineaMB.entityCount}."/>
+                    </f:facet>				
+
+				</rich:dataTable>
+
+
+				<rich:datascroller	rendered="#{lineaMB.entityCount ge 11}"
+								   align="center" for="entitiListTable" 
+								   maxPages="10" 
+								   page="#{lineaMB.scrollerPage}" 									
+								   id="sc1" />
+			</h:panelGrid>
+
+		</h:form>	
+
+		<rich:modalPanel id="confirmDeleteModalPanel" width="200" height="100">
+
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText value="#{UIMessages.COMMON_DELETE}"/>
+				</h:panelGroup>
+			</f:facet>
+
+			<h:form id="formConfirm">
+
+				<h:outputText class="centerAlign" 
+							  value="#{UIMessages.COMMON_CONFIRM_DELETE_MSG}"/>
+
+				<h:panelGrid id="panelGridBotones"
+							 width="100%" 
+							 columns="2"
+							 columnClasses="columnWidth50 rightAlign, columnWidth50 leftAlign">
+					<a4j:commandButton id="commandButtonGuardar"
+									   value="#{UIMessages.COMMON_OK}"
+									   actionListener="#{lineaMB.eliminarRegistro}"
+									   action="test"
+									   ignoreDupResponses="true"
+									   oncomplete="#{rich:component('confirmDeleteModalPanel')}.hide();"
+									   reRender="entitiListTable"/> 
+
+					<a4j:commandButton id="commandButtonCancelar"
+									   value="#{UIMessages.COMMON_CANCEL}" 
+									   action="test"
+									   ignoreDupResponses="true"
+									   immediate="true"
+									   oncomplete="#{rich:component('confirmDeleteModalPanel')}.hide();"
+									   reRender="entitiListTable"/> 
+
+				</h:panelGrid>
+
+
+			</h:form>
+		</rich:modalPanel>		
+
+		<rich:modalPanel id="entityEditionModalPanel" width="500" height="200" resizeable="false">
+
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText value="#{UIEntityLabels.LABEL_EDIT_LINEA}" rendered="#{not empty lineaMB.entityId}"/>
+					<h:outputText value="#{UIEntityLabels.LABEL_NEW_LINEA}"  rendered="#{empty lineaMB.entityId}"/>
+				</h:panelGroup>
+			</f:facet>
+
+			<h:form id="formSecundario">
+				<a4j:outputPanel layout="block" style="width:480px;height:160px;overflow:auto;">
+					<rich:messages layout="list" globalOnly="true" 
+								   showDetail="true"
+								   infoClass="littleInfoMessage_bold"
+								   warnClass="littleWarnMessage_bold"
+								   errorClass="littleErrorMessage_bold">
+
+						<f:facet name="infoMarker">
+							<h:graphicImage  value="/images/info16x16.gif" /> 
+						</f:facet>
+						<f:facet name="warnMarker">
+							<h:graphicImage value="/images/alerta16x16.gif" />   
+						</f:facet>
+						<f:facet name="errorMarker">
+							<h:graphicImage value="/images/error16x16.gif" />   
+						</f:facet>
+					</rich:messages>
+
+					<h:panelGrid id="panelGridCampos"
+								 width="100%" 
+								 columns="2" border="0"
+								 columnClasses="columnWidth30 rightAlign, columnWidth70 leftAlign">
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_LINEA_ID}:" for="inputTextId" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_LINEA_ID}" 
+									   rendered="#{not empty lineaMB.entityId}"/>
+
+						<h:panelGroup	 rendered="#{not empty lineaMB.entityId}">
+							<h:inputText id="inputTextId"
+										 readonly="#{not empty lineaMB.entityId}"
+										 value="#{lineaMB.entityId}" 
+										 label="#{UIEntityLabels.LABEL_LINEA_ID}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_LINEA_ID}"
+										 size="4"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_LINEA_ID}" >
+							</h:inputText>
+
+							<rich:message for="inputTextId" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_LINEA_NOMBRE}:" for="inputTextNombre" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_LINEA_NOMBRE}" />
+
+						<h:panelGroup>
+							<h:inputText id="inputTextNombre"
+										 value="#{lineaMB.entity.nombre}" 
+										 label="#{UIEntityLabels.LABEL_LINEA_NOMBRE}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_LINEA_NOMBRE}"
+										 size="35"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_LINEA_NOMBRE}">
+								<f:validateLength minimum="3" maximum="#{UIEntityLabels.TEXT_MAXCHARS_LINEA_NOMBRE}"/>
+							</h:inputText>
+							<rich:message for="inputTextNombre" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+					</h:panelGrid>
+
+					<br/>
+
+					<h:panelGrid id="panelGridBotones"
+								 width="100%" 
+								 columns="2"
+								 columnClasses="columnWidth50 rightAlign, columnWidth50 leftAlign">
+
+						<a4j:commandButton id="commandButtonGuardar"
+										   value="#{UIMessages.COMMON_SAVE}"
+										   actionListener="#{lineaMB.aceptarGuardar}"
+										   action="test"
+										   ignoreDupResponses="true"
+										   oncomplete="if (#{empty facesContext.maximumSeverity or facesContext.maximumSeverity eq 'INFO 0'}) { #{rich:component('entityEditionModalPanel')}.hide(); }"
+										   reRender="entitiListTable, formSecundario"/> 
+
+						<a4j:commandButton id="commandButtonCancelar"
+										   value="#{UIMessages.COMMON_CANCEL}" 
+										   actionListener="#{lineaMB.cancelarGuardar}"
+										   action="test"
+										   ignoreDupResponses="true"
+										   immediate="true"
+										   oncomplete="#{rich:component('entityEditionModalPanel')}.hide();"
+										   reRender="entitiListTable,entityEditionModalPanel"/> 
+
+					</h:panelGrid>
+				</a4j:outputPanel>
+			</h:form>
+		</rich:modalPanel>
+
+    </ui:define>
+
+</ui:composition>

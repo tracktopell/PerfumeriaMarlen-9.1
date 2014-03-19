@@ -1,0 +1,697 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                
+				template="/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+		<h:outputFormat value=" {0} >> {1} ">
+			<f:param value="#{UIMessages.MAIN_SHORT_TITLE}" />
+			<f:param value="#{UIEntityLabels.MENU_CRUD_CLIENTE}" />
+		</h:outputFormat>		
+    </ui:define>
+
+    <ui:define name="location">
+
+		<h:outputFormat value=" {0} > {1} > {2}">
+			<f:param value="#{UIMessages.MENU_ADMINISTRATION}" />
+			<f:param value="#{UIMessages.MENU_CATALOGS}" />
+			<f:param value="#{UIEntityLabels.MENU_CRUD_CLIENTE}" />
+		</h:outputFormat>
+
+    </ui:define>
+
+    <ui:define name="body">
+
+		<a4j:keepAlive beanName="clienteMB"/>		
+
+		<h:form id="principalForm">
+
+			<h:panelGrid id="panelGridPrincipal"
+						 width="100%" 
+						 columns="1">
+
+				<rich:messages passedLabel="OK" layout="list" globalOnly="true" 
+							   showDetail="true"
+							   infoClass="littleInfoMessage_bold"
+							   warnClass="littleWarnMessage_bold"
+							   errorClass="littleErrorMessage_bold">
+					<f:facet name="infoMarker">
+                        <h:graphicImage  value="/images/info16x16.gif" /> 
+                    </f:facet>
+                    <f:facet name="warnMarker">
+                        <h:graphicImage value="/images/alerta16x16.gif" />   
+                    </f:facet>
+					<f:facet name="errorMarker">
+                        <h:graphicImage value="/images/error16x16.gif" />   
+                    </f:facet>
+                </rich:messages>
+
+				<rich:dataTable id="entitiListTable"
+								columnClasses="columnWidth5 centerAlign,columnWidth5 centerAlign, 
+								columnWidth30 centerAlign, columnWidth30 centerAlign, columnWidth30 centerAlign"
+								value="#{clienteMB.entityList}"
+								var="cliente"
+								rows="#{clienteMB.numRecShow}"
+								width="100%" >
+					<f:facet name="header">
+						<h:panelGroup style="display:block; text-align:left; background-color:transparent; width: 100%;" >
+							<h:outputText value="#{UIMessages.COMMON_ACTIONS} : " />
+							<rich:spacer width="10"/>
+							<a4j:commandButton	rendered="#{sessionUserMB.adminUser}"
+											   id="commandButtonPreparar"
+											   value="#{UIMessages.COMMON_ADD_NEW} #{UIEntityLabels.LABEL_CLIENTE}" 
+											   actionListener="#{clienteMB.preparaNuevoRegistro}"
+											   ignoreDupResponses="true"
+											   oncomplete="#{rich:component('entityEditionModalPanel')}.show();return false;"
+											   reRender="entityEditionModalPanel,formSecundario"/> 
+
+							<rich:spacer width="10"/>
+
+							<h:outputText value="#{UIMessages.COMMON_VIEW_REG_PAGE} : " />
+
+							[
+							<h:outputText value="10" rendered="#{clienteMB.numRecShow eq 10}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{clienteMB.updateRecShow}" rendered="#{clienteMB.numRecShow ne 10}">
+								<f:param name="numRecShowToSet" value="10"/>
+								<h:outputText value="10" /> 
+							</a4j:commandLink>
+							|
+							<h:outputText value="25" rendered="#{clienteMB.numRecShow eq 25}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{clienteMB.updateRecShow}" rendered="#{clienteMB.numRecShow ne 25}">
+								<f:param name="numRecShowToSet" value="25"/>
+								<h:outputText value="25" /> 
+							</a4j:commandLink>
+							|
+							<h:outputText value="100" rendered="#{clienteMB.numRecShow eq 100}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{clienteMB.updateRecShow}" rendered="#{clienteMB.numRecShow ne 100}">
+								<f:param name="numRecShowToSet" value="100"/>
+								<h:outputText value="100" /> 
+							</a4j:commandLink>				
+							|
+							<h:outputText value="500" rendered="#{clienteMB.numRecShow eq 500}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{clienteMB.updateRecShow}" rendered="#{clienteMB.numRecShow ne 500}">
+								<f:param name="numRecShowToSet" value="500"/>
+								<h:outputText value="500" /> 
+							</a4j:commandLink>
+							]
+						</h:panelGroup>
+                    </f:facet>
+
+					<rich:column rendered="#{sessionUserMB.adminUser}">
+						<f:facet name="header">
+							<h:outputText value="#{UIMessages.COMMON_OPTIONS}"/>
+						</f:facet>
+						<a4j:commandLink   id="commandButtonEdit" 
+										   actionListener="#{clienteMB.editarRegistro}"
+										   ignoreDupResponses="true"
+										   oncomplete="if (#{empty facesContext.maximumSeverity or facesContext.maximumSeverity eq 'INFO 0'}) { #{rich:component('entityEditionModalPanel')}.show(); return false; }"
+										   reRender="entitiListTable,entityEditionModalPanel">
+							<f:param name="entityId" value="#{cliente.id}"/>
+							<h:graphicImage value="/images/editar.gif" title="#{UIMessages.COMMON_EDIT}"/>
+						</a4j:commandLink>
+						<rich:spacer width="10"/>
+						<a4j:commandLink   id="commandButtonDelete" 
+										   actionListener="#{clienteMB.preparEliminarRegistro}"
+										   ignoreDupResponses="true"
+										   oncomplete="if (#{empty facesContext.maximumSeverity or facesContext.maximumSeverity eq 'INFO 0'}) { #{rich:component('confirmDeleteModalPanel')}.show(); return false; }"
+										   reRender="entitiListTable,entityEditionModalPanel">
+							<f:param name="entityId" value="#{cliente.id}"/>
+							<h:graphicImage value="/images/eliminar.gif" title="#{UIMessages.COMMON_DELETE}"/>
+						</a4j:commandLink>						
+					</rich:column>
+
+
+					<rich:column rendered="#{sessionUserMB.adminUser}" sortBy="#{cliente.id}">
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_ID}"/>
+						</f:facet>
+
+						<h:outputText value="#{cliente.id}"/>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="DATOS"/>
+						</f:facet>
+						<h:panelGrid	id="panelGridRazonSocialNombreEstablecimiento"
+										width="100%" columnClasses="columnWidth35 rightAlign,columnWidth65 leftAlign"
+									    columns="2">
+							<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_RFC}:"  class="common_component_bold" />
+							<h:outputText  value="#{cliente.rfc}"/>
+							<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_RAZONSOCIAL}:"  class="common_component_bold" />
+							<h:outputText  value="#{cliente.razonSocial}"/>
+							<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_NOMBREESTABLECIMIENTO}:"  class="common_component_bold" />
+							<h:outputText value="#{cliente.nombreEstablecimiento}"/>
+							<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_FECHACREACION}:"  class="common_component_bold" />
+							<h:outputText  value="#{cliente.fechaCreacion}">
+								<f:convertDateTime timeZone="America/Mexico_City" pattern="yyyy/MM/dd HH:mm"/>
+							</h:outputText>
+
+						</h:panelGrid>
+					</rich:column>
+
+					<rich:column >
+						<f:facet name="header">
+							<h:outputText value="DIRECCIÓN"/>
+						</f:facet>
+						<h:panelGrid	id="panelGridDireccion"
+									 width="100%" columnClasses="centerAlign"
+									 columns="1">
+						
+							<h:outputText value="#{cliente.calle}, #{cliente.numExterior} #{cliente.numInterior}, "/>
+							<h:outputText value="#{cliente.poblacion.nombre}, #{cliente.poblacion.municipioODelegacion}, "/>
+							<h:outputText value="#{cliente.poblacion.entidadFederativa}, C.P. #{cliente.poblacion.codigoPostal}"/>
+						</h:panelGrid>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_CONTACTO} / #{UIEntityLabels.LABEL_CLIENTE_TELEFONOS} / #{UIEntityLabels.LABEL_CLIENTE_EMAIL}"/>
+						</f:facet>
+						<h:panelGrid	id="panelGridContactInfo"
+									 width="100%" columnClasses="columnWidth35 rightAlign,columnWidth65 leftAlign"
+									 columns="2">
+							<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_CONTACTO}:"  class="common_component_bold" />
+							<h:outputText value="#{cliente.contacto}"/>
+							<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_TELEFONOS}:" class="common_component_bold" />
+							<h:outputText value="#{cliente.telefonos}"/>
+							<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_EMAIL}:"	 class="common_component_bold" />
+							<h:outputText value="#{cliente.email}"/><br/>
+						</h:panelGrid>
+
+					</rich:column>
+
+                    <f:facet name="footer">                
+                        <h:outputText value="#{UIMessages.COMMON_TOTAL_REC_COUND} : #{clienteMB.entityCount}."/>
+                    </f:facet>				
+
+				</rich:dataTable>
+
+				<rich:datascroller	rendered="#{clienteMB.entityCount ge 11}"
+								   align="center" for="entitiListTable" 
+								   maxPages="10" 
+								   page="#{clienteMB.scrollerPage}" 									
+								   id="sc1" />
+			</h:panelGrid>
+
+		</h:form>	
+
+		<rich:modalPanel id="confirmDeleteModalPanel" width="200" height="100">
+
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText value="#{UIMessages.COMMON_DELETE}"/>
+				</h:panelGroup>
+			</f:facet>
+
+			<h:form id="formConfirm">
+
+				<h:outputText class="centerAlign" 
+							  value="#{UIMessages.COMMON_CONFIRM_DELETE_MSG}"/>
+
+				<h:panelGrid id="panelGridBotones"
+							 width="100%" 
+							 columns="2"
+							 columnClasses="columnWidth50 rightAlign, columnWidth50 leftAlign">
+					<a4j:commandButton id="commandButtonGuardar"
+									   value="#{UIMessages.COMMON_OK}"
+									   actionListener="#{clienteMB.eliminarRegistro}"
+									   action="test"
+									   ignoreDupResponses="true"
+									   oncomplete="#{rich:component('confirmDeleteModalPanel')}.hide();"
+									   reRender="entitiListTable"/> 
+
+					<a4j:commandButton id="commandButtonCancelar"
+									   value="#{UIMessages.COMMON_CANCEL}" 
+									   action="test"
+									   ignoreDupResponses="true"
+									   immediate="true"
+									   oncomplete="#{rich:component('confirmDeleteModalPanel')}.hide();"
+									   reRender="entitiListTable"/> 
+
+				</h:panelGrid>
+
+
+			</h:form>
+		</rich:modalPanel>		
+
+		<rich:modalPanel id="entityEditionModalPanel" width="800" height="560">
+
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText value="#{UIEntityLabels.LABEL_EDIT_CLIENTE}" rendered="#{not empty clienteMB.entityId}"/>
+					<h:outputText value="#{UIEntityLabels.LABEL_NEW_CLIENTE}"  rendered="#{empty clienteMB.entityId}"/>
+				</h:panelGroup>
+			</f:facet>
+
+			<h:form id="formSecundario">
+				<a4j:outputPanel layout="block" style="width:780px;height:530px;overflow:auto;">
+					<rich:messages layout="list" globalOnly="true" 
+								   showDetail="true"
+								   infoClass="littleInfoMessage_bold"
+								   warnClass="littleWarnMessage_bold"
+								   errorClass="littleErrorMessage_bold">
+
+						<f:facet name="infoMarker">
+							<h:graphicImage  value="/images/info16x16.gif" /> 
+						</f:facet>
+						<f:facet name="warnMarker">
+							<h:graphicImage value="/images/alerta16x16.gif" />   
+						</f:facet>
+						<f:facet name="errorMarker">
+							<h:graphicImage value="/images/error16x16.gif" />   
+						</f:facet>
+					</rich:messages>
+
+					<h:panelGrid id="panelGridCampos"
+								 width="100%" 
+								 columns="2" border="0"
+								 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign">
+
+						<h:outputLabel	rendered="#{not empty clienteMB.entity.id}" for="inputTextId"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_ID}" 
+									   value="#{UIEntityLabels.LABEL_CLIENTE_ID}:" />
+
+						<h:panelGroup rendered="#{not empty clienteMB.entity.id}">
+							<h:inputText id="inputTextId"
+										 readonly="true"		 
+										 value="#{clienteMB.entity.id}" 
+										 label="#{UIEntityLabels.LABEL_CLIENTE_ID}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_ID}"
+										 size="4"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_ID}" >
+							</h:inputText>
+
+							<rich:message for="inputTextId" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_CLIENTE_RFC}:" for="inputTextRFC" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_RFC}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextRFC"
+										 value="#{clienteMB.entity.rfc}" 
+										 label="#{UIEntityLabels.LABEL_CLIENTE_RFC}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_RFC}"
+										 size="11"
+										 maxlength="13">
+								<f:validateLength minimum="2" maximum="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_RFC}"/>
+								<f:validator validatorId="RFCValidator"/>
+
+							</h:inputText>
+							<rich:message for="inputTextRFC" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_CLIENTE_FECHACREACION}:" for="inputTextFechaCreacion"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_FECHACREACION}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextFechaCreacion"
+										 value="#{clienteMB.entity.fechaCreacion}" 
+										 readonly="true"
+										 label="#{UIEntityLabels.LABEL_CLIENTE_FECHACREACION}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_FECHACREACION}"
+										 size="13"									 
+										 maxlength="16">
+								<f:convertDateTime timeZone="America/Mexico_City" pattern="yyyy/MM/dd HH:mm"/>						
+							</h:inputText>
+							<rich:message for="inputTextFechaCreacion" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_CLIENTE_RAZONSOCIAL}:" for="inputTextRazonSocial"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_RAZONSOCIAL}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextRazonSocial"
+										 value="#{clienteMB.entity.razonSocial}" 
+										 label="#{UIEntityLabels.LABEL_CLIENTE_RAZONSOCIAL}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_RAZONSOCIAL}"
+										 size="55"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_RAZONSOCIAL}">
+								<f:validateLength minimum="3" maximum="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_RAZONSOCIAL}"/>
+								<f:validator validatorId="AlphanumericNameValidator"/>
+							</h:inputText>
+							<rich:message for="inputTextRazonSocial" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_CLIENTE_NOMBREESTABLECIMIENTO}:" for="inputTextNombreEstablecimiento" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_NOMBREESTABLECIMIENTO}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextNombreEstablecimiento"
+										 value="#{clienteMB.entity.nombreEstablecimiento}" 
+										 label="#{UIEntityLabels.LABEL_CLIENTE_NOMBREESTABLECIMIENTO}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_NOMBREESTABLECIMIENTO}"
+										 size="35"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_NOMBREESTABLECIMIENTO}">
+								<f:validateLength minimum="3" maximum="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_NOMBREESTABLECIMIENTO}"/>
+								<f:validator validatorId="AlphanumericNameValidator"/>
+							</h:inputText>
+							<rich:message for="inputTextNombreEstablecimiento" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_CLIENTE_CALLE}:" for="inputTextCalle"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_CALLE}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextCalle"
+										 value="#{clienteMB.entity.calle}" 
+										 label="#{UIEntityLabels.LABEL_CLIENTE_CALLE}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_CALLE}"
+										 size="35"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_CALLE}">
+								<f:validateLength minimum="3" maximum="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_CALLE}"/>
+								<f:validator validatorId="AlphanumericNameValidator"/>
+							</h:inputText>
+							<rich:message for="inputTextCalle" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_CLIENTE_NUMEXTERIOR}:" for="inputTextNumExterior" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_NUMEXTERIOR}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextNumExterior"
+										 value="#{clienteMB.entity.numExterior}" 
+										 label="#{UIEntityLabels.LABEL_CLIENTE_NUMEXTERIOR}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_NUMEXTERIOR}"
+										 size="10"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_NUMEXTERIOR}">
+								<f:validateLength minimum="1" maximum="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_NUMEXTERIOR}"/>
+								<f:validator validatorId="AlphanumericNameValidator"/>
+							</h:inputText>
+							<rich:message for="inputTextNumExterior" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_CLIENTE_NUMINTERIOR}:" for="inputTextNumInterior"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_NUMINTERIOR}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextNumInterior"
+										 value="#{clienteMB.entity.numInterior}" 
+										 label="#{UIEntityLabels.LABEL_CLIENTE_NUMINTERIOR}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_NUMINTERIOR}"
+										 size="10"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_NUMINTERIOR}">
+								<f:validateLength minimum="1" maximum="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_NUMINTERIOR}"/>
+								<f:validator validatorId="AlphanumericNameValidator"/>
+							</h:inputText>
+							<rich:message for="inputTextNumInterior" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputText value="#{UIEntityLabels.LABEL_POBLACION}:" 
+									  class="input-required-#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_POBLACIONID}"/>
+						<h:panelGroup >
+							<h:inputText id="inputTextPoblacion"
+										 value="#{clienteMB.entity.poblacion.nombre}" 
+										 label="#{UIEntityLabels.LABEL_POBLACION}"
+										 readonly="true"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_POBLACIONID}"
+										 size="40"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_POBLACION_NOMBRE}">
+							</h:inputText>
+							<a4j:commandLink	id="commandLinkBuscarPoblacion" 
+											 actionListener="#{clienteMB.preparaDialogoPoblacion}"
+											 ignoreDupResponses="true"
+											 oncomplete="#{rich:component('poblacionModalPanel')}.show(); return false;"
+											 reRender="poblacionModalPanel,formPoblacion">							
+								<h:graphicImage value="/images/buscar_cp_20x20.gif" title="#{UIEntityLabels.LABEL_POBLACION}"/>
+							</a4j:commandLink>
+
+							<rich:message for="inputTextPoblacion" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+				
+						<h:outputLabel value="#{UIEntityLabels.LABEL_POBLACION_MUNICIPIOODELEGACION}:" 
+									   class="input-required-true"/>
+
+						<h:inputText   id="inputTextMunicipioODelegacion" rendered="#{not empty clienteMB.entity.poblacion}"
+									   value="#{clienteMB.entity.poblacion.municipioODelegacion}" 
+									   readonly="true" size="35"/>
+						<h:inputText   id="inputTextMunicipioODelegacion_empty" rendered="#{empty clienteMB.entity.poblacion}"
+									   value="-" 
+									   readonly="true" size="35"/>
+						
+						
+						<h:outputLabel value="#{UIEntityLabels.LABEL_POBLACION_ENTIDADFEDERATIVA}:" 
+									   class="input-required-true"/>
+
+						<h:inputText   id="inputTextEntidadFederativa" rendered="#{not empty clienteMB.entity.poblacion}"
+									   value="#{clienteMB.entity.poblacion.entidadFederativa}" 
+									   readonly="true" size="35"/>
+						<h:inputText   id="inputTextEntidadFederativa_empty" rendered="#{empty clienteMB.entity.poblacion}"
+									   value="-" 
+									   readonly="true" size="35"/>
+						
+						<h:outputLabel value="#{UIEntityLabels.LABEL_POBLACION_CODIGOPOSTAL}:" 
+									   class="input-required-true"/>
+
+						<h:inputText   id="inputTextCodigoPostal" rendered="#{not empty clienteMB.entity.poblacion}"
+									   value="#{clienteMB.entity.poblacion.codigoPostal}" 
+									   readonly="true" size="4"/>
+						<h:inputText   id="inputTextCodigoPostal_empty" rendered="#{empty clienteMB.entity.poblacion}"
+									   value="-" 
+									   readonly="true" size="4"/>
+
+						
+						<h:outputLabel value="#{UIEntityLabels.LABEL_CLIENTE_TELEFONOS}:" for="inputTextTelefonos" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_TELEFONOS}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextTelefonos"
+										 value="#{clienteMB.entity.telefonos}" 
+										 label="#{UIEntityLabels.LABEL_CLIENTE_TELEFONOS}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_TELEFONOS}"
+										 size="25"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_TELEFONOS}">
+								<f:validateLength minimum="5" maximum="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_TELEFONOS}"/>
+								
+								<f:validator validatorId="TelephoneValidator"/>
+								
+							</h:inputText>
+							<rich:message for="inputTextTelefonos" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_CLIENTE_CONTACTO}:" for="inputTextContacto" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_CONTACTO}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextContacto"
+										 value="#{clienteMB.entity.contacto}" 
+										 label="#{UIEntityLabels.LABEL_CLIENTE_CONTACTO}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_CONTACTO}"
+										 size="25"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_CONTACTO}">
+								<f:validateLength minimum="3" maximum="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_CONTACTO}"/>
+								<f:validator validatorId="AlphanumericNameValidator"/>
+							</h:inputText>
+							<rich:message for="inputTextContacto" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_CLIENTE_EMAIL}:" for="inputTextEmail"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_EMAIL}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextEmail"
+										 value="#{clienteMB.entity.email}" 
+										 label="#{UIEntityLabels.LABEL_CLIENTE_EMAIL}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_EMAIL}"
+										 size="25"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_EMAIL}">
+
+								<f:validateLength minimum="5" maximum="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_EMAIL}"/>
+								<f:validator validatorId="EMailValidator"/>
+							</h:inputText>
+							<rich:message for="inputTextEmail" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+					</h:panelGrid>
+
+					<br/>
+
+					<h:panelGrid id="panelGridBotones"
+								 width="100%" 
+								 columns="2"
+								 columnClasses="columnWidth50 rightAlign, columnWidth50 leftAlign">
+
+						<a4j:commandButton id="commandButtonGuardar"
+										   value="#{UIMessages.COMMON_SAVE}"
+										   actionListener="#{clienteMB.aceptarGuardar}"
+										   action="test"
+										   ignoreDupResponses="true"
+										   oncomplete="if(#{empty facesContext.maximumSeverity or facesContext.maximumSeverity eq 'INFO 0'}) { #{rich:component('entityEditionModalPanel')}.hide(); }"
+										   reRender="formSecundario, entitiListTable"/> 
+
+						<a4j:commandButton id="commandButtonCancelar"
+										   value="#{UIMessages.COMMON_CANCEL}" 
+										   actionListener="#{clienteMB.cancelarGuardar}"
+										   action="test"
+										   ignoreDupResponses="true"
+										   immediate="true"
+										   oncomplete="#{rich:component('entityEditionModalPanel')}.hide();"
+										   reRender="entitiListTable,formSecundario"/> 
+
+					</h:panelGrid>							
+				</a4j:outputPanel>
+			</h:form>
+		</rich:modalPanel>
+
+		<rich:modalPanel id="poblacionModalPanel" width="600" height="200">
+
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText value="POBLACIÓN"/>
+				</h:panelGroup>
+			</f:facet>
+
+			<h:form id="formPoblacion">
+
+				<rich:messages layout="list" globalOnly="true" 
+							   showDetail="true"
+							   infoClass="littleInfoMessage_bold"
+							   warnClass="littleWarnMessage_bold"
+							   errorClass="littleErrorMessage_bold">
+
+					<f:facet name="infoMarker">
+						<h:graphicImage  value="/images/info16x16.gif" /> 
+					</f:facet>
+					<f:facet name="warnMarker">
+						<h:graphicImage value="/images/alerta16x16.gif" />   
+					</f:facet>
+					<f:facet name="errorMarker">
+						<h:graphicImage value="/images/error16x16.gif" />   
+					</f:facet>
+				</rich:messages>
+
+				<h:panelGrid id="panelGridCampos"
+							 width="100%" 
+							 columns="2" border="0"
+							 columnClasses="columnWidth35 rightAlign, columnWidth65 leftAlign">
+
+					<h:outputText value="#{UIEntityLabels.LABEL_POBLACION_ENTIDADFEDERATIVA}:" />
+					<h:panelGroup >
+						<h:selectOneMenu id="selectOneMenuEntidadFederativa"
+										 value="#{poblacionMB.entidadFederativa}"
+										 label="#{UIEntityLabels.LABEL_POBLACION_ENTIDADFEDERATIVA}"
+										 valueChangeListener="#{poblacionMB.entidadFederativaChanged}"
+										 >
+							<f:selectItems  value="#{poblacionMB.entidadFederativaList}"/>
+
+							<a4j:support reRender="formPoblacion" event="onchange"/>
+
+						</h:selectOneMenu>
+						<rich:message for="selectOneMenuEntidadFederativa" errorClass="littleErrorMessage_bold">
+							<f:facet name="errorMarker">
+								<h:graphicImage value="/images/error16x16.gif" />   
+							</f:facet>
+						</rich:message>
+					</h:panelGroup>
+
+					<h:outputText value="#{UIEntityLabels.LABEL_POBLACION_MUNICIPIOODELEGACION}:" />
+					<h:panelGroup >
+						<h:selectOneMenu id="selectOneMenuMunicipioODelegacion"
+										 value="#{poblacionMB.municipioODelegacion}"
+										 label="#{UIEntityLabels.LABEL_POBLACION_MUNICIPIOODELEGACION}"
+										 valueChangeListener="#{poblacionMB.municipioODelegacionChanged}"
+										 >
+							<f:selectItems  value="#{poblacionMB.municipioODelegacionList}"/>
+							<a4j:support reRender="formPoblacion" event="onchange"/>
+						</h:selectOneMenu>
+						<rich:message for="selectOneMenuMunicipioODelegacion" errorClass="littleErrorMessage_bold">
+							<f:facet name="errorMarker">
+								<h:graphicImage value="/images/error16x16.gif" />   
+							</f:facet>
+						</rich:message>
+					</h:panelGroup>
+
+					<h:outputText value="#{UIEntityLabels.LABEL_POBLACION}:" />
+					<h:panelGroup >
+						<h:selectOneMenu id="selectOneMenuPoblacion"
+										 label="#{UIEntityLabels.LABEL_POBLACION}"
+										 value="#{poblacionMB.entity.id}"
+										 valueChangeListener="#{poblacionMB.poblacionChanged}">
+							<f:selectItems  value="#{poblacionMB.poblacionByMunicipioODelegacion}"/>
+							<a4j:support reRender="formPoblacion" event="onchange"/>
+						</h:selectOneMenu>
+						<rich:message for="selectOneMenuPoblacion" errorClass="littleErrorMessage_bold">
+							<f:facet name="errorMarker">
+								<h:graphicImage value="/images/error16x16.gif" />   
+							</f:facet>
+						</rich:message>
+					</h:panelGroup>
+
+
+				</h:panelGrid>
+
+				<br/>
+
+				<h:panelGrid id="panelGridBotones"
+							 width="100%" 
+							 columns="2"
+							 columnClasses="columnWidth50 rightAlign, columnWidth50 leftAlign">
+
+					<a4j:commandButton id="commandAceptarPoblacion"
+									   value="#{UIMessages.COMMON_SAVE}"
+									   actionListener="#{clienteMB.aceptarPoblacion}"
+									   action="test"
+									   ignoreDupResponses="true"
+									   oncomplete="if(#{empty facesContext.maximumSeverity or facesContext.maximumSeverity eq 'INFO 0'}){#{rich:component('poblacionModalPanel')}.hide(); return false;}"
+									   reRender="inputTextPoblacion,inputTextMunicipioODelegacion,inputTextEntidadFederativa,inputTextCodigoPostal" /> 
+
+					<a4j:commandButton id="commandButtonCancelar"
+									   value="#{UIMessages.COMMON_CANCEL}" 
+									   actionListener="#{poblacionMB.cancelarGuardar}"
+									   action="test"
+									   ignoreDupResponses="true"
+									   immediate="true"
+									   oncomplete="#{rich:component('poblacionModalPanel')}.hide();return false;"
+									   /> 
+
+				</h:panelGrid>							
+
+			</h:form>
+		</rich:modalPanel>
+
+    </ui:define>
+
+</ui:composition>

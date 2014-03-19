@@ -1,0 +1,662 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:core="http://java.sun.com/jsf/core"
+                template="/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+		<h:outputFormat value=" {0} >> {1} ">
+			<f:param value="#{UIMessages.MAIN_SHORT_TITLE}" />
+			<f:param value="#{UIEntityLabels.MENU_CRUD_SUCURSAL}" />
+		</h:outputFormat>		
+    </ui:define>
+
+    <ui:define name="location">
+
+		<h:outputFormat value=" {0} > {1} > {2}">
+			<f:param value="#{UIMessages.MENU_ADMINISTRATION}" />
+			<f:param value="#{UIMessages.MENU_CATALOGS}" />
+			<f:param value="#{UIEntityLabels.MENU_CRUD_SUCURSAL}" />
+		</h:outputFormat>			
+
+    </ui:define>
+
+    <ui:define name="body">
+		
+		<h:form id="principalForm">
+
+			<h:panelGrid id="panelGridPrincipal"
+						 width="100%" 
+						 columns="1">
+
+				<rich:messages passedLabel="OK" layout="list" globalOnly="true" 
+							   showDetail="true"
+							   infoClass="littleInfoMessage_bold"
+							   warnClass="littleWarnMessage_bold"
+							   errorClass="littleErrorMessage_bold">
+					<f:facet name="infoMarker">
+                        <h:graphicImage  value="/images/info16x16.gif" /> 
+                    </f:facet>
+                    <f:facet name="warnMarker">
+                        <h:graphicImage value="/images/alerta16x16.gif" />   
+                    </f:facet>
+					<f:facet name="errorMarker">
+                        <h:graphicImage value="/images/error16x16.gif" />   
+                    </f:facet>
+                </rich:messages>
+
+				<rich:dataTable id="entitiListTable"
+								columnClasses="columnWidth5 centerAlign,
+								columnWidth5 centerAlign, columnWidth30 centerAlign, columnWidth30 centerAlign, columnWidth30 centerAlign"
+								value="#{sucursalMB.entityList}"
+								var="sucursal"
+								rows="#{sucursalMB.numRecShow}"
+								width="100%" >
+					<f:facet name="header">
+						<h:panelGroup style="display:block; text-align:left; background-color:transparent; width: 100%;" >
+							<h:outputText value="#{UIMessages.COMMON_ACTIONS} : " />
+							<rich:spacer width="10"/>
+							<a4j:commandButton	rendered="#{sessionUserMB.adminUser}"
+											   id="commandButtonPreparar"
+											   value="#{UIMessages.COMMON_ADD_NEW} #{UIEntityLabels.LABEL_SUCURSAL}" 
+											   actionListener="#{sucursalMB.preparaNuevoRegistro}"
+											   ignoreDupResponses="true"
+											   oncomplete="#{rich:component('entityEditionModalPanel')}.show(); #{rich:component('inputTextNombre')}.focus(); return false;"
+											   reRender="entityEditionModalPanel"/> 
+
+							<rich:spacer width="10"/>
+
+							<h:outputText value="#{UIMessages.COMMON_VIEW_REG_PAGE} : " />
+
+							[
+							<h:outputText value="10" rendered="#{sucursalMB.numRecShow eq 10}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{sucursalMB.updateRecShow}" rendered="#{sucursalMB.numRecShow ne 10}">
+								<f:param name="numRecShowToSet" value="10"/>
+								<h:outputText value="10" /> 
+							</a4j:commandLink>
+							|
+							<h:outputText value="25" rendered="#{sucursalMB.numRecShow eq 25}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{sucursalMB.updateRecShow}" rendered="#{sucursalMB.numRecShow ne 25}">
+								<f:param name="numRecShowToSet" value="25"/>
+								<h:outputText value="25" /> 
+							</a4j:commandLink>
+							|
+							<h:outputText value="100" rendered="#{sucursalMB.numRecShow eq 100}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{sucursalMB.updateRecShow}" rendered="#{sucursalMB.numRecShow ne 100}">
+								<f:param name="numRecShowToSet" value="100"/>
+								<h:outputText value="100" /> 
+							</a4j:commandLink>				
+							|
+							<h:outputText value="500" rendered="#{sucursalMB.numRecShow eq 500}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{sucursalMB.updateRecShow}" rendered="#{sucursalMB.numRecShow ne 500}">
+								<f:param name="numRecShowToSet" value="500"/>
+								<h:outputText value="500" /> 
+							</a4j:commandLink>
+							]
+						</h:panelGroup>
+                    </f:facet>
+					<rich:column rendered="#{sessionUserMB.adminUser}">
+						<f:facet name="header">
+							<h:outputText value="#{UIMessages.COMMON_OPTIONS}"/>
+						</f:facet>
+						<a4j:commandLink   id="commandButtonEdit" 
+										   actionListener="#{sucursalMB.editarRegistro}"
+										   ignoreDupResponses="true"
+										   oncomplete="if (#{empty facesContext.maximumSeverity or facesContext.maximumSeverity eq 'INFO 0'}) { #{rich:component('entityEditionModalPanel')}.show(); return false; }"
+										   reRender="entitiListTable,entityEditionModalPanel">
+							<f:param name="entityId" value="#{sucursal.id}"/>
+							<h:graphicImage value="/images/editar.gif" title="#{UIMessages.COMMON_EDIT}"/>
+						</a4j:commandLink>
+						<rich:spacer width="10"/>
+						<a4j:commandLink   id="commandButtonDelete" 
+										   actionListener="#{sucursalMB.preparEliminarRegistro}"
+										   ignoreDupResponses="true"
+										   oncomplete="if (#{empty facesContext.maximumSeverity or facesContext.maximumSeverity eq 'INFO 0'}) { #{rich:component('confirmDeleteModalPanel')}.show(); return false; }"										   
+										   reRender="entitiListTable,entityEditionModalPanel">
+							<f:param name="entityId" value="#{sucursal.id}"/>
+							<h:graphicImage value="/images/eliminar.gif" title="#{UIMessages.COMMON_DELETE}"/>
+						</a4j:commandLink>						
+					</rich:column>
+
+					<rich:column rendered="#{sessionUserMB.adminUser}" sortBy="#{sucursal.id}">
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_SUCURSAL_ID}"/>
+						</f:facet>
+
+						<h:outputText value="#{sucursal.id}"/>
+					</rich:column>
+
+					<rich:column >
+						<f:facet name="header">
+							<h:outputText value="#{UIMessages.COMMON_DATA}"/>
+						</f:facet>
+						<h:panelGrid id="panelGridTelefonosYComentarios"
+									 width="100%" 
+									 columns="2"
+									 columnClasses="columnWidth35 rightAlign, columnWidth65 leftAlign">
+							<h:outputText value="#{UIEntityLabels.LABEL_SUCURSAL} #{UIEntityLabels.LABEL_SUCURSAL_IDPADRE}:" class="common_component_bold" rendered="#{not empty sucursal.sucursal}"/>
+							<h:outputText value="#{sucursal.sucursal}" rendered="#{not empty sucursal.sucursal}"/>
+							
+							<h:outputText value="#{UIEntityLabels.LABEL_SUCURSAL_NOMBRE}:" class="common_component_bold"/>
+							<h:outputText value="#{sucursal.nombre}"/>							
+							<h:outputText value="#{UIEntityLabels.LABEL_SUCURSAL_TELEFONOS}:" class="common_component_bold"/>
+							<h:outputText value="#{sucursal.telefonos}"/>
+							<h:outputText value="#{UIEntityLabels.LABEL_SUCURSAL_COMENTARIOS}:" class="common_component_bold"/>
+							<h:outputText value="#{sucursal.comentarios}"/>
+						</h:panelGrid>
+					</rich:column>
+
+					<rich:column rendered="#{sessionUserMB.adminUser}">
+						<f:facet name="header">
+							<h:outputText value="SICOFI"/>
+						</f:facet>
+						<h:panelGrid id="panelGridSicofi"
+									 width="100%" 
+									 columns="2"
+									 columnClasses="columnWidth35 rightAlign, columnWidth65 leftAlign">
+
+							<h:outputText value="#{UIEntityLabels.LABEL_SUCURSAL_SERIESICOFI}:" class="common_component_bold"/>
+							<h:outputText value="#{sucursal.serieSicofi}"/>
+
+							<h:outputText value="#{UIEntityLabels.LABEL_SUCURSAL_USUARIOSICOFI}:" class="common_component_bold"/>
+							<h:outputText value="#{sucursal.usuarioSicofi}"/>
+
+							<h:outputText value="#{UIEntityLabels.LABEL_SUCURSAL_PASSWORDSICOFI}:" class="common_component_bold"/>
+							<h:outputText value="#{sucursal.passwordSicofi}"/>
+						</h:panelGrid>
+					</rich:column>
+
+				</rich:dataTable>
+
+
+				<rich:datascroller	rendered="#{sucursalMB.entityCount ge 11}"
+								   align="center" for="entitiListTable" 
+								   maxPages="10" 
+								   page="#{sucursalMB.scrollerPage}" 									
+								   id="sc1" />
+			</h:panelGrid>
+
+		</h:form>	
+
+		<rich:modalPanel id="confirmDeleteModalPanel" width="200" height="100">
+
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText value="#{UIMessages.COMMON_DELETE}"/>
+				</h:panelGroup>
+			</f:facet>
+
+			<h:form id="formConfirm">
+				<h:outputText class="centerAlign" 
+							  value="#{UIMessages.COMMON_CONFIRM_DELETE_MSG}"/>
+
+				<h:panelGrid id="panelGridBotones"
+							 width="100%" 
+							 columns="2"
+							 columnClasses="columnWidth50 rightAlign, columnWidth50 leftAlign">
+					<a4j:commandButton id="commandButtonGuardar"
+									   value="#{UIMessages.COMMON_OK}"
+									   actionListener="#{sucursalMB.eliminarRegistro}"
+									   action="test"
+									   ignoreDupResponses="true"
+									   oncomplete="#{rich:component('confirmDeleteModalPanel')}.hide();"
+									   reRender="entitiListTable"/> 
+
+					<a4j:commandButton id="commandButtonCancelar"
+									   value="#{UIMessages.COMMON_CANCEL}" 
+									   action="test"
+									   ignoreDupResponses="true"
+									   immediate="true"
+									   oncomplete="#{rich:component('confirmDeleteModalPanel')}.hide();"
+									   reRender="entitiListTable"/> 
+
+				</h:panelGrid>
+			</h:form>
+		</rich:modalPanel>		
+
+		<rich:modalPanel id="entityEditionModalPanel" width="800" height="550">
+
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText value="#{UIEntityLabels.LABEL_EDIT_SUCURSAL}" rendered="#{not empty sucursalMB.entityId}"/>
+					<h:outputText value="#{UIEntityLabels.LABEL_NEW_SUCURSAL}"  rendered="#{empty sucursalMB.entityId}"/>
+				</h:panelGroup>
+			</f:facet>
+
+			<h:form id="formSecundario">
+				<a4j:outputPanel layout="block" style="width:780px;height:520px;overflow:auto;">
+					<rich:messages layout="list" globalOnly="true" 
+								   showDetail="true"
+								   infoClass="littleInfoMessage_bold"
+								   warnClass="littleWarnMessage_bold"
+								   errorClass="littleErrorMessage_bold">
+
+						<f:facet name="infoMarker">
+							<h:graphicImage  value="/images/info16x16.gif" /> 
+						</f:facet>
+						<f:facet name="warnMarker">
+							<h:graphicImage value="/images/alerta16x16.gif" />   
+						</f:facet>
+						<f:facet name="errorMarker">
+							<h:graphicImage value="/images/error16x16.gif" />   
+						</f:facet>
+					</rich:messages>
+
+					<h:panelGrid id="panelGridCampos"
+								 width="100%" 
+								 columns="2" border="0"
+								 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign">
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_SUCURSAL_ID}:" for="inputTextId" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_ID}"
+									   rendered="#{not empty sucursalMB.entityId}"/>
+
+						<h:panelGroup	 rendered="#{not empty sucursalMB.entityId}">
+							<h:inputText id="inputTextId"
+										 readonly="#{not empty sucursalMB.entityId}"
+										 value="#{sucursalMB.entityId}" 
+										 label="#{UIEntityLabels.LABEL_SUCURSAL_ID}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_ID}"
+										 size="4"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_ID}" >
+							</h:inputText>
+
+							<rich:message for="inputTextId" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_SUCURSAL} #{UIEntityLabels.LABEL_SUCURSAL_IDPADRE}:" for="inputTextIdPadre" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_IDPADRE}"
+									   />
+
+						<h:panelGroup    >	 
+							<h:inputText id="inputTextIdPadre"
+										 readonly="true"
+										 value="#{sucursalMB.entity.sucursal.nombre}" 
+										 size="35">
+							</h:inputText>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_SUCURSAL_NOMBRE}:" for="inputTextNombre" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_NOMBRE}" />
+						<h:panelGroup>
+							<h:inputText id="inputTextNombre"
+										 value="#{sucursalMB.entity.nombre}" 
+										 label="#{UIEntityLabels.LABEL_SUCURSAL_NOMBRE}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_NOMBRE}"
+										 size="35"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_NOMBRE}">
+								<f:validateLength minimum="2" maximum="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_NOMBRE}"/>
+								<f:validator validatorId="AlphanumericNameValidator"/>
+							</h:inputText>
+							<rich:message for="inputTextNombre" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_SUCURSAL_USUARIOSICOFI}:" for="inputTextUsuarioSicofi" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_USUARIOSICOFI}" />
+						<h:panelGroup>
+							<h:inputText id="inputTextUsuarioSicofi"
+										 value="#{sucursalMB.entity.usuarioSicofi}" 
+										 label="#{UIEntityLabels.LABEL_SUCURSAL_USUARIOSICOFI}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_USUARIOSICOFI}"
+										 size="10"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_USUARIOSICOFI}">
+								<f:validateLength minimum="5" maximum="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_USUARIOSICOFI}"/>
+							</h:inputText>
+							<rich:message for="inputTextUsuarioSicofi" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_SUCURSAL_PASSWORDSICOFI}:" for="inputTextPasswordSicofi"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_PASSWORDSICOFI}" />
+						<h:panelGroup>
+							<h:inputText id="inputTextPasswordSicofi"
+										 value="#{sucursalMB.entity.passwordSicofi}" 
+										 label="#{UIEntityLabels.LABEL_SUCURSAL_PASSWORDSICOFI}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_PASSWORDSICOFI}"
+										 size="10"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_PASSWORDSICOFI}">
+								<f:validateLength minimum="5" maximum="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_PASSWORDSICOFI}"/>
+							</h:inputText>
+							<rich:message for="inputTextPasswordSicofi" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="CONFRIMAR #{UIEntityLabels.LABEL_SUCURSAL_PASSWORDSICOFI}:" for="inputTextConfirmarPasswordSicofi" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_PASSWORDSICOFI}" />
+						<h:panelGroup>
+							<h:inputText id="inputTextConfirmarPasswordSicofi"
+										 value="#{sucursalMB.passwordConfirm}" 
+										 label="CONFIRMAR #{UIEntityLabels.LABEL_SUCURSAL_PASSWORDSICOFI}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_PASSWORDSICOFI}"
+										 size="10"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_PASSWORDSICOFI}">
+								<f:validateLength minimum="5" maximum="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_PASSWORDSICOFI}"/>
+							</h:inputText>
+							<rich:message for="inputTextConfirmarPasswordSicofi" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_SUCURSAL_SERIESICOFI}:" for="inputTextSerieSicofi" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_SERIESICOFI}" />
+						<h:panelGroup>
+							<h:inputText id="inputTextSerieSicofi"
+										 value="#{sucursalMB.entity.serieSicofi}" 
+										 label="#{UIEntityLabels.LABEL_SUCURSAL_SERIESICOFI}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_SERIESICOFI}"
+										 size="4"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_SERIESICOFI}">
+								<f:validateLength minimum="2" maximum="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_SERIESICOFI}"/>
+							</h:inputText>
+							<rich:message for="inputTextSerieSicofi" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_SUCURSAL_CALLE}:" for="inputTextCalle" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_CALLE}" />
+						<h:panelGroup>
+							<h:inputText id="inputTextCalle"
+										 value="#{sucursalMB.entity.calle}" 
+										 label="#{UIEntityLabels.LABEL_SUCURSAL_CALLE}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_CALLE}"
+										 size="35"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_CALLE}">
+								<f:validateLength minimum="3" maximum="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_CALLE}"/>
+								<f:validator validatorId="AlphanumericNameValidator"/>
+							</h:inputText>
+							<rich:message for="inputTextCalle" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_SUCURSAL_NUMEXTERIOR}:" for="inputTextNumExterior"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_NUMEXTERIOR}" />
+						<h:panelGroup>
+							<h:inputText id="inputTextNumExterior"
+										 value="#{sucursalMB.entity.numExterior}" 
+										 label="#{UIEntityLabels.LABEL_SUCURSAL_NUMEXTERIOR}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_NUMEXTERIOR}"
+										 size="10"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_NUMEXTERIOR}">
+								<f:validateLength minimum="1" maximum="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_NUMEXTERIOR}"/>								
+								<f:validator validatorId="AlphanumericNameValidator"/>
+							</h:inputText>
+							<rich:message for="inputTextNumExterior" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_SUCURSAL_NUMINTERIOR}:" for="inputTextNumInterior"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_NUMINTERIOR}" />
+						<h:panelGroup>
+							<h:inputText id="inputTextNumInterior"
+										 value="#{sucursalMB.entity.numInterior}" 
+										 label="#{UIEntityLabels.LABEL_SUCURSAL_NUMINTERIOR}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_NUMINTERIOR}"
+										 size="10"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_NUMINTERIOR}">
+								<f:validateLength minimum="1" maximum="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_NUMINTERIOR}"/>
+								<f:validator validatorId="AlphanumericNameValidator"/>								
+							</h:inputText>
+							<rich:message for="inputTextNumInterior" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputText value="#{UIEntityLabels.LABEL_POBLACION}:" 
+									  class="input-required-#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_POBLACIONID}" />
+						<h:panelGroup >
+							<h:inputText id="inputTextPoblacion"
+										 value="#{sucursalMB.entity.poblacion.nombre}" 
+										 label="#{UIEntityLabels.LABEL_POBLACION}"
+										 readonly="true"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_POBLACIONID}"
+										 size="40"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_NOMBRE}">							
+							</h:inputText>
+							<a4j:commandLink	id="commandLinkBuscarPoblacion" 
+											 actionListener="#{sucursalMB.preparaDialogoPoblacion}"
+											 ignoreDupResponses="true"
+											 oncomplete="#{rich:component('poblacionModalPanel')}.show(); return false;"
+											 reRender="poblacionModalPanel,formPoblacion">							
+								<h:graphicImage value="/images/buscar_cp_20x20.gif" title="#{UIEntityLabels.LABEL_POBLACION}"/>
+							</a4j:commandLink>
+
+							<rich:message for="inputTextPoblacion" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+						
+						<h:outputLabel value="#{UIEntityLabels.LABEL_POBLACION_MUNICIPIOODELEGACION}:" 
+									   class="input-required-true"/>
+
+						<h:inputText   id="inputTextMunicipioODelegacion" rendered="#{not empty sucursalMB.entity.poblacion}"
+									   value="#{sucursalMB.entity.poblacion.municipioODelegacion}" 
+									   readonly="true" size="35"/>
+						<h:inputText   id="inputTextMunicipioODelegacion_empty" rendered="#{empty sucursalMB.entity.poblacion}"
+									   value="-" 
+									   readonly="true" size="35"/>
+						
+						
+						<h:outputLabel value="#{UIEntityLabels.LABEL_POBLACION_ENTIDADFEDERATIVA}:" 
+									   class="input-required-true"/>
+
+						<h:inputText   id="inputTextEntidadFederativa" rendered="#{not empty sucursalMB.entity.poblacion}"
+									   value="#{sucursalMB.entity.poblacion.entidadFederativa}" 
+									   readonly="true" size="35"/>
+						<h:inputText   id="inputTextEntidadFederativa_empty" rendered="#{empty sucursalMB.entity.poblacion}"
+									   value="-" 
+									   readonly="true" size="35"/>
+						
+						<h:outputLabel value="#{UIEntityLabels.LABEL_POBLACION_CODIGOPOSTAL}:" 
+									   class="input-required-true"/>
+
+						<h:inputText   id="inputTextCodigoPostal" rendered="#{not empty sucursalMB.entity.poblacion}"
+									   value="#{sucursalMB.entity.poblacion.codigoPostal}" 
+									   readonly="true" size="4"/>
+						<h:inputText   id="inputTextCodigoPostal_empty" rendered="#{empty sucursalMB.entity.poblacion}"
+									   value="-" 
+									   readonly="true" size="4"/>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_SUCURSAL_TELEFONOS}:" for="inputTextTelefonos" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_TELEFONOS}" />
+						<h:panelGroup>
+							<h:inputText id="inputTextTelefonos"
+										 value="#{sucursalMB.entity.telefonos}" 
+										 label="#{UIEntityLabels.LABEL_SUCURSAL_TELEFONOS}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_SUCURSAL_TELEFONOS}"
+										 size="25"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_TELEFONOS}">
+								<f:validateLength minimum="5" maximum="#{UIEntityLabels.TEXT_MAXCHARS_SUCURSAL_TELEFONOS}"/>
+								
+								<f:validator validatorId="TelephoneValidator"/>
+								
+							</h:inputText>
+							<rich:message for="inputTextTelefonos" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+					</h:panelGrid>
+
+					<br/>
+
+					<h:panelGrid id="panelGridBotones"
+								 width="100%" 
+								 columns="2"
+								 columnClasses="columnWidth50 rightAlign, columnWidth50 leftAlign">
+
+						<a4j:commandButton id="commandButtonGuardar"
+										   value="#{UIMessages.COMMON_SAVE}"
+										   actionListener="#{sucursalMB.aceptarGuardar}"
+										   action="test"
+										   ignoreDupResponses="true"
+										   oncomplete="if (#{facesContext.maximumSeverity == 'INFO 0'}) { #{rich:component('entityEditionModalPanel')}.hide(); }"
+										   reRender="entitiListTable"/> 
+
+						<a4j:commandButton id="commandButtonCancelar"
+										   value="#{UIMessages.COMMON_CANCEL}" 
+										   actionListener="#{sucursalMB.cancelarGuardar}"
+										   action="test"
+										   ignoreDupResponses="true"
+										   immediate="true"
+										   oncomplete="#{rich:component('entityEditionModalPanel')}.hide();"
+										   reRender="entitiListTable,entityEditionModalPanel"/> 
+
+					</h:panelGrid>							
+				</a4j:outputPanel>
+
+			</h:form>
+		</rich:modalPanel>
+
+		<rich:modalPanel id="poblacionModalPanel" width="600" height="200">
+
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText value="POBLACIÓN"/>
+				</h:panelGroup>
+			</f:facet>
+
+			<h:form id="formPoblacion">
+
+				<rich:messages layout="list" globalOnly="true" 
+							   showDetail="true"
+							   infoClass="littleInfoMessage_bold"
+							   warnClass="littleWarnMessage_bold"
+							   errorClass="littleErrorMessage_bold">
+
+					<f:facet name="infoMarker">
+						<h:graphicImage  value="/images/info16x16.gif" /> 
+					</f:facet>
+					<f:facet name="warnMarker">
+						<h:graphicImage value="/images/alerta16x16.gif" />   
+					</f:facet>
+					<f:facet name="errorMarker">
+						<h:graphicImage value="/images/error16x16.gif" />   
+					</f:facet>
+				</rich:messages>
+
+				<h:panelGrid id="panelGridCampos"
+							 width="100%" 
+							 columns="2" border="0"
+							 columnClasses="columnWidth35 rightAlign, columnWidth65 leftAlign">
+
+					<h:outputText value="#{UIEntityLabels.LABEL_POBLACION_ENTIDADFEDERATIVA}:" />
+					<h:panelGroup >
+						<h:selectOneMenu id="selectOneMenuEntidadFederativa"
+										 value="#{poblacionMB.entidadFederativa}"
+										 label="#{UIEntityLabels.LABEL_POBLACION_ENTIDADFEDERATIVA}"
+										 valueChangeListener="#{poblacionMB.entidadFederativaChanged}"
+										 >
+							<f:selectItems  value="#{poblacionMB.entidadFederativaList}"/>
+
+							<a4j:support reRender="formPoblacion" event="onchange"/>
+
+						</h:selectOneMenu>
+						<rich:message for="selectOneMenuEntidadFederativa" errorClass="littleErrorMessage_bold">
+							<f:facet name="errorMarker">
+								<h:graphicImage value="/images/error16x16.gif" />   
+							</f:facet>
+						</rich:message>
+					</h:panelGroup>
+
+					<h:outputText value="#{UIEntityLabels.LABEL_POBLACION_MUNICIPIOODELEGACION}:" />
+					<h:panelGroup >
+						<h:selectOneMenu id="selectOneMenuMunicipioODelegacion"
+										 value="#{poblacionMB.municipioODelegacion}"
+										 label="#{UIEntityLabels.LABEL_POBLACION_MUNICIPIOODELEGACION}"
+										 valueChangeListener="#{poblacionMB.municipioODelegacionChanged}"
+										 >
+							<f:selectItems  value="#{poblacionMB.municipioODelegacionList}"/>
+							<a4j:support reRender="formPoblacion" event="onchange"/>
+						</h:selectOneMenu>
+						<rich:message for="selectOneMenuMunicipioODelegacion" errorClass="littleErrorMessage_bold">
+							<f:facet name="errorMarker">
+								<h:graphicImage value="/images/error16x16.gif" />   
+							</f:facet>
+						</rich:message>
+					</h:panelGroup>
+
+					<h:outputText value="#{UIEntityLabels.LABEL_POBLACION}:" />
+					<h:panelGroup >
+						<h:selectOneMenu id="selectOneMenuPoblacion"
+										 label="#{UIEntityLabels.LABEL_POBLACION}"
+										 value="#{poblacionMB.entity.id}"
+										 valueChangeListener="#{poblacionMB.poblacionChanged}">
+							<f:selectItems  value="#{poblacionMB.poblacionByMunicipioODelegacion}"/>
+							<a4j:support reRender="formPoblacion" event="onchange"/>
+						</h:selectOneMenu>
+						<rich:message for="selectOneMenuPoblacion" errorClass="littleErrorMessage_bold">
+							<f:facet name="errorMarker">
+								<h:graphicImage value="/images/error16x16.gif" />   
+							</f:facet>
+						</rich:message>
+					</h:panelGroup>
+
+
+				</h:panelGrid>
+
+				<br/>
+
+				<h:panelGrid id="panelGridBotones"
+							 width="100%" 
+							 columns="2"
+							 columnClasses="columnWidth50 rightAlign, columnWidth50 leftAlign">
+
+					<a4j:commandButton id="commandAceptarPoblacion"
+									   value="#{UIMessages.COMMON_SAVE}"
+									   actionListener="#{sucursalMB.aceptarPoblacion}"
+									   action="test"
+									   ignoreDupResponses="true"
+									   oncomplete="if(#{empty facesContext.maximumSeverity or facesContext.maximumSeverity eq 'INFO 0'}){#{rich:component('poblacionModalPanel')}.hide(); return false;}"
+									   reRender="inputTextPoblacion,inputTextMunicipioODelegacion,inputTextEntidadFederativa,inputTextCodigoPostal"/> 
+
+					<a4j:commandButton id="commandButtonCancelar"
+									   value="#{UIMessages.COMMON_CANCEL}" 
+									   actionListener="#{poblacionMB.cancelarGuardar}"
+									   action="test"
+									   ignoreDupResponses="true"
+									   immediate="true"
+									   oncomplete="#{rich:component('poblacionModalPanel')}.hide();return false;"
+									   /> 
+
+				</h:panelGrid>							
+
+			</h:form>
+		</rich:modalPanel>
+
+    </ui:define>
+
+</ui:composition>

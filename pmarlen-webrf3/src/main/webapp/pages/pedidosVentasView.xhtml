@@ -1,0 +1,289 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+
+                template="/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+		<h:outputFormat value=" {0} >> {1} ">
+			<f:param value="#{UIMessages.MAIN_SHORT_TITLE}" />
+			<f:param value="PEDIDOS EN PROCESO" />
+		</h:outputFormat>		
+
+    </ui:define>
+
+    <ui:define name="location">
+		<h:outputFormat value=" {0} > {1} > {2}">
+			<f:param value="#{UIMessages.MENU_OPERATION}" />
+			<f:param value="VENTAS" />
+			<f:param value="PEDIDOS EN PROCESO" />
+		</h:outputFormat>			
+
+    </ui:define>
+
+    <ui:define name="body">
+		<style>
+			.dataTable_PVE_header {
+				color:#FF0000;
+			}
+
+			.dataTable_TD_PVE_1 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FFFFFF;
+			}
+			.dataTable_TD_PVE_2 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FF33CC;
+			}
+			.dataTable_TD_PVE_4 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FFFF00;
+			}
+			.dataTable_TD_PVE_8 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#CCFF99;
+			}
+			.dataTable_TD_PVE_16 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#00FF00;
+			}
+			.dataTable_TD_PVE_32 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#00FF00;
+			}
+			.dataTable_TD_PVE_64 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#00FFCC;
+			}
+			.dataTable_TD_PVE_128 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FF66CC;
+			}
+			.dataTable_TD_PVE_256 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FF66CC;
+			}
+			.dataTable_TD_PVE_512 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FF66CC;
+			}
+			.dataTable_TD_PVE_1024 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FF66CC;
+			}
+			.dataTable_TD_PVE_2048 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FF66CC;
+			}
+			.dataTable_TD_PVE_4096 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FF66CC;
+			}
+			.dataTable_TD_PVE_65536 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FF0000;
+			}
+
+		</style>
+
+        <a4j:form id="listarPedidosVentasForm">
+			<h:panelGrid id="panelGridPrincipal"
+						 width="100%" 
+						 columns="1">
+
+				<rich:messages passedLabel="OK" layout="list" globalOnly="true" 
+							   showDetail="true"
+							   infoClass="littleInfoMessage_bold"
+							   warnClass="littleWarnMessage_bold"
+							   errorClass="littleErrorMessage_bold">
+					<f:facet name="infoMarker">
+						<h:graphicImage  value="/images/info16x16.gif" /> 
+					</f:facet>
+					<f:facet name="warnMarker">
+						<h:graphicImage value="/images/alerta16x16.gif" />   
+					</f:facet>
+					<f:facet name="errorMarker">
+						<h:graphicImage value="/images/error16x16.gif" />   
+					</f:facet>
+				</rich:messages>
+				
+				<rich:dataTable		id="pedidosVentaTable"
+								 value="#{pedidosVentasViewMB.pedidoFastViewList}"
+								 var="pedidoFastView"
+								 width="100%"
+								 columnClasses="columnWidth10 centerAlign, columnWidth15 centerAlign, columnWidth20 centerAlign, columnWidth25 centerAlign, columnWidth30 rightAlign" >
+
+					<f:facet name="header">
+						<h:panelGrid columns="2" styleClass="center" width="100%" 
+									 columnClasses="columnWidth50 leftAlign, columnWidth50 rightAlign">
+							<h:panelGroup>
+								<h:outputText value="PEDIDOS DE VENTAS" />
+							</h:panelGroup>
+							
+							<h:panelGroup>
+								<h:outputText value="BUSQUEDA RÁPIDA :" />
+								<h:inputText value="#{pedidosVentasViewMB.pedidoBuscar}" size="3" maxlength="4" class="inputCant">
+									<f:convertNumber integerOnly="true"/>
+								</h:inputText>
+								<a4j:commandLink action="#{pedidosVentasViewMB.buscarPedidoDirecto}">
+									<h:graphicImage style="border-style:none;" value="/images/buscar.gif" title="BUSCAR" alt="BUSCAR"/>								
+								</a4j:commandLink>
+							</h:panelGroup>							
+						</h:panelGrid>						
+					</f:facet>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<h:panelGroup>
+							<h:panelGrid columns="1" styleClass="center" width="100%" columnClasses="centerAlign">
+
+								<a4j:commandLink reRender="listarPedidosVentasForm,panelEditarCantidad"
+												 ignoreDupResponses="true"
+												 action="#{verPedidoEnProcesoMB.prepararPedidoParaEdicion}">
+
+									<h:outputText value="#{pedidoFastView.pedidoId}"/>
+
+									<f:param name="pedidoVentaId" value="#{pedidoFastView.pedidoId}"/>
+								</a4j:commandLink> 
+
+								<h:outputLink value="#{facesContext.externalContext.requestContextPath}/docs/notas/Nota_PerfumeriaMarlen_No_#{pedidoFastView.pedidoId}.pdf"
+											  target="_blank">
+									<h:graphicImage style="border-style:none;" value="/images/pdf.gif" title="NOTA DE PEDIDO #{pedidoFastView.pedidoId}" alt="NOTA #{pedidoFastView.pedidoId}"/>
+								</h:outputLink>
+
+								<h:outputLink value="#{facesContext.externalContext.requestContextPath}/docs/facturas/Factura_PerfumeriaMarlen_No_#{pedidoFastView.pedidoId}.pdf"
+											  target="_blank"
+											  rendered="#{pedidoFastView.estadoActualId eq 16}">
+									<h:graphicImage style="border-style:none;" value="/images/pdf_factura_qr.gif" title="FACTURA DE PEDIDO #{pedidoFastView.pedidoId}" alt="FACTURA #{pedidoFastView.pedidoId}"/>
+								</h:outputLink>
+
+							</h:panelGrid>
+
+						</h:panelGroup>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="ESTATUS / TIPO" />
+						</f:facet>
+						<h:panelGrid columns="1" styleClass="center" width="100%" columnClasses="centerAlign">
+							<h:panelGroup class="dataTable_TD_PVE_#{pedidoFastView.estadoActualId}" >
+								<h:outputText value="#{pedidoFastView.estadoActualDescripcion}" />
+							</h:panelGroup>
+
+							<h:outputText value="#{pedidoFastView.estadoActualFecha}">
+								<f:convertDateTime timeZone="America/Mexico_City" locale="es_MX" pattern="yyyy/MM/dd HH:mm"/>
+							</h:outputText>
+
+							<h:panelGroup>
+								<h:outputText rendered="#{pedidoFastView.tipoAlmacen eq 1}" value="LINEA" />
+								<h:outputText rendered="#{pedidoFastView.tipoAlmacen eq 2}" value="OPORTUNIDAD" />
+								<h:outputText rendered="#{pedidoFastView.tipoAlmacen eq 3}" value="REGALIAS" />
+							</h:panelGroup>
+						</h:panelGrid>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="CLIENTE" />
+						</f:facet>
+						<h:panelGroup >
+							<h:panelGrid columns="2" styleClass="center" width="100%" columnClasses="columnWidth40 rightAlign,columnWidth60 leftAlign">
+								<h:outputText value="R.F.C.:" />
+								<h:outputText value="#{pedidoFastView.clienteRFC}" />
+
+								<h:outputText value="RAZON SOCIAL:" />
+								<h:outputText value="#{pedidoFastView.clienteRazonSocial}" />
+
+								<h:outputText value="NOMBRE ESTAB.:" />
+								<h:outputText value="#{pedidoFastView.clienteNombreEstablecimiento}" />
+							</h:panelGrid>
+						</h:panelGroup>
+					</rich:column>
+
+					<rich:column  >
+						<f:facet name="header">
+							<h:outputText value="DATOS" />
+						</f:facet>
+						<h:panelGrid	columns="2" styleClass="center" columnClasses="columnWidth40 rightAlign,columnWidth60 leftAlign">
+							<h:outputText value="USUARIO CREO:" />
+							<h:outputText value="#{pedidoFastView.usuarioNombreCompleto}" />
+
+							<h:outputText value="ELEMENTOS:" />
+							<h:outputText value="#{pedidoFastView.numElementos}" />
+
+							<h:outputText value="FORMA DE PAGO:" />
+							<h:outputText value="#{pedidoFastView.formaDePago}" />
+
+							<h:outputText value="MEDIO DE PAGO:" />
+							<h:outputText value="#{pedidoFastView.medioDePago}" />
+						</h:panelGrid>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="IMPORTE - DESC." />
+						</f:facet>
+						<h:panelGrid	columns="2" styleClass="center" columnClasses="columnWidth40 rightAlign,columnWidth60 rightAlign">
+
+							<h:outputText value="IMPORTE BRUTO:" />
+							<h:outputText value="#{pedidoFastView.importePedidoFormatted} "/>
+
+							<h:outputText value="- DESCUENTO APLICADO:" />
+							<h:panelGroup>
+								<h:outputText value="#{pedidoFastView.porcentajeDescuentoCalculado}% + #{pedidoFastView.porcentajeDescuentoExtra}% = " />
+								<h:outputText value="#{pedidoFastView.importePedido * pedidoFastView.descuentoAplicado}">
+									<f:convertNumber maxFractionDigits="2" pattern="###,###,##0.00" locale="es_MX"/>
+								</h:outputText>
+							</h:panelGroup>
+
+							<h:outputText value="IMPORTE FINAL:" />
+							<h:outputText value="#{pedidoFastView.importeFinalPedidoFormatted} "/>
+
+						</h:panelGrid>
+					</rich:column>
+				</rich:dataTable>
+				<!--
+				<rich:datascroller	align="center" for="pedidosVentaTable" 
+								   maxPages="15" 
+								   page="#{pedidosVentasViewMB.scrollerPage}" 									
+								   id="sc1" />
+				-->
+			</h:panelGrid>
+        </a4j:form>
+    </ui:define>
+
+</ui:composition>

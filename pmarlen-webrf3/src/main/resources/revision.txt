@@ -1,0 +1,11 @@
+svnInfo_repository = ${svnInfo.repository}
+svnInfo_path = ${svnInfo.path}
+svnInfo_revision = ${svnInfo.revision}
+svnInfo_mixedRevisions = ${svnInfo.mixedRevisions}
+svnInfo_committedRevision = ${svnInfo.committedRevision}
+svnInfo_committedDate = ${svnInfo.committedDate}
+svnInfo_status = ${svnInfo.status}
+svnInfo_specialStatus = ${svnInfo.specialStatus}
+
+maven_build_timestamp=${maven_build_timestamp}
+

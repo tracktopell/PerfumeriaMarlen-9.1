@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" crossContext="true" path="/pmarlen-webrf3" 
+		 reloadable="true" allowLinking="true">
+	
+	<Resource	type="javax.sql.DataSource" 
+				factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+				
+				initialSize="10"
+				maxActive="15" 
+				maxIdle="8"
+				minIdle="4"
+				
+				maxWait="20000"
+				logAbandoned="true" 
+				removeAbandoned="true"
+				removeAbandonedTimeout="60"
+				testOnBorrow="true" 
+				testWhileIdle="true"
+				validationQuery="select 1"
+				timeBetweenEvictionRunsMillis="5000"
+				
+				auth="Container" 
+				driverClassName="com.mysql.jdbc.Driver" 
+			
+				url="jdbc:mysql://localhost/PMARLEN_DB_TEST?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true" 
+				name="jdbc/PMARLEN_DB_TEST_DS" 
+				username="PMARLEN_TEST"
+				password="PMARLEN_TEST_PASSWORD" />
+				
+	<Realm		className="org.apache.catalina.realm.JDBCRealm" 
+				driverName="com.mysql.jdbc.Driver"
+				connectionName="PMARLEN_TEST" 				 
+				connectionPassword="PMARLEN_TEST_PASSWORD" 
+				connectionURL="jdbc:mysql://localhost/PMARLEN_DB_TEST?characterEncoding=UTF-8" 
+				digest="MD5" 
+				userRoleTable="USUARIO_PERFIL" 
+				roleNameCol="PERFIL_ID" 
+				userNameCol="USUARIO_ID" 				
+				userTable="USUARIO"
+				userCredCol="PASSWORD" />
+</Context>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	   xmlns:jee="http://www.springframework.org/schema/jee"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context 
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/jdbc
+                           http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+                           http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
+
+    <context:component-scan base-package="com.pmarlen" />
+    <tx:annotation-driven />
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<!--
+        <property name="locations" value="classpath:/jdbc.properties"/>
+	-->
+		<property name="locations" value="classpath:/jdbc-test.properties"/>
+    </bean>
+	<!--
+    <jdbc:initialize-database data-source="dataSourceX">
+		<jdbc:script location="classpath:/initScenarioForTest.sql"/>
+    </jdbc:initialize-database>
+	-->
+	
+	<!--
+    <bean id="dataSourceX" class="org.springframework.jdbc.datasource.SingleConnectionDataSource"
+          lazy-init="true">
+        <property name="driverClassName"   value="${jdbc.driverClassName}"/>
+        <property name="url"               value="${jdbc.url}"/>
+        <property name="username"          value="${jdbc.username}"/>
+        <property name="password"          value="${jdbc.password}"/>
+        <property name="suppressClose"     value="true"/>
+    </bean>
+	-->
+	<jee:jndi-lookup	id="dataSourceX" 
+						jndi-name="jdbc/PMARLEN_DB_TEST_DS" />
+	
+	<bean id="entityManagerFactory" 
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+    	  p:dataSource-ref="dataSourceX"
+          p:persistenceUnitName="PMARLEN_LOGIC_PU"
+          lazy-init="true">
+
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+        </property>
+
+    </bean>
+
+    <bean id="transactionManager" 
+          class="org.springframework.orm.jpa.JpaTransactionManager"
+          p:entityManagerFactory-ref="entityManagerFactory"
+          lazy-init="true"/>
+	
+	<!--
+	<bean	id="jdbcUnbloquerTask" 
+			class="com.pmarlen.tasks.JDBCUnbloquerTask"
+			lazy-init="false"/>
+
+	<bean	id="scheduledTask" 
+			class="org.springframework.scheduling.timer.ScheduledTimerTask"
+			lazy-init="flase">
+				
+	
+		<property name="delay" value="1000" />
+	
+		<property name="period" value="5000" />
+		<property name="timerTask" ref="jdbcUnbloquerTask" />
+	</bean>
+	
+	<bean	id="myTimerFactoryBean"
+			class="org.springframework.scheduling.timer.TimerFactoryBean"
+			lazy-init="false">
+		<property name="scheduledTimerTasks">
+			<list>
+				<ref local="scheduledTask" />
+			</list>
+		</property>
+	</bean>	
+	-->
+	<task:scheduler id="taskScheduler"/>
+    <task:executor  id="taskExecutor" pool-size="1"/>
+    <task:annotation-driven executor="taskExecutor" scheduler="taskScheduler"/>
+	
+</beans>

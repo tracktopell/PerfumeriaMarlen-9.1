@@ -1,0 +1,418 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                
+				xmlns:core="http://java.sun.com/jsf/core"
+                template="/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+		<h:outputFormat value=" {0} >> {1} ">
+			<f:param value="#{UIMessages.MAIN_SHORT_TITLE}" />
+			<f:param value="#{UIEntityLabels.MENU_CRUD_USUARIO}" />
+		</h:outputFormat>		
+    </ui:define>
+
+    <ui:define name="location">
+
+		<h:outputFormat value=" {0} > {1} > {2}">
+			<f:param value="#{UIMessages.MENU_ADMINISTRATION}" />
+			<f:param value="#{UIMessages.MENU_CATALOGS}" />
+			<f:param value="#{UIEntityLabels.MENU_CRUD_USUARIO}" />
+		</h:outputFormat>			
+
+    </ui:define>
+
+    <ui:define name="body">
+
+		<a4j:keepAlive beanName="usuarioMB"/>		
+
+		<h:form id="principalForm">
+
+			<h:panelGrid id="panelGridPrincipal"
+						 width="100%" 
+						 columns="1">
+
+				<rich:messages passedLabel="OK" layout="list" globalOnly="true" 
+							   showDetail="true"
+							   infoClass="littleInfoMessage_bold"
+							   warnClass="littleWarnMessage_bold"
+							   errorClass="littleErrorMessage_bold">
+					<f:facet name="infoMarker">
+                        <h:graphicImage  value="/images/info16x16.gif" /> 
+                    </f:facet>
+                    <f:facet name="warnMarker">
+                        <h:graphicImage value="/images/alerta16x16.gif" />   
+                    </f:facet>
+					<f:facet name="errorMarker">
+                        <h:graphicImage value="/images/error16x16.gif" />   
+                    </f:facet>
+                </rich:messages>
+
+				<rich:dataTable id="entitiListTable"
+								columnClasses="columnWidth5 centerAlign,
+								columnWidth10 centerAlign, columnWidth10 centerAlign, columnWidth10 centerAlign, columnWidth65 centerAlign"
+								value="#{usuarioMB.entityList}"
+								var="usuario"
+								rows="#{usuarioMB.numRecShow}"
+								width="100%" >
+					<f:facet name="header">
+						<h:panelGroup style="display:block; text-align:left; background-color:transparent; width: 100%;" >
+							<h:outputText value="#{UIMessages.COMMON_ACTIONS} : " />
+							<rich:spacer width="10"/>
+							<a4j:commandButton	rendered="#{sessionUserMB.adminUser}"
+											   id="commandButtonPreparar"
+											   value="#{UIMessages.COMMON_ADD_NEW} #{UIEntityLabels.LABEL_USUARIO}" 
+											   actionListener="#{usuarioMB.preparaNuevoRegistro}"
+											   ignoreDupResponses="true"
+											   oncomplete="#{rich:component('entityEditionModalPanel')}.show(); #{rich:component('inputTextNombre')}.focus(); return false;"
+											   reRender="entityEditionModalPanel"/> 
+
+							<rich:spacer width="10"/>
+
+							<h:outputText value="#{UIMessages.COMMON_VIEW_REG_PAGE} : " />
+
+							[
+							<h:outputText value="10" rendered="#{usuarioMB.numRecShow eq 10}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{usuarioMB.updateRecShow}" rendered="#{usuarioMB.numRecShow ne 10}">
+								<f:param name="numRecShowToSet" value="10"/>
+								<h:outputText value="10" /> 
+							</a4j:commandLink>
+							|
+							<h:outputText value="25" rendered="#{usuarioMB.numRecShow eq 25}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{usuarioMB.updateRecShow}" rendered="#{usuarioMB.numRecShow ne 25}">
+								<f:param name="numRecShowToSet" value="25"/>
+								<h:outputText value="25" /> 
+							</a4j:commandLink>
+							|
+							<h:outputText value="100" rendered="#{usuarioMB.numRecShow eq 100}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{usuarioMB.updateRecShow}" rendered="#{usuarioMB.numRecShow ne 100}">
+								<f:param name="numRecShowToSet" value="100"/>
+								<h:outputText value="100" /> 
+							</a4j:commandLink>				
+							|
+							<h:outputText value="500" rendered="#{usuarioMB.numRecShow eq 500}"/>
+							<a4j:commandLink reRender="entitiListTable,sc1" actionListener="#{usuarioMB.updateRecShow}" rendered="#{usuarioMB.numRecShow ne 500}">
+								<f:param name="numRecShowToSet" value="500"/>
+								<h:outputText value="500" /> 
+							</a4j:commandLink>
+							]
+						</h:panelGroup>
+                    </f:facet>
+					<rich:column rendered="#{sessionUserMB.adminUser}">
+						<f:facet name="header">
+							<h:outputText value="#{UIMessages.COMMON_OPTIONS}"/>
+						</f:facet>
+						<a4j:commandLink   id="commandButtonEdit" 
+										   actionListener="#{usuarioMB.editarRegistro}"
+										   ignoreDupResponses="true"
+										   oncomplete="if (#{empty facesContext.maximumSeverity or facesContext.maximumSeverity eq 'INFO 0'}) { #{rich:component('entityEditionModalPanel')}.show(); return false; }"
+										   reRender="entitiListTable,entityEditionModalPanel">
+							<f:param name="entityId" value="#{usuario.usuarioId}"/>
+							<h:graphicImage value="/images/editar.gif" title="#{UIMessages.COMMON_EDIT}"/>
+						</a4j:commandLink>
+						<rich:spacer width="10"/>
+						<a4j:commandLink   id="commandButtonDelete" 
+										   actionListener="#{usuarioMB.preparEliminarRegistro}"
+										   ignoreDupResponses="true"
+										   oncomplete="if (#{empty facesContext.maximumSeverity or facesContext.maximumSeverity eq 'INFO 0'}) { #{rich:component('confirmDeleteModalPanel')}.show(); return false; }"										   
+										   reRender="entitiListTable,entityEditionModalPanel">
+							<f:param name="entityId" value="#{usuario.usuarioId}"/>
+							<h:graphicImage value="/images/eliminar.gif" title="#{UIMessages.COMMON_DELETE}"/>
+						</a4j:commandLink>						
+					</rich:column>
+
+					<rich:column rendered="#{sessionUserMB.adminUser}" sortBy="#{usuario.usuarioId}">
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_USUARIO_USUARIOID}"/>
+						</f:facet>
+
+						<h:outputText value="#{usuario.usuarioId}"/>
+					</rich:column>
+
+					<rich:column sortBy="#{usuario.habilitado}">
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_USUARIO_HABILITADO}"/>
+						</f:facet>
+						<h:outputText rendered="#{usuario.habilitado eq 1}" value="#{UIMessages.COMMON_ENABLED}"/>
+						<h:outputText rendered="#{usuario.habilitado eq 0}" value="#{UIMessages.COMMON_DISABLED}"/>						
+					</rich:column>
+
+					<rich:column >
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_PERFIL}"/>
+						</f:facet>
+
+						<rich:dataGrid value="#{usuario.perfilCollection}" var="perfil">
+							<h:outputText value="#{perfil.descripcion}"/>
+						</rich:dataGrid>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="DATOS"/>
+						</f:facet>
+						<h:panelGrid id="panelGridDatosUsuario"
+									 width="100%" 
+									 columns="2"
+									 columnClasses="columnWidth35 rightAlign, columnWidth65 leftAlign">
+							<h:outputText value="#{UIEntityLabels.LABEL_USUARIO_NOMBRECOMPLETO}:" class="common_component_bold"/>
+							<h:outputText value="#{usuario.nombreCompleto}"/>
+							<h:outputText value="#{UIEntityLabels.LABEL_USUARIO_EMAIL}:" class="common_component_bold"/>
+							<h:outputText value="#{usuario.email}"/>
+							<h:outputText value="#{UIEntityLabels.LABEL_SUCURSAL}:" class="common_component_bold"/>
+							<h:outputText value="#{usuario.sucursal.nombre}"/>
+						</h:panelGrid>
+					</rich:column>
+
+                    <f:facet name="footer">                
+                        <h:outputText value="#{UIMessages.COMMON_TOTAL_REC_COUND} : #{usuarioMB.entityCount}."/>
+                    </f:facet>				
+
+				</rich:dataTable>
+
+
+				<rich:datascroller	rendered="#{usuarioMB.entityCount ge 11}"
+								   align="center" for="entitiListTable" 
+								   maxPages="10" 
+								   page="#{usuarioMB.scrollerPage}" 									
+								   id="sc1" />
+			</h:panelGrid>
+
+		</h:form>	
+
+		<rich:modalPanel id="confirmDeleteModalPanel" width="200" height="100">
+
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText value="#{UIMessages.COMMON_DELETE}"/>
+				</h:panelGroup>
+			</f:facet>
+
+			<h:form id="formConfirm">
+
+				<h:outputText class="centerAlign" 
+							  value="#{UIMessages.COMMON_CONFIRM_DELETE_MSG}"/>
+
+				<h:panelGrid id="panelGridBotones"
+							 width="100%" 
+							 columns="2"
+							 columnClasses="columnWidth50 rightAlign, columnWidth50 leftAlign">
+					<a4j:commandButton id="commandButtonGuardar"
+									   value="#{UIMessages.COMMON_OK}"
+									   actionListener="#{usuarioMB.eliminarRegistro}"
+									   action="test"
+									   ignoreDupResponses="true"
+									   oncomplete="#{rich:component('confirmDeleteModalPanel')}.hide();"
+									   reRender="entitiListTable"/> 
+
+					<a4j:commandButton id="commandButtonCancelar"
+									   value="#{UIMessages.COMMON_CANCEL}" 
+									   action="test"
+									   ignoreDupResponses="true"
+									   immediate="true"
+									   oncomplete="#{rich:component('confirmDeleteModalPanel')}.hide();"
+									   reRender="entitiListTable"/> 
+
+				</h:panelGrid>
+
+
+			</h:form>
+		</rich:modalPanel>		
+
+		<rich:modalPanel id="entityEditionModalPanel" width="800" height="400">
+
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText value="#{UIEntityLabels.LABEL_EDIT_USUARIO}" rendered="#{not empty usuarioMB.entityId}"/>
+					<h:outputText value="#{UIEntityLabels.LABEL_NEW_USUARIO}"  rendered="#{empty usuarioMB.entityId}"/>
+				</h:panelGroup>
+			</f:facet>
+
+			<h:form id="formSecundario">
+				<a4j:outputPanel layout="block" style="width:780px;height:370px;overflow:auto;">
+
+					<rich:messages layout="list" globalOnly="true" 
+								   showDetail="true"
+								   infoClass="littleInfoMessage_bold"
+								   warnClass="littleWarnMessage_bold"
+								   errorClass="littleErrorMessage_bold">
+
+						<f:facet name="infoMarker">
+							<h:graphicImage  value="/images/info16x16.gif" /> 
+						</f:facet>
+						<f:facet name="warnMarker">
+							<h:graphicImage value="/images/alerta16x16.gif" />   
+						</f:facet>
+						<f:facet name="errorMarker">
+							<h:graphicImage value="/images/error16x16.gif" />   
+						</f:facet>
+					</rich:messages>
+
+					<h:panelGrid id="panelGridCampos"
+								 width="100%" 
+								 columns="2" border="0"
+								 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign">
+
+						<h:outputLabel	value="#{UIEntityLabels.LABEL_USUARIO_USUARIOID}:" for="inputTextId"
+									    class="input-required-#{UIEntityLabels.INPUT_REQUIRED_USUARIO_USUARIOID}" />
+
+						<h:panelGroup>
+							<h:inputText id="inputTextId"
+										 readonly="#{not empty usuarioMB.entity.usuarioId}"
+										 value="#{usuarioMB.entity.usuarioId}" 
+										 label="#{UIEntityLabels.LABEL_USUARIO_USUARIOID}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_USUARIO_USUARIOID}"
+										 size="12"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_USUARIO_USUARIOID}" >
+								<f:validateLength minimum="2" maximum="#{UIEntityLabels.TEXT_MAXCHARS_USUARIO_USUARIOID}"/>
+								<f:validator validatorId="AlphaNumericIdentifierValidator"/>
+							</h:inputText>
+
+							<rich:message for="inputTextId" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_USUARIO_HABILITADO}:" for="inputRadioHabilitado" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_USUARIO_HABILITADO}"/>
+						<h:selectOneRadio id="inputRadioHabilitado"
+										  value="#{usuarioMB.entity.habilitado}">
+							<f:selectItems  value="#{usuarioMB.habilitadoList}"/>
+						</h:selectOneRadio>
+
+						<h:outputText value="#{UIEntityLabels.LABEL_SUCURSAL}:" 
+									  class="input-required-#{UIEntityLabels.INPUT_REQUIRED_USUARIO_SUCURSALID}"/>
+						<h:panelGroup >
+							<h:selectOneMenu id="selectOneMenuSucursal"
+											 value="#{usuarioMB.entity.sucursal.id}"
+											 required="#{UIEntityLabels.INPUT_REQUIRED_USUARIO_SUCURSALID}">
+								<f:selectItems  value="#{usuarioMB.sucursalList}"/>
+							</h:selectOneMenu>
+							<rich:message for="selectOneMenuSucursal" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_USUARIO_NOMBRECOMPLETO}:" for="inputTextNombre" 
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_USUARIO_NOMBRECOMPLETO}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextNombre"
+										 value="#{usuarioMB.entity.nombreCompleto}" 
+										 label="#{UIEntityLabels.LABEL_USUARIO_NOMBRECOMPLETO}"
+										 required="#{UIEntityLabels.INPUT_REQUIRED_USUARIO_NOMBRECOMPLETO}"
+										 size="35"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_USUARIO_NOMBRECOMPLETO}">
+								<f:validateLength minimum="3" maximum="#{UIEntityLabels.TEXT_MAXCHARS_USUARIO_NOMBRECOMPLETO}"/>
+								<f:validator validatorId="AlphanumericNameValidator"/>
+							</h:inputText>
+							<rich:message for="inputTextNombre" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_USUARIO_PASSWORD}:" for="inputTextPassword"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_USUARIO_PASSWORD}"/>
+						<h:panelGroup>
+							<h:inputSecret id="inputTextPassword"
+										   value="#{usuarioMB.entity.password}" 
+										   label="#{UIEntityLabels.LABEL_USUARIO_PASSWORD}"
+										   required="#{UIEntityLabels.INPUT_REQUIRED_USUARIO_PASSWORD}"
+										   size="10"
+										   maxlength="#{UIEntityLabels.TEXT_MAXCHARS_USUARIO_PASSWORD}">
+								<f:validateLength minimum="5" maximum="#{UIEntityLabels.TEXT_MAXCHARS_USUARIO_PASSWORD}"/>								
+							</h:inputSecret>
+							<rich:message for="inputTextPassword" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIMessages.COMMON_CONFIRM} #{UIEntityLabels.LABEL_USUARIO_PASSWORD}:" for="inputTextPasswordConfirm"
+									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_USUARIO_PASSWORD}"/>
+						<h:panelGroup>
+							<h:inputSecret id="inputTextPasswordConfirm"
+										   value="#{usuarioMB.passwordConfirm}" 
+										   label="#{UIMessages.COMMON_CONFIRM} #{UIEntityLabels.LABEL_USUARIO_PASSWORD}"
+										   required="#{UIEntityLabels.INPUT_REQUIRED_USUARIO_PASSWORD}"
+										   size="10"
+										   maxlength="#{UIEntityLabels.TEXT_MAXCHARS_USUARIO_PASSWORD}">
+								<f:validateLength minimum="5" maximum="#{UIEntityLabels.TEXT_MAXCHARS_USUARIO_PASSWORD}"/>								
+							</h:inputSecret>
+							<rich:message for="inputTextPasswordConfirm" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_USUARIO_EMAIL}:" for="inputTextEmail"
+									   class="input-required-#{UIEntityLabels.LABEL_USUARIO_EMAIL}"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextEmail"
+										 value="#{usuarioMB.entity.email}" 
+										 label="#{UIEntityLabels.LABEL_USUARIO_EMAIL}"
+										 required="#{UIEntityLabels.LABEL_USUARIO_EMAIL}"
+										 size="25"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_USUARIO_EMAIL}">
+								<f:validateLength minimum="10" maximum="#{UIEntityLabels.TEXT_MAXCHARS_USUARIO_EMAIL}"/>
+								<f:validator validatorId="EMailValidator"/>
+							</h:inputText>
+							<rich:message for="inputTextEmail" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+
+						<h:outputLabel value="#{UIEntityLabels.LABEL_PERFIL}:" for="inputChekBoxesPerfiles" />
+						<h:panelGroup>
+							<h:selectManyCheckbox	id="inputChekBoxesPerfiles"
+													value="#{usuarioMB.perfilesIds}" >
+								<f:selectItems  value="#{usuarioMB.perfilList}"/>
+							</h:selectManyCheckbox>
+						</h:panelGroup>
+
+					</h:panelGrid>
+
+					<br/>
+
+					<h:panelGrid id="panelGridBotones"
+								 width="100%" 
+								 columns="2"
+								 columnClasses="columnWidth50 rightAlign, columnWidth50 leftAlign">
+
+						<a4j:commandButton id="commandButtonGuardar"
+										   value="#{UIMessages.COMMON_SAVE}"
+										   actionListener="#{usuarioMB.aceptarGuardar}"
+										   action="test"
+										   ignoreDupResponses="true"
+										   oncomplete="if (#{facesContext.maximumSeverity == 'INFO 0'}) { #{rich:component('entityEditionModalPanel')}.hide(); }"
+										   reRender="entitiListTable"/> 
+
+						<a4j:commandButton id="commandButtonCancelar"
+										   value="#{UIMessages.COMMON_CANCEL}" 
+										   actionListener="#{usuarioMB.cancelarGuardar}"
+										   action="test"
+										   ignoreDupResponses="true"
+										   immediate="true"
+										   oncomplete="#{rich:component('entityEditionModalPanel')}.hide();"
+										   reRender="entitiListTable,entityEditionModalPanel"/> 
+
+					</h:panelGrid>							
+				</a4j:outputPanel>
+			</h:form>
+		</rich:modalPanel>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+                                 http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+             version="1.0">
+
+    <persistence-unit name="PMARLEN_LOGIC_PU">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<class>com.pmarlen.model.beans.Producto</class>
+		<class>com.pmarlen.model.beans.NotaCreditoDetalle</class>
+		<class>com.pmarlen.model.beans.PedidoVentaEstado</class>
+		<class>com.pmarlen.model.beans.PedidoVenta</class>
+		<class>com.pmarlen.model.beans.FormaDePago</class>
+		<class>com.pmarlen.model.beans.Marca</class>
+		<class>com.pmarlen.model.beans.Perfil</class>
+		<class>com.pmarlen.model.beans.MovimientoMonederoElectronico</class>
+		<class>com.pmarlen.model.beans.Poblacion</class>
+		<class>com.pmarlen.model.beans.Almacen</class>
+		<class>com.pmarlen.model.beans.PedidoVentaDetalle</class>
+		<class>com.pmarlen.model.beans.Multimedio</class>
+		<class>com.pmarlen.model.beans.EntradaAlmacen</class>
+		<class>com.pmarlen.model.beans.MensajesParaPortal</class>
+		<class>com.pmarlen.model.beans.EventoSincronizacion</class>
+		<class>com.pmarlen.model.beans.CfdVenta</class>
+		<class>com.pmarlen.model.beans.MetodoDePago</class>
+		<class>com.pmarlen.model.beans.Sucursal</class>
+		<class>com.pmarlen.model.beans.Linea</class>
+		<class>com.pmarlen.model.beans.EntradaAlmacenDetalle</class>
+		<class>com.pmarlen.model.beans.NotaCredito</class>
+		<class>com.pmarlen.model.beans.ProveedorProducto</class>
+		<class>com.pmarlen.model.beans.Estado</class>
+		<class>com.pmarlen.model.beans.Usuario</class>
+		<class>com.pmarlen.model.beans.MovimientoOperativoAlmacenDetalle</class>
+		<class>com.pmarlen.model.beans.TipoMovimiento</class>
+		<class>com.pmarlen.model.beans.AlmacenProducto</class>
+		<class>com.pmarlen.model.beans.MonederoElectronico</class>
+		<class>com.pmarlen.model.beans.ConfiguracionSistema</class>
+		<class>com.pmarlen.model.beans.PedidoVentaPago</class>
+		<class>com.pmarlen.model.beans.MovimientoOperativoAlmacen</class>
+		<class>com.pmarlen.model.beans.Cliente</class>
+		<class>com.pmarlen.model.beans.MovimientoHistoricoProducto</class>
+		<class>com.pmarlen.model.beans.Industria</class>
+		<class>com.pmarlen.model.beans.Proveedor</class>
+        <exclude-unlisted-classes/>
+        
+        <properties>
+            <property name="hibernate.dialect"     value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.show_sql"    value="false" />
+            <property name="hibernate.format_sql"  value="true" />
+            <!--
+            <property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+            -->
+        </properties>
+
+    </persistence-unit>
+
+    <persistence-unit name="PMARLEN_LOGIC_PU_CLIENT">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<class>com.pmarlen.model.beans.Producto</class>
+		<class>com.pmarlen.model.beans.NotaCreditoDetalle</class>
+		<class>com.pmarlen.model.beans.PedidoVentaEstado</class>
+		<class>com.pmarlen.model.beans.PedidoVenta</class>
+		<class>com.pmarlen.model.beans.FormaDePago</class>
+		<class>com.pmarlen.model.beans.Marca</class>
+		<class>com.pmarlen.model.beans.Perfil</class>
+		<class>com.pmarlen.model.beans.MovimientoMonederoElectronico</class>
+		<class>com.pmarlen.model.beans.Poblacion</class>
+		<class>com.pmarlen.model.beans.Almacen</class>
+		<class>com.pmarlen.model.beans.PedidoVentaDetalle</class>
+		<class>com.pmarlen.model.beans.Multimedio</class>
+		<class>com.pmarlen.model.beans.EntradaAlmacen</class>
+		<class>com.pmarlen.model.beans.MensajesParaPortal</class>
+		<class>com.pmarlen.model.beans.EventoSincronizacion</class>
+		<class>com.pmarlen.model.beans.CfdVenta</class>
+		<class>com.pmarlen.model.beans.MetodoDePago</class>
+		<class>com.pmarlen.model.beans.Sucursal</class>
+		<class>com.pmarlen.model.beans.Linea</class>
+		<class>com.pmarlen.model.beans.EntradaAlmacenDetalle</class>
+		<class>com.pmarlen.model.beans.NotaCredito</class>
+		<class>com.pmarlen.model.beans.ProveedorProducto</class>
+		<class>com.pmarlen.model.beans.Estado</class>
+		<class>com.pmarlen.model.beans.Usuario</class>
+		<class>com.pmarlen.model.beans.MovimientoOperativoAlmacenDetalle</class>
+		<class>com.pmarlen.model.beans.TipoMovimiento</class>
+		<class>com.pmarlen.model.beans.AlmacenProducto</class>
+		<class>com.pmarlen.model.beans.MonederoElectronico</class>
+		<class>com.pmarlen.model.beans.ConfiguracionSistema</class>
+		<class>com.pmarlen.model.beans.PedidoVentaPago</class>
+		<class>com.pmarlen.model.beans.MovimientoOperativoAlmacen</class>
+		<class>com.pmarlen.model.beans.Cliente</class>
+		<class>com.pmarlen.model.beans.MovimientoHistoricoProducto</class>
+		<class>com.pmarlen.model.beans.Industria</class>
+		<class>com.pmarlen.model.beans.Proveedor</class>
+        <exclude-unlisted-classes/>
+        
+        <properties>
+            <property name="hibernate.dialect"     value="org.hibernate.dialect.DerbyDialect" />
+            <property name="hibernate.show_sql"    value="false" />
+            <property name="hibernate.format_sql"  value="true" />
+            <!--
+            <property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+            -->
+        </properties>
+        
+    </persistence-unit>
+	
+
+    <persistence-unit name="PMARLEN_LOGIC_PU_CLIENT_UPDATE">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<class>com.pmarlen.model.beans.Producto</class>
+		<class>com.pmarlen.model.beans.NotaCreditoDetalle</class>
+		<class>com.pmarlen.model.beans.PedidoVentaEstado</class>
+		<class>com.pmarlen.model.beans.PedidoVenta</class>
+		<class>com.pmarlen.model.beans.FormaDePago</class>
+		<class>com.pmarlen.model.beans.Marca</class>
+		<class>com.pmarlen.model.beans.Perfil</class>
+		<class>com.pmarlen.model.beans.MovimientoMonederoElectronico</class>
+		<class>com.pmarlen.model.beans.Poblacion</class>
+		<class>com.pmarlen.model.beans.Almacen</class>
+		<class>com.pmarlen.model.beans.PedidoVentaDetalle</class>
+		<class>com.pmarlen.model.beans.Multimedio</class>
+		<class>com.pmarlen.model.beans.EntradaAlmacen</class>
+		<class>com.pmarlen.model.beans.MensajesParaPortal</class>
+		<class>com.pmarlen.model.beans.EventoSincronizacion</class>
+		<class>com.pmarlen.model.beans.CfdVenta</class>
+		<class>com.pmarlen.model.beans.MetodoDePago</class>
+		<class>com.pmarlen.model.beans.Sucursal</class>
+		<class>com.pmarlen.model.beans.Linea</class>
+		<class>com.pmarlen.model.beans.EntradaAlmacenDetalle</class>
+		<class>com.pmarlen.model.beans.NotaCredito</class>
+		<class>com.pmarlen.model.beans.ProveedorProducto</class>
+		<class>com.pmarlen.model.beans.Estado</class>
+		<class>com.pmarlen.model.beans.Usuario</class>
+		<class>com.pmarlen.model.beans.MovimientoOperativoAlmacenDetalle</class>
+		<class>com.pmarlen.model.beans.TipoMovimiento</class>
+		<class>com.pmarlen.model.beans.AlmacenProducto</class>
+		<class>com.pmarlen.model.beans.MonederoElectronico</class>
+		<class>com.pmarlen.model.beans.ConfiguracionSistema</class>
+		<class>com.pmarlen.model.beans.PedidoVentaPago</class>
+		<class>com.pmarlen.model.beans.MovimientoOperativoAlmacen</class>
+		<class>com.pmarlen.model.beans.Cliente</class>
+		<class>com.pmarlen.model.beans.MovimientoHistoricoProducto</class>
+		<class>com.pmarlen.model.beans.Industria</class>
+		<class>com.pmarlen.model.beans.Proveedor</class>
+        <exclude-unlisted-classes/>
+        
+        <properties>
+            <property name="hibernate.dialect"     value="org.hibernate.dialect.DerbyDialect" />
+            <property name="hibernate.show_sql"    value="false" />
+            <property name="hibernate.format_sql"  value="true" />
+			<property name="hibernate.hbm2ddl.auto" value="update"/>
+            <!--
+            <property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+            -->
+        </properties>
+        
+    </persistence-unit>	
+</persistence>

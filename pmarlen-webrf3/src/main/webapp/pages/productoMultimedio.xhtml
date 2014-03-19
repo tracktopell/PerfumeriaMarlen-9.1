@@ -1,0 +1,604 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                
+                template="/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+		<h:outputFormat value=" {0} - {1} ">
+			<f:param value="#{UIMessages.MAIN_SHORT_TITLE}" />
+			<f:param value="#{UIMessages.MENU_PRODUCTOS}" />
+		</h:outputFormat>		
+    </ui:define>
+
+    <ui:define name="location">
+
+		<h:outputFormat value=" {0} > {1} ">
+			<f:param value="#{UIMessages.MENU_ADMINISTRATION}" />
+			<f:param value="#{UIMessages.MENU_PRODUCTOS}" />
+		</h:outputFormat>			
+
+    </ui:define>
+
+    <ui:define name="body">
+
+		<h:form id="principalForm">
+
+			<h:panelGrid id="panelGridPrincipal"
+						 width="100%" 
+						 columns="1">
+
+				<rich:messages passedLabel="OK" layout="list" globalOnly="true" 
+							   showDetail="true"
+							   infoClass="littleInfoMessage_bold"
+							   warnClass="littleWarnMessage_bold"
+							   errorClass="littleErrorMessage_bold">
+					<f:facet name="infoMarker">
+                        <h:graphicImage  value="/images/info16x16.gif" /> 
+                    </f:facet>
+                    <f:facet name="warnMarker">
+                        <h:graphicImage value="/images/alerta16x16.gif" />   
+                    </f:facet>
+					<f:facet name="errorMarker">
+                        <h:graphicImage value="/images/error16x16.gif" />   
+                    </f:facet>
+                </rich:messages>
+
+				<a4j:commandButton	id="commandButtonPreparar"
+								   value="#{UIMessages.COMMON_ADD_NEW}" 
+								   actionListener="#{productoMB.preparaNuevoRegistro}"
+								   ignoreDupResponses="true"
+								   oncomplete="#{rich:component('entityEditionModalPanel')}.show(); #{rich:component('inputTextNombre')}.focus(); return false;"
+								   reRender="entityEditionModalPanel"/> 
+
+
+				<rich:dataTable id="entitiListTable"
+								columnClasses="columnWidth5 centerAlign, 
+								columnWidth5 centerAlign, columnWidth10 leftAlign, columnWidth10 leftAlign, columnWidth10 leftAlign, columnWidth10 leftAlign, 
+								columnWidth10 leftAlign, columnWidth10 leftAlign, columnWidth10 leftAlign, columnWidth10 leftAlign,columnWidth5 leftAlign"
+								value="#{productoMB.productoList}"
+								var="producto"
+								rows="10"
+								width="100%" >
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="#{UIMessages.COMMON_OPTIONS}"/>
+						</f:facet>
+						<a4j:commandLink   id="commandButtonEdit" 
+										   actionListener="#{productoMB.editarRegistro}"
+										   ignoreDupResponses="true"
+										   oncomplete="#{rich:component('entityEditionModalPanel')}.show(); return false;"
+										   reRender="entitiListTable,entityEditionModalPanel">
+							<f:param name="productoId" value="#{producto.id}"/>
+							<h:graphicImage value="/images/editar.gif" title="#{UIMessages.COMMON_EDIT}"/>
+						</a4j:commandLink>
+						<a4j:commandLink   id="commandButtonDelete" 
+										   actionListener="#{productoMB.preparEliminarRegistro}"
+										   ignoreDupResponses="true"
+										   oncomplete="#{rich:component('confirmDeleteModalPanel')}.show(); return false;" >
+							<f:param name="productoId" value="#{producto.id}"/>
+							<h:graphicImage value="/images/eliminar.gif" title="#{UIMessages.COMMON_DELETE}"/>
+						</a4j:commandLink>						
+						<!--
+						<a4j:commandLink   id="commandButtonUpdateIcons" 
+										   actionListener="#{productoMB.actualizaIconos}"
+										   ignoreDupResponses="true"
+										   reRender="entitiListTable,entityEditionModalPanel">
+							<f:param name="productoId" value="#{producto.id}"/>
+							<h:graphicImage value="/images/update.gif" title="#{UIMessages.COMMON_UPDATE} IMGS."/>
+						</a4j:commandLink>
+						-->
+					</rich:column>
+
+					<rich:column sortBy="#{producto.id}">
+						<f:facet name="header">
+							<h:outputText value="ID"/>
+						</f:facet>
+
+						<h:outputText value="#{producto.id}"/>
+					</rich:column>
+
+					<rich:column sortBy="#{producto.codigoBarras}">
+						<f:facet name="header">
+							<h:outputText value="CODIGO"/>
+						</f:facet>
+						<h:outputText value="#{producto.codigoBarras}"/>
+					</rich:column>
+
+
+					<rich:column sortBy="#{producto.nombre}">
+						<f:facet name="header">
+							<h:outputText value="Nombre"/>
+						</f:facet>
+						<h:outputText value="#{producto.nombre}"/>
+					</rich:column>
+
+					<rich:column sortBy="#{producto.presentacion}">
+						<f:facet name="header">
+							<h:outputText value="Presentación"/>
+						</f:facet>
+						<h:outputText value="#{producto.presentacion}"/>
+					</rich:column>
+
+					<rich:column sortBy="#{producto.marca.nombre}">
+						<f:facet name="header">
+							<h:outputText value="Marca"/>
+						</f:facet>
+						<h:outputText value="#{producto.marca.nombre}"/>
+					</rich:column>
+
+					<rich:column sortBy="#{producto.linea.nombre}">
+						<f:facet name="header">
+							<h:outputText value="Linea"/>
+						</f:facet>
+						<h:outputText value="#{producto.linea.nombre}"/>
+					</rich:column>
+
+					<rich:column sortBy="#{producto.unidadesPorCaja}">
+						<f:facet name="header">
+							<h:outputText value="U. X Caja"/>
+						</f:facet>
+						<h:outputText value="#{producto.unidadesPorCaja}"/>
+					</rich:column>
+
+					<rich:column sortBy="#{producto.unidadMedida}">
+						<f:facet name="header">
+							<h:outputText value="U. Medida"/>
+						</f:facet>
+						<h:outputText value="#{producto.unidadMedida}"/>
+					</rich:column>
+
+					<rich:column sortBy="#{producto.costoVenta}">
+						<f:facet name="header">
+							<h:outputText value="Costo Venta"/>
+						</f:facet>
+						<h:outputText value="#{producto.costoVenta}"/>
+					</rich:column>
+
+					<rich:column sortBy="#{producto.precioBase}">
+						<f:facet name="header">
+							<h:outputText value="$ Base"/>
+						</f:facet>
+						<h:outputText value="#{producto.precioBase}"/>
+					</rich:column>
+
+					<rich:column sortBy="#{producto.abrebiatura}">
+						<f:facet name="header">
+							<h:outputText value="Abreb."/>
+						</f:facet>
+						<h:outputText value="#{producto.abrebiatura}"/>
+					</rich:column>
+
+                    <f:facet name="footer">                
+                        <h:outputText value="#{UIMessages.COMMON_TOTAL_REC_COUND} : #{productoMB.productoCount}."/>
+                    </f:facet>				
+
+				</rich:dataTable>
+
+
+				<rich:datascroller	rendered="#{productoMB.productoCount ge 11}"
+								   align="center" for="entitiListTable" 
+								   maxPages="10" 
+								   page="#{productoMB.scrollerPage}" 									
+								   id="sc1" />
+			</h:panelGrid>
+
+		</h:form>	
+
+		<rich:modalPanel id="confirmDeleteModalPanel" width="200" height="100">
+
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText value="#{UIMessages.COMMON_DELETE}"/>
+				</h:panelGroup>
+			</f:facet>
+
+			<h:form id="formConfirm">
+
+				<h:outputText class="centerAlign" 
+							  value="#{UIMessages.COMMON_CONFIRM_DELETE_MSG}"/>
+
+				<h:panelGrid id="panelGridBotones"
+							 width="100%" 
+							 columns="2"
+							 columnClasses="columnWidth50 rightAlign, columnWidth50 leftAlign">
+					<a4j:commandButton id="commandButtonGuardar"
+									   value="#{UIMessages.COMMON_OK}"
+									   actionListener="#{productoMB.eliminarRegistro}"
+									   action="test"
+									   ignoreDupResponses="true"
+									   oncomplete="#{rich:component('confirmDeleteModalPanel')}.hide();"
+									   reRender="entitiListTable"/> 
+
+					<a4j:commandButton id="commandButtonCancelar"
+									   value="#{UIMessages.COMMON_CANCEL}" 
+									   action="test"
+									   ignoreDupResponses="true"
+									   immediate="true"
+									   oncomplete="#{rich:component('confirmDeleteModalPanel')}.hide();"
+									   reRender="entitiListTable"/> 
+
+				</h:panelGrid>
+
+
+			</h:form>
+		</rich:modalPanel>		
+
+		<rich:modalPanel id="entityEditionModalPanel" width="600" height="510">
+
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText value="#{UIMessages.DETAIL_PRODUCTO}"/>
+				</h:panelGroup>
+			</f:facet>
+
+			<h:form id="formSecundario">
+
+				<table width="100%" border="0" style="height: 480px;overflow-y: scroll;">
+					<tr>
+						<td style="vertical-align: top">
+							<rich:messages layout="list" globalOnly="true" 
+										   showDetail="true"
+										   infoClass="littleInfoMessage_bold"
+										   warnClass="littleWarnMessage_bold"
+										   errorClass="littleErrorMessage_bold">
+
+								<f:facet name="infoMarker">
+									<h:graphicImage  value="/images/info16x16.gif" /> 
+								</f:facet>
+								<f:facet name="warnMarker">
+									<h:graphicImage value="/images/alerta16x16.gif" />   
+								</f:facet>
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:messages>
+
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align: top; height: 90%">
+							<rich:tabPanel switchType="ajax">
+								<rich:tab label="Campos principales">
+
+									<h:panelGrid id="panelGridCampos"
+												 width="100%" 
+												 columns="2" border="0"
+												 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign">
+
+										<h:outputLabel	value="Id:" for="inputTextId" 
+													   rendered="#{not empty productoMB.producto.id}"/>
+
+										<h:panelGroup	 rendered="#{not empty productoMB.producto.id}">
+											<h:inputText id="inputTextId"
+														 readonly="#{not empty productoMB.producto.id}"
+														 value="#{productoMB.producto.id}" 
+														 label="Id"
+														 required="true"
+														 size="4"
+														 maxlength="6" >
+											</h:inputText>
+
+											<rich:message for="inputTextId" errorClass="littleErrorMessage_bold">
+												<f:facet name="errorMarker">
+													<h:graphicImage value="/images/error16x16.gif" />   
+												</f:facet>
+											</rich:message>
+										</h:panelGroup>
+
+										<h:outputLabel value="Codigo de Barras:" for="inputTextCodigoBarras" />
+										<h:panelGroup>
+											<h:inputText id="inputTextCodigoBarras"
+														 value="#{productoMB.producto.codigoBarras}" 
+														 label="Codigo de Barras"
+														 required="true"
+														 size="13"
+														 maxlength="64">
+												<f:validateLength minimum="8" />
+
+											</h:inputText>
+											<rich:message for="inputTextCodigoBarras" errorClass="littleErrorMessage_bold">
+												<f:facet name="errorMarker">
+													<h:graphicImage value="/images/error16x16.gif" />   
+												</f:facet>
+											</rich:message>
+										</h:panelGroup>
+
+
+										<h:outputText value="Marca : " />
+										<h:panelGroup >
+											<h:selectOneMenu id="selectOneMenuMarca"
+															 value="#{productoMB.producto.marca.id}"
+															 required="true">
+												<f:selectItems  value="#{productoMB.marcaList}"/>
+											</h:selectOneMenu>
+											<rich:message for="selectOneMenuMarca" errorClass="littleErrorMessage_bold">
+												<f:facet name="errorMarker">
+													<h:graphicImage value="/images/error16x16.gif" />   
+												</f:facet>
+											</rich:message>
+										</h:panelGroup>
+
+										<h:outputText value="Linea : " />
+										<h:panelGroup >
+											<h:selectOneMenu id="selectOneMenuLinea"
+															 value="#{productoMB.producto.linea.id}"
+															 required="true">
+												<f:selectItems  value="#{productoMB.lineaList}"/>
+											</h:selectOneMenu>
+											<rich:message for="selectOneMenuLinea" errorClass="littleErrorMessage_bold">
+												<f:facet name="errorMarker">
+													<h:graphicImage value="/images/error16x16.gif" />   
+												</f:facet>
+											</rich:message>
+										</h:panelGroup>
+
+										<h:outputLabel value="Nombre:" for="inputTextNombre" />
+										<h:panelGroup>
+											<h:inputText id="inputTextNombre"
+														 value="#{productoMB.producto.nombre}" 
+														 label="Nombre"
+														 required="true"
+														 size="35"
+														 maxlength="255">
+												<f:validateLength minimum="2"/>
+											</h:inputText>
+											<rich:message for="inputTextNombre" errorClass="littleErrorMessage_bold">
+												<f:facet name="errorMarker">
+													<h:graphicImage value="/images/error16x16.gif" />   
+												</f:facet>
+											</rich:message>
+										</h:panelGroup>
+
+										<h:outputLabel value="Presentación:" for="inputTextPresentacion" />
+										<h:panelGroup>
+											<h:inputText id="inputTextPresentacion"
+														 value="#{productoMB.producto.presentacion}" 
+														 label="Presentacion"
+														 required="true"
+														 size="35"
+														 maxlength="255">
+												<f:validateLength minimum="2"/>
+											</h:inputText>
+											<rich:message for="inputTextPresentacion" errorClass="littleErrorMessage_bold">
+												<f:facet name="errorMarker">
+													<h:graphicImage value="/images/error16x16.gif" />   
+												</f:facet>
+											</rich:message>
+										</h:panelGroup>
+
+										<h:outputLabel value="Unidades x caja:" for="inputTextUnidadesPorCaja" />
+										<h:panelGroup>
+											<h:inputText id="inputTextUnidadesPorCaja"
+														 value="#{productoMB.producto.unidadesPorCaja}" 
+														 label="UnidadesPorCaja"
+														 required="true"
+														 size="2"
+														 maxlength="3">
+												<f:convertNumber integerOnly="true"/>
+												<f:validateLongRange minimum="3" maximum="999"/>
+											</h:inputText>
+											<rich:message for="inputTextUnidadesPorCaja" errorClass="littleErrorMessage_bold">
+												<f:facet name="errorMarker">
+													<h:graphicImage value="/images/error16x16.gif" />   
+												</f:facet>
+											</rich:message>
+										</h:panelGroup>
+
+										<h:outputLabel value="Unidad Medida:" for="inputTextUnidadMedida" />
+										<h:panelGroup>
+											<h:inputText id="inputTextUnidadMedida"
+														 value="#{productoMB.producto.unidadMedida}" 
+														 label="Contenido"
+														 required="true"
+														 size="4"
+														 maxlength="5">
+												<f:validateLength minimum="2"/>
+											</h:inputText>
+											<rich:message for="inputTextUnidadMedida" errorClass="littleErrorMessage_bold">
+												<f:facet name="errorMarker">
+													<h:graphicImage value="/images/error16x16.gif" />   
+												</f:facet>
+											</rich:message>
+										</h:panelGroup>
+										<h:outputLabel value="Costo:" for="inputTextCosto" />
+										<h:panelGroup>
+											<h:inputText id="inputTextCosto"
+														 value="#{productoMB.producto.costo}" 
+														 label="Costo"
+														 required="true"
+														 size="4"
+														 maxlength="5">
+												<f:convertNumber integerOnly="false" pattern="#######0.00" locale="es_MX"/>
+												<f:validateDoubleRange minimum="1.0" maximum="100000.00"/>							
+											</h:inputText>
+											<rich:message for="inputTextCosto" errorClass="littleErrorMessage_bold">
+												<f:facet name="errorMarker">
+													<h:graphicImage value="/images/error16x16.gif" />   
+												</f:facet>
+											</rich:message>
+										</h:panelGroup>					
+
+										<h:outputLabel value="Costo Venta:" for="inputTextCostoVenta" />
+										<h:panelGroup>
+											<h:inputText id="inputTextCostoVenta"
+														 value="#{productoMB.producto.costoVenta}" 
+														 label="Costo Venta"
+														 required="true"
+														 size="4"
+														 maxlength="5">
+												<f:convertNumber integerOnly="false" pattern="#######0.00" locale="es_MX"/>
+												<f:validateDoubleRange minimum="1.0" maximum="100000.00"/>							
+											</h:inputText>
+											<rich:message for="inputTextCostoVenta" errorClass="littleErrorMessage_bold">
+												<f:facet name="errorMarker">
+													<h:graphicImage value="/images/error16x16.gif" />   
+												</f:facet>
+											</rich:message>
+										</h:panelGroup>
+
+										<h:outputLabel value="Precio Base:" for="inputTextPrecioBase" />
+										<h:panelGroup>
+											<h:inputText id="inputTextPrecioBase"
+														 value="#{productoMB.producto.precioBase}" 
+														 label="Precio Base"
+														 required="true"
+														 size="4"
+														 maxlength="5">
+												<f:convertNumber integerOnly="false" pattern="#######0.00" locale="es_MX"/>
+												<f:validateDoubleRange minimum="1.0" maximum="100000.00"/>							
+											</h:inputText>
+											<rich:message for="inputTextPrecioBase" errorClass="littleErrorMessage_bold">
+												<f:facet name="errorMarker">
+													<h:graphicImage value="/images/error16x16.gif" />   
+												</f:facet>
+											</rich:message>
+										</h:panelGroup>			
+
+										<h:outputLabel value="Contenido:" for="inputTextContenido" />
+										<h:panelGroup>
+											<h:inputText id="inputTextContenido"
+														 value="#{productoMB.producto.contenido}" 
+														 label="Contenido"
+														 required="true"
+														 size="4"
+														 maxlength="5">
+												<f:validateLength minimum="2"/>
+											</h:inputText>
+											<rich:message for="inputTextContenido" errorClass="littleErrorMessage_bold">
+												<f:facet name="errorMarker">
+													<h:graphicImage value="/images/error16x16.gif" />   
+												</f:facet>
+											</rich:message>
+										</h:panelGroup>
+
+										<h:outputLabel value="Abrebiatura:" for="inputTextAbrebiatura" />
+										<h:panelGroup>
+											<h:inputText id="inputTextAbrebiatura"
+														 value="#{productoMB.producto.abrebiatura}" 
+														 label="Abrebiatura"
+														 required="true"
+														 size="3"
+														 maxlength="25">
+												<f:validateLength minimum="2"/>
+											</h:inputText>
+											<rich:message for="inputTextAbrebiatura" errorClass="littleErrorMessage_bold">
+												<f:facet name="errorMarker">
+													<h:graphicImage value="/images/error16x16.gif" />   
+												</f:facet>
+											</rich:message>
+										</h:panelGroup>
+									</h:panelGrid>
+
+								</rich:tab>
+								<rich:tab label="Relacionados" >
+
+									<h:panelGrid id="panelGridCamposRel1"
+												 width="100%" 
+												 columns="2" border="0">
+
+										<rich:fileUpload fileUploadListener="#{productoMB.listener}"
+														 maxFilesQuantity="#{productoMB.uploadsAvailable}"
+														 id="upload"
+
+														 addControlLabel="AGREGAR IMAGEN DESDE ARCHIVO"
+														 cancelEntryControlLabel="CANCELAR SUBIDA DE ARCHIVO"
+														 clearAllControlLabel="LIMPIAR HISTORICO DEL CONTENIDO SUBIDO"
+														 clearControlLabel="SOLO LIMPIAR"
+														 doneLabel="SUBIDO, AL SERVIDOR"
+														 progressLabel="...SUBIENDO"
+														 sizeErrorLabel="¡ EL ARCHIVO ES MUY GRANDE !"
+														 stopControlLabel="DETENER SUBIDA DEL ARCHIVO"
+														 stopEntryControlLabel="DETENER"
+														 transferErrorLabel="ERROR DE TRASNFERENCIA"
+														 uploadControlLabel="OK, SUBIR"
+
+														 listWidth="50%" listHeight="0px"
+														 autoclear="true"
+														 immediateUpload="#{productoMB.autoUpload}"
+														 acceptedTypes="jpg, jpeg, gif, png, bmp" 
+														 allowFlash="#{productoMB.useFlash}">
+											<a4j:support event="onuploadcomplete" reRender="info" />
+										</rich:fileUpload>
+										
+									</h:panelGrid>
+
+										<rich:panel id="info"
+													bodyClass="info">
+											<f:facet name="header">
+												<h:outputText value="IMAGENES AGREGADAS" />
+											</f:facet>
+											
+											<h:outputText value="NO HAY NINGUNA IMAGEN AGREGADA AHÚN"
+														  rendered="#{productoMB.size==0}" />
+
+											<rich:dataGrid columns="#{productoMB.preferredColumns}" 
+														   value="#{productoMB.multimedioFiles}"
+														   var="multimedioFile" rowKeyVar="row"														   
+														   style="width:100%; height: 280px; background-color: transparent;">
+
+
+												<h:panelGrid columns="1" columnClasses="centerAlign" width="100%">
+
+													<!--
+													<h:outputText    value="id=#{multimedioFile.id}"/>													
+													<h:outputText    value="id=#{multimedioFile.name}"/>
+													-->
+													<h:graphicImage value="/multimedio/getMultimedio?id=#{multimedioFile.id}" 
+																	style="width:120px; height:90px;"/>
+
+													<a4j:commandButton	actionListener="#{productoMB.removeUploadData}"
+																	   reRender="info, upload" value="X">
+														<f:param name="multimedioFileId" value="#{multimedioFile.id}"/>
+													</a4j:commandButton>
+
+												</h:panelGrid>
+
+											</rich:dataGrid>
+										</rich:panel>
+
+
+								</rich:tab>
+							</rich:tabPanel>
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align: bottom; height: 10%">
+							<h:panelGrid id="panelGridBotones"
+										 width="100%" 
+										 columns="2"
+										 columnClasses="columnWidth50 rightAlign, columnWidth50 leftAlign">
+
+								<a4j:commandButton id="commandButtonGuardar"
+												   value="#{UIMessages.COMMON_SAVE}"
+												   actionListener="#{productoMB.aceptarGuardar}"
+												   action="test"
+												   ignoreDupResponses="true"
+												   oncomplete="if (#{facesContext.maximumSeverity == 'INFO 0'}) { #{rich:component('entityEditionModalPanel')}.hide(); }"
+												   reRender="entitiListTable"/> 
+
+								<a4j:commandButton id="commandButtonCancelar"
+												   value="#{UIMessages.COMMON_CANCEL}" 
+												   actionListener="#{productoMB.cancelarGuardar}"
+												   action="test"
+												   ignoreDupResponses="true"
+												   immediate="true"
+												   oncomplete="#{rich:component('entityEditionModalPanel')}.hide();"
+												   reRender="entitiListTable,entityEditionModalPanel"/> 
+
+							</h:panelGrid>							
+						</td>						
+					</tr>
+
+				</table>
+
+			</h:form>
+		</rich:modalPanel>
+
+    </ui:define>
+
+</ui:composition>

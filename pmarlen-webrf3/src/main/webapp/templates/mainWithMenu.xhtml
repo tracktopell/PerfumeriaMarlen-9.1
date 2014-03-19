@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich">
+
+    <head>
+
+        <title><ui:insert name="title"/></title>		
+		<ui:include src="/templates/include/dynamic-css.xhtml" />
+		<link href="${facesContext.externalContext.requestContextPath}/images/Logo_icono_2.gif" rel="shortcut icon" type="image/x-icon"/>
+		<link href="${facesContext.externalContext.requestContextPath}/images/Logo_icono_2.gif" rel="icon"          type="image/x-icon"/>
+		<script >
+
+		function init(){
+			console.log("-->>init()");
+			//timedMsg();
+			document.forms[0].j_username.focus();
+		}
+		function timedMsg() {
+			console.log("-->>timedMsg()");
+			var t = setTimeout("returnToHome();",#{session.maxInactiveInterval*1000 + 10});
+		}
+		function returnToHome() {
+			console.log("-->>returnToHome()");
+			window.location = "${facesContext.externalContext.requestContextPath}";
+		}
+
+		</script>
+
+    </head>
+
+    <body onload="init();">	
+
+		<h:panelGrid id="mainTemplatePanel" columns="1" class="mainBodyLayout">
+			<f:facet name="header">
+				<h:panelGroup>
+					<ui:include src="/templates/include/header.xhtml" />
+					<ui:include src="/templates/include/menuBar.xhtml" />
+
+				</h:panelGroup>
+			</f:facet>
+
+			<h:panelGrid columns="#{navigationMB.numColumnsLiteral}" width="100%" columnClasses="#{navigationMB.columnClassLiteral}">
+
+				<h:panelGroup rendered="#{navigationMB.renderedForMobile}" style="vertical-align: top;">
+					<ui:include src="/templates/include/panelMenu.xhtml" />
+				</h:panelGroup>
+
+				<rich:panel bodyClass="body-main-panel" width="100%">
+
+					<f:facet name="header">
+
+						<h:panelGrid	id="panelGridBotonesPanelMenu"
+									 width="100%" 
+									 columns="3"
+									 columnClasses="leftAlign columnWidth2, leftAlign columnWidth95">
+							<a4j:status>
+								<f:facet name="start">
+									<h:graphicImage  value="/images/gif_loading_azul.gif"/>
+								</f:facet>								
+								<h:graphicImage  value="/images/png/Transparent_4x16.png"/>								
+							</a4j:status>
+
+							<h:panelGroup>
+								<h:graphicImage  value="/images/png/Transparent_4x16.png"/>								
+								<ui:insert name="location">
+									#{UIMessages.MENU_LOCATION_PATH}
+								</ui:insert>
+							</h:panelGroup>
+							
+
+						</h:panelGrid>
+
+					</f:facet>
+
+					<ui:insert name="body">Body</ui:insert>						
+
+				</rich:panel>
+
+			</h:panelGrid>
+
+			<f:facet name="footer">
+
+				<ui:include src="/templates/include/footer.xhtml" />
+
+			</f:facet>
+
+		</h:panelGrid>
+
+	</body>
+
+</html>

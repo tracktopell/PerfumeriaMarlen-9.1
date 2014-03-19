@@ -1,0 +1,85 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+
+		<script type="text/javascript">
+			<!--
+			var b_timer = null; // blink timer
+			var b_on = true; // blink state
+			var blnkrs = null; // array of spans
+
+			function blink() {
+				var tmp = document.getElementsByTagName("span");
+				if (tmp) {
+					blnkrs = new Array();
+					var b_count = 0;
+					for (var i = 0; i < tmp.length; ++i) {
+						if (tmp[i].className == "blink") {
+							blnkrs[b_count] = tmp[i];
+							++b_count;
+						}
+					}
+					// time in m.secs between blinks
+					// 500 = 1/2 second
+					blinkTimer(500);
+				}
+			}
+
+			function blinkTimer(ival) {
+				if (b_timer) {
+					window.clearTimeout(b_timer);
+					b_timer = null;
+				}
+				blinkIt();
+				b_timer = window.setTimeout('blinkTimer(' + ival + ')', ival);
+			}
+
+			function blinkIt() {
+				for (var i = 0; i < blnkrs.length; ++i) {
+					if (b_on == true) {
+						blnkrs[i].style.visibility = "hidden";
+					}
+					else {
+						blnkrs[i].style.visibility = "visible";
+					}
+				}
+				b_on =!b_on;
+			}
+			//-->
+		</script>
+
+		<style type="text/css">
+			.blink {
+				font-size: 22px;
+				color: red;
+				display: inline;
+			}
+		</style>
+	</head>
+	<body bgcolor="#000000" onload="blink();">
+		<div style="text-align:center; color:#000000; font-size: 22pt;">
+			<span class="blink">GRABANDO</span> 		
+		</div>
+		<div style="text-align:center; color:#FFFFFF; font-size: 16pt;">
+			CONECTADO CON S.S.P. TECAMAC Y PRIVADA
+		</div>
+		<div style="text-align:center; color:#FFFFFF; font-size: 16pt;">
+			RESPALDADO EN LA NUBE EN TIEMPO REAL
+		</div>
+		<table border="0" align="center">
+			<tr>
+				<td><img src="http://pmarlensuc1.dyndns.org:3081/nphMotionJpeg?Resolution=320x240&Quality=Standard" /></td>
+				<td><img src="http://pmarlensuc1.dyndns.org:3082/nphMotionJpeg?Resolution=320x240&Quality=Standard" /></td>
+			</tr>
+			<tr>
+				<td><img src="http://pmarlensuc1.dyndns.org:3083/nphMotionJpeg?Resolution=320x240&Quality=Standard" /></td>
+				<td><img src="http://pmarlensuc1.dyndns.org:3084/videostream.cgi?user=pmc4admin&pwd=pmc4admin01&resolution=64&rate=0"/></td>
+			</tr>
+		</table>
+	</body>
+</html>

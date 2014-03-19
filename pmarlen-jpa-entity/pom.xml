@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.pmarlen.erp</groupId>
+    <artifactId>pmarlen-parent</artifactId>
+    <version>9.1.140319</version>
+  </parent>
+  <artifactId>pmarlen-jpa-entity</artifactId>
+  <version>${parent.version}</version>
+  <name>Perfumeria Marlen 9.1.x - Entity JPA</name>
+
+  <!-- ======================== DEPENDENCIES ==================== -->
+
+  <dependencies>
+  <!-- ================= MAIN DEPENDENCIES ============ --> 
+
+  <!-- ================= LIBRARY DEPENDENCIES ============ --> 
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>org.springframework.test</artifactId>
+      <version>${spring.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>com.springsource.javax.persistence</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+  </dependencies>
+  
+  <build>
+    <plugins>
+
+    </plugins>
+
+  </build>
+
+</project>

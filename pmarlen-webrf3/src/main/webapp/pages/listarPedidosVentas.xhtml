@@ -1,0 +1,349 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+
+                template="/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+		PEDIDOS EN PROCESO
+		<h:outputFormat value=" {0} >> {1} ">
+			<f:param value="#{UIMessages.MAIN_SHORT_TITLE}" />
+			<f:param value="PEDIDOS EN PROCESO" />
+		</h:outputFormat>		
+
+    </ui:define>
+
+    <ui:define name="location">
+		<h:outputFormat value=" {0} > {1} > {2}">
+			<f:param value="#{UIMessages.MENU_OPERATION}" />
+			<f:param value="VENTAS" />
+			<f:param value="PEDIDOS EN PROCESO" />
+		</h:outputFormat>			
+
+    </ui:define>
+
+    <ui:define name="body">
+		<style>
+			.dataTable_PVE_header {
+				color:#FF0000;
+			}
+
+			.dataTable_TD_PVE_1 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FFFFFF;
+			}
+			.dataTable_TD_PVE_2 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FF33CC;
+			}
+			.dataTable_TD_PVE_4 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FFCC99;
+			}
+			.dataTable_TD_PVE_8 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#99FF66;
+			}
+			.dataTable_TD_PVE_16 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#00FF00;
+			}
+			.dataTable_TD_PVE_32 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#00FF00;
+			}
+			.dataTable_TD_PVE_64 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#00FFCC;
+			}
+			.dataTable_TD_PVE_128 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FF66CC;
+			}
+			.dataTable_TD_PVE_256 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FF66CC;
+			}
+			.dataTable_TD_PVE_512 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FF66CC;
+			}
+			.dataTable_TD_PVE_1024 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FF66CC;
+			}
+			.dataTable_TD_PVE_2048 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FF66CC;
+			}
+			.dataTable_TD_PVE_4096 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FF66CC;
+			}
+			.dataTable_TD_PVE_65536 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FF0000;
+			}
+
+		</style>
+
+        <a4j:form id="listarPedidosVentasForm">
+			<h:panelGrid id="panelGridPrincipal"
+						 width="100%" 
+						 columns="1">
+
+				<rich:messages passedLabel="OK" layout="list" globalOnly="true" 
+							   showDetail="true"
+							   infoClass="littleInfoMessage_bold"
+							   warnClass="littleWarnMessage_bold"
+							   errorClass="littleErrorMessage_bold">
+					<f:facet name="infoMarker">
+						<h:graphicImage  value="/images/info16x16.gif" /> 
+					</f:facet>
+					<f:facet name="warnMarker">
+						<h:graphicImage value="/images/alerta16x16.gif" />   
+					</f:facet>
+					<f:facet name="errorMarker">
+						<h:graphicImage value="/images/error16x16.gif" />   
+					</f:facet>
+				</rich:messages>
+				<!--
+				<rich:datascroller	align="center" for="pedidosVentaTable" 
+								   maxPages="15" 
+								   page="#{pedidosPreVisorMB.scrollerPage}" 									
+								   id="sc2" />
+				-->
+				<rich:dataTable id="pedidosVentaTable"
+								value="#{pedidosPreVisorMB.pedidoVentaList}"
+								var="pedidoVentaEasyView"
+								width="100%"  
+								rows="#{pedidosPreVisorMB.numRecShow}"
+								columnClasses="columnWidth5 centerAlign,columnWidth55 centerAlign,columnWidth10 centerAlign,columnWidth10 centerAlign,columnWidth10 rightAlign" >
+
+					<f:facet name="header">
+						<h:panelGroup style="display:block; text-align:left; background-color:transparent; width: 100%;">
+							<h:outputText value="FLUJO DE ESTADOS DE PEDIDOS" />
+							<rich:spacer width="100"/>
+
+							<h:outputText value="#{UIMessages.COMMON_VIEW_REG_PAGE} : " />
+
+							[
+							<h:outputText value="10" rendered="#{pedidosPreVisorMB.numRecShow eq 10}"/>
+							<a4j:commandLink reRender="pedidosVentaTable,sc1,sc2" actionListener="#{pedidosPreVisorMB.updateRecShow}" rendered="#{pedidosPreVisorMB.numRecShow ne 10}">
+								<f:param name="numRecShowToSet" value="10"/>
+								<h:outputText value="10" /> 
+							</a4j:commandLink>
+							|
+							<h:outputText value="25" rendered="#{pedidosPreVisorMB.numRecShow eq 25}"/>
+							<a4j:commandLink reRender="pedidosVentaTable,sc1,sc2" actionListener="#{pedidosPreVisorMB.updateRecShow}" rendered="#{pedidosPreVisorMB.numRecShow ne 25}">
+								<f:param name="numRecShowToSet" value="25"/>
+								<h:outputText value="25" /> 
+							</a4j:commandLink>
+							|
+							<h:outputText value="100" rendered="#{pedidosPreVisorMB.numRecShow eq 100}"/>
+							<a4j:commandLink reRender="pedidosVentaTable,sc1,sc2" actionListener="#{pedidosPreVisorMB.updateRecShow}" rendered="#{pedidosPreVisorMB.numRecShow ne 100}">
+								<f:param name="numRecShowToSet" value="100"/>
+								<h:outputText value="100" /> 
+							</a4j:commandLink>				
+							|
+							<h:outputText value="500" rendered="#{pedidosPreVisorMB.numRecShow eq 500}"/>
+							<a4j:commandLink reRender="pedidosVentaTable,sc1,sc2" actionListener="#{pedidosPreVisorMB.updateRecShow}" rendered="#{pedidosPreVisorMB.numRecShow ne 500}">
+								<f:param name="numRecShowToSet" value="500"/>
+								<h:outputText value="500" /> 
+							</a4j:commandLink>
+							]
+						</h:panelGroup>
+
+					</f:facet>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<h:panelGroup>
+							<a4j:commandLink	rendered="#{sessionUserMB.adminUser or sessionUserMB.stockUser or sessionUserMB.rootUser }"
+											 reRender="listarPedidosVentasForm,panelEditarCantidad"
+											 ignoreDupResponses="true"
+											 action="#{verPedidoEnProcesoMB.prepararPedidoParaEdicion}">
+								<!--
+								<h:graphicImage style="border-style:none;" value="/images/orders.gif" title="#{UIMessages.COMMON_READ}" alt="#{pedidoVentaEasyView.pedidoVenta.id}"/>
+								-->
+								<h:outputText value="#{pedidoVentaEasyView.pedidoVenta.id}" />
+								
+								<f:param name="pedidoVentaId" value="#{pedidoVentaEasyView.pedidoVenta.id}"/>
+							</a4j:commandLink> 
+
+							<h:panelGroup style="display:block; text-align:left; background-color:transparent;" 
+										  rendered="#{not sessionUserMB.adminUser and not sessionUserMB.rootUser and not sessionUserMB.stockUser}">
+
+								<h:outputLink value="#{facesContext.externalContext.requestContextPath}/docs/PedidoVenta_PerfumeriaMarlen.pdf?pedidoId=#{pedidoVentaEasyView.pedidoVenta.id}"
+											  target="_blank">
+									<!--
+									<h:graphicImage style="border-style:none;" value="/images/pdf.gif" title="#{UIMessages.COMMON_READ}" alt="#{pedidoVentaEasyView.pedidoVenta.id}"/>
+									-->
+									<h:outputText value="#{pedidoVentaEasyView.pedidoVenta.id}" />
+									
+								</h:outputLink>
+							</h:panelGroup>
+
+						</h:panelGroup>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+
+							<h:panelGroup>
+								<h:outputText value="Flujo de Estados" />
+								<br/>
+								<table border="0" width="100%">
+									<tr >
+										<td class="dr-table-headercell rich-table-headercell dataTable_PVE_header"><h:outputText value="CAPT" /></td>
+										<td class="dr-table-headercell rich-table-headercell dataTable_PVE_header"><h:outputText value="SINC" /></td>
+										<td class="dr-table-headercell rich-table-headercell dataTable_PVE_header"><h:outputText value="VERF" /></td>
+										<td class="dr-table-headercell rich-table-headercell dataTable_PVE_header"><h:outputText value="SURT" /></td>
+										<td class="dr-table-headercell rich-table-headercell dataTable_PVE_header"><h:outputText value="FACT" /></td>
+										<td class="dr-table-headercell rich-table-headercell dataTable_PVE_header"><h:outputText value="REMS" /></td>
+										<td class="dr-table-headercell rich-table-headercell dataTable_PVE_header"><h:outputText value="ENVI" /></td>
+										<td class="dr-table-headercell rich-table-headercell dataTable_PVE_header"><h:outputText value="ENTR" /></td>
+										<td class="dr-table-headercell rich-table-headercell dataTable_PVE_header"><h:outputText value="DEVU" /></td>
+										<!--
+										<td class="dr-table-headercell rich-table-headercell dataTable_PVE_header"><h:outputText value="VND-S" /></td>
+										<td class="dr-table-headercell rich-table-headercell dataTable_PVE_header"><h:outputText value="FAC-S" /></td>
+										<td class="dr-table-headercell rich-table-headercell dataTable_PVE_header"><h:outputText value="DEV-S" /></td>
+										-->
+										<td class="dr-table-headercell rich-table-headercell dataTable_PVE_header"><h:outputText value="PAGA" /></td>
+										<td class="dr-table-headercell rich-table-headercell dataTable_PVE_header"><h:outputText value="CANC" /></td>									
+									</tr>
+
+								</table>
+							</h:panelGroup>
+						</f:facet>
+
+						<h:panelGroup >
+
+							<br/>
+							<table class="dr-table rich-table" width="100%">
+
+								<tbody>
+									<tr>
+
+										<a4j:repeat var="pedidoVentaEstado" value="#{pedidoVentaEasyView.pveTodos}" >
+
+											<td class="dr-subtable-cell rich-subtable-cell">
+
+												<rich:panel rendered="#{pedidoVentaEstado.id eq -1}" 
+															styleClass="tooltip-text" bodyClass="rich-laguna-panel-no-header">
+													<rich:spacer width="5"/>					
+												</rich:panel>
+												<rich:panel rendered="#{pedidoVentaEstado.id ne -1}" 
+															styleClass="tooltip-text" bodyClass="rich-laguna-panel-no-header dataTable_TD_PVE_#{pedidoVentaEstado.estado.id}">
+													<rich:spacer width="5"/>
+
+													<rich:toolTip showEvent="onmouseover" direction="bottom-left" mode="client" styleClass="tooltip" layout="block">
+														<f:facet name="defaultContent">
+															<strong>Cargando...</strong>
+														</f:facet>
+
+														<h:panelGroup style="display:block; text-align:center; background-color:transparent;">
+															<h:outputText value="#{pedidoVentaEstado.estado.descripcion}" />
+															<br/>
+															<h:outputText value="#{pedidoVentaEstado.fecha}">
+																<f:convertDateTime timeZone="America/Mexico_City" pattern="yyyy/MM/dd HH:mm"/>
+															</h:outputText>			
+															<br/>
+															<h:outputText value="#{pedidoVentaEstado.usuario.nombreCompleto}" />
+															<br/>
+															<h:outputText rendered="#{not empty pedidoVentaEstado.comentarios}" value="#{pedidoVentaEstado.estado.comentarios}" />
+														</h:panelGroup>
+
+													</rich:toolTip>
+
+												</rich:panel>
+
+											</td>
+
+										</a4j:repeat>
+
+
+									</tr>
+								</tbody>
+							</table>
+						</h:panelGroup>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Cliente" />
+						</f:facet>
+						<h:panelGroup >
+							<h:outputText value="#{pedidoVentaEasyView.pedidoVenta.cliente.razonSocial}" />
+						</h:panelGroup>
+					</rich:column>
+
+					<rich:column  >
+						<f:facet name="header">
+							<h:outputText value="DATOS" />
+						</f:facet>
+						<h:panelGrid	columns="1" styleClass="center" >
+							<h:outputText value="F.P.:#{pedidoVentaEasyView.pedidoVenta.formaDePago.descripcion}" />
+							<h:outputText value="M.P.:#{pedidoVentaEasyView.pedidoVenta.metodoDePago.descripcion}" />
+							<h:outputText rendered="#{pedidoVentaEasyView.pedidoVenta.almacen.tipoAlmacen eq 1}" value="LINEA" />
+							<h:outputText rendered="#{pedidoVentaEasyView.pedidoVenta.almacen.tipoAlmacen eq 2}" value="OPORTUNIDAD" />
+							<h:outputText rendered="#{pedidoVentaEasyView.pedidoVenta.almacen.tipoAlmacen eq 3}" value="REGALIAS" />
+						</h:panelGrid>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Importe" />
+						</f:facet>
+						<h:panelGroup >
+							<h:outputText value="#{pedidoVentaEasyView.importeTotal}">
+								<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+							</h:outputText>
+						</h:panelGroup>
+
+
+					</rich:column>
+
+				</rich:dataTable>
+				<rich:datascroller	align="center" for="pedidosVentaTable" 
+								   maxPages="15" 
+								   page="#{pedidosPreVisorMB.scrollerPage}" 									
+								   id="sc1" />
+			</h:panelGrid>
+        </a4j:form>
+    </ui:define>
+
+</ui:composition>

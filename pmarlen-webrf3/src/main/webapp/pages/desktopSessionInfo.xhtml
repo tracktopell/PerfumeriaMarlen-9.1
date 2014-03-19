@@ -1,0 +1,174 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+		<h:outputFormat value=" {0} - {1} ">
+			<f:param value="#{UIMessages.MAIN_SHORT_TITLE}" />
+			<f:param value="#{UIMessages.MENU_SESSION_INFO}" />
+		</h:outputFormat>		
+    </ui:define>
+
+    <ui:define name="location">
+		
+		<h:outputFormat value=" {0} > {1} ">
+			<f:param value="#{UIMessages.MENU_CONTROL}" />
+			<f:param value="#{UIMessages.MENU_SESSION_INFO}" />
+		</h:outputFormat>
+
+    </ui:define>
+
+    <ui:define name="body">
+
+		<h:form id="principalForm">
+			
+			<h:panelGrid id="panelGridPrincipal"
+						 width="100%" 
+						 columns="1">
+
+				<rich:messages passedLabel="OK" layout="list" globalOnly="true" 
+							   showDetail="true"
+							   infoClass="littleInfoMessage_bold"
+							   warnClass="littleWarnMessage_bold"
+							   errorClass="littleErrorMessage_bold">
+					<f:facet name="infoMarker">
+                        <h:graphicImage  value="/images/info16x16.gif" /> 
+                    </f:facet>
+                    <f:facet name="warnMarker">
+                        <h:graphicImage value="/images/alerta16x16.gif" />   
+                    </f:facet>
+					<f:facet name="errorMarker">
+                        <h:graphicImage value="/images/error16x16.gif" />   
+                    </f:facet>
+                </rich:messages>
+				
+				<h:outputText value="USUARIOS EN SISTEMA"/>
+				<rich:dataTable id="entitiListTable"
+								columnClasses="columnWidth5 centerAlign, columnWidth20 centerAlign, columnWidth20 centerAlign, columnWidth20 centerAlign, columnWidth20 centerAlign, columnWidth15 centerAlign"
+								value="#{desktopSessionMB.sessionInfoList}"
+								var="sessionInfo"
+								rows="20"
+								width="100%" >
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="#{UIMessages.COMMON_OPTIONS}"/>
+						</f:facet>
+						<rich:spacer width="10"/>
+					</rich:column>
+
+					<rich:column sortBy="#{sessionInfo.session.id}">
+						<f:facet name="header">
+							<h:outputText value="Session HTTP/RemoteAddr/UserAgent"/>
+						</f:facet>
+						
+						<h:panelGrid	width="100%" columns="1"
+										columnClasses="centerAlign">						
+							<h:outputText value="#{sessionInfo.session.id}"/>
+
+							<h:outputText value="#{sessionInfo.remoteAddr}"/>
+
+							<h:outputText value="#{sessionInfo.userAgent}"/>
+							
+						</h:panelGrid>
+					</rich:column>
+
+					<rich:column sortBy="#{sessionInfo.userName}">
+						<f:facet name="header">
+							<h:outputText value="Usuario"/>
+						</f:facet>
+
+						<h:outputText value="#{sessionInfo.userName}"/>
+
+					</rich:column>
+
+					<rich:column sortBy="#{sessionInfo.creationDate}">
+						<f:facet name="header">
+							<h:outputText value="Hora entrada"/>
+						</f:facet>
+						<h:panelGrid	width="100%" columns="1"
+										columnClasses="centerAlign">
+						
+							<h:outputText value="#{sessionInfo.creationDate}">
+								<f:convertDateTime timeZone="America/Mexico_City" locale="es_MX" pattern="yyyy/MM/dd HH:mm:ss:SSS"/>
+							</h:outputText>
+
+							<h:outputText value="#{sessionInfo.creationTimeDiff}"/>
+						</h:panelGrid>
+					</rich:column>
+
+					<rich:column sortBy="#{sessionInfo.lastAccessedTime}">
+						<f:facet name="header">
+							<h:outputText value="Última actividad"/>
+						</f:facet>
+						<h:panelGrid	width="100%" columns="1"
+										columnClasses="centerAlign">
+						
+							<h:outputText value="#{sessionInfo.lastAccessedTime}">
+								<f:convertDateTime timeZone="America/Mexico_City" locale="es_MX" pattern="yyyy/MM/dd HH:mm:ss:SSS"/>							
+							</h:outputText>
+							
+							<h:outputText value="#{sessionInfo.lastAccessedTimeDiff}"/>
+						</h:panelGrid>
+					</rich:column>
+
+					<rich:column sortBy="#{sessionInfo.lastVisitedPage}">
+						<f:facet name="header">
+							<h:outputText value="Última Página"/>
+						</f:facet>
+						<h:outputText value="#{sessionInfo.lastVisitedPage}"/>
+					</rich:column>
+
+				</rich:dataTable>
+				
+				<h:outputText value="USUARIOS EN APLICACION DE CAJA EN SUCURSALES"/>
+				<rich:dataTable id="entitiListTableS2"
+								columnClasses="columnWidth10 centerAlign, columnWidth30 centerAlign, columnWidth30 leftAlign, columnWidth30 leftAlign"
+								value="#{desktopSessionMB.list}"
+								var="desktopSessionInfo"
+								rows="20"
+								width="100%" >
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="#{UIMessages.COMMON_OPTIONS}"/>
+						</f:facet>
+						<rich:spacer width="10"/>
+					</rich:column>
+
+					<rich:column sortBy="#{desktopSessionInfo.id}">
+						<f:facet name="header">
+							<h:outputText value="Usuario ID"/>
+						</f:facet>
+
+						<h:outputText value="#{desktopSessionInfo.usuarioId}"/>
+
+					</rich:column>
+
+					<rich:column sortBy="#{desktopSessionInfo.nombre}">
+						<f:facet name="header">
+							<h:outputText value="Num Caja"/>
+						</f:facet>
+						<h:outputText value="#{desktopSessionInfo.numCaja}"/>
+					</rich:column>
+
+					<rich:column sortBy="#{desktopSessionInfo.nombre}">
+						<f:facet name="header">
+							<h:outputText value="Sucursal Id"/>
+						</f:facet>
+						<h:outputText value="#{desktopSessionInfo.sucursalId}"/>
+					</rich:column>
+
+				</rich:dataTable>
+
+			</h:panelGrid>
+
+		</h:form>	
+
+    </ui:define>
+
+</ui:composition>

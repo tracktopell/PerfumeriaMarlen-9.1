@@ -1,0 +1,262 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+
+                template="/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+		<h:outputFormat value=" {0} >> {1} ">
+			<f:param value="#{UIMessages.MAIN_SHORT_TITLE}" />
+			<f:param value="INVENTARIOS ACTUALES" />
+		</h:outputFormat>		
+
+    </ui:define>
+
+    <ui:define name="location">
+		<h:outputFormat value=" {0} > {1} > {2}">
+			<f:param value="#{UIMessages.MENU_ADMINISTRATION}" />
+			<f:param value="INVENTARIOS" />
+			<f:param value="INVENTARIOS ACTUALES" />
+		</h:outputFormat>			
+
+    </ui:define>
+
+    <ui:define name="body">
+        <a4j:form id="inventariosViewForm">
+			<h:panelGrid id="panelGridPrincipal"
+						 width="100%" 
+						 columns="1">
+
+				<rich:messages passedLabel="OK" layout="list" globalOnly="true" 
+							   showDetail="true"
+							   infoClass="littleInfoMessage_bold"
+							   warnClass="littleWarnMessage_bold"
+							   errorClass="littleErrorMessage_bold">
+					<f:facet name="infoMarker">
+						<h:graphicImage  value="/images/info16x16.gif" /> 
+					</f:facet>
+					<f:facet name="warnMarker">
+						<h:graphicImage value="/images/alerta16x16.gif" />   
+					</f:facet>
+					<f:facet name="errorMarker">
+						<h:graphicImage value="/images/error16x16.gif" />   
+					</f:facet>
+				</rich:messages>
+				<!--
+				SELECT 
+				S.ID SUCURSAL_ID,A.ID ALMACEN_ID,A.TIPO_ALMACEN,
+				P.ID,P.CODIGO_BARRAS,P.NOMBRE,P.PRESENTACION,M.NOMBRE MARCA_NOMBRE,I.NOMBRE INDUSTRIA_NOMBRE,L.NOMBRE LINEA_NOMBRE,
+				AP.CANTIDAD_ACTUAL,AP.PRECIO_VENTA,AP.COSTO,AP.PRECIO_MAYOREO
+				
+				columnClasses="columnWidth10 centerAlign, columnWidth15 centerAlign, columnWidth20 centerAlign, columnWidth25 centerAlign, columnWidth30 rightAlign"
+				
+				-->
+				<h:panelGrid columns="2" styleClass="center" width="100%"
+									 columnClasses="columnWidth30 rightAlign, columnWidth70 leftAlign">
+
+					<h:outputText		value="#{UIEntityLabels.LABEL_ALMACEN}:" styleClass="label_bold_right"/>
+					<h:panelGroup >
+						<h:selectOneRadio id="selectOneRadioAlmacen"
+										  value="#{inventariosViewMB.tipoAlmacen}" 
+										  valueChangeListener="#{inventariosViewMB.almacenSelected}">
+							<a4j:support	reRender="inventariosViewForm" event="onchange"/>
+							<f:selectItems  value="#{inventariosViewMB.tipoAlmacenList}"/>
+						</h:selectOneRadio>						
+					</h:panelGroup>
+					
+					<h:panelGroup styleClass="label_bold_right">
+						<h:selectBooleanCheckbox value="#{inventariosViewMB.codigoBuscarEnabled}" id="codigoBuscarEnabled" 
+												 label="[#{UIEntityLabels.LABEL_PRODUCTO_CODIGOBARRAS}]:">
+							<a4j:support	event="onchange" 
+										    actionListener="#{inventariosViewMB.codigoBuscarEnabledChanged}"
+										    reRender="inventariosViewForm, inventarioTable, movimientoHistoricoTable"/>
+						</h:selectBooleanCheckbox>
+						<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO_CODIGOBARRAS} :" />						
+					</h:panelGroup>
+					
+					<h:panelGroup >
+						
+						<h:outputText value="Habilitar para filtrar por Codigo de Barras"
+									  rendered="#{not inventariosViewMB.codigoBuscarEnabled}"/>
+						
+						<h:inputText value="#{inventariosViewMB.codigoBuscar}" 
+									 rendered="#{inventariosViewMB.codigoBuscarEnabled}"
+									 valueChangeListener="#{inventariosViewMB.codigoBuscarChanged}"
+									 id="codigoBuscar" size="12" maxlength="18" class="inputCant">
+
+							<a4j:support	event="onchange" 
+										 reRender="inventariosViewForm, inventarioTable, movimientoHistoricoTable"/>
+						</h:inputText>
+						
+						<a4j:commandLink rendered="#{inventariosViewMB.codigoBuscarEnabled}" 
+										 actionListener="#{inventariosViewMB.buscarProductoPorCodigo}"
+										 reRender="inventariosViewForm, inventarioTable, movimientoHistoricoTable"
+										 ignoreDupResponses="true">
+							<h:graphicImage style="border-style:none;" value="/images/buscar.gif" 
+											title="#{UIMessages.COMMON_BASIC_VALUE_SEARCH}"/>							
+						</a4j:commandLink>
+
+					</h:panelGroup>
+					
+				</h:panelGrid>
+				<rich:dataTable		id="inventarioTable"
+								 value="#{inventariosViewMB.inventarioFastViewList}"
+								 var="inventarioFastView"
+								 width="100%" >
+
+					<f:facet name="header">
+						<h:panelGrid columns="2" styleClass="center" width="100%" 
+									 columnClasses="columnWidth50 leftAlign, columnWidth50 rightAlign">
+
+							<h:panelGroup>
+								<h:outputText value="INVETARIOS ACTUALES" />
+							</h:panelGroup>
+
+							<rich:spacer width="10"/>
+						</h:panelGrid>						
+					</f:facet>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<h:panelGroup>
+							<h:outputText value="#{inventarioFastView.productoCodigoBarras}" />
+						</h:panelGroup>
+					</rich:column>
+
+					<rich:column >
+						<f:facet name="header">
+							<h:outputText value="NOMBRE / PRESENTACIÓN" />
+						</f:facet>
+						
+						<h:panelGrid columns="1" width="100%" columnClasses="centerAlign">
+						
+							<h:outputText value="#{inventarioFastView.productoNombre}" />
+							
+							<h:outputText value="#{inventarioFastView.productoPresentacion}" />
+
+						</h:panelGrid>
+						
+					</rich:column>
+
+					<rich:column >
+						<f:facet name="header">
+							<h:outputText value="MARCA / LINEA / INDUSTRIA" />
+						</f:facet>
+						
+						<h:panelGrid columns="1" width="100%" columnClasses="centerAlign">
+
+							<h:outputText value="#{inventarioFastView.marcaNombre}" />
+
+							<h:outputText value="#{inventarioFastView.lineaNombre}" />
+
+							<h:outputText value="#{inventarioFastView.inductriaNombre}" />
+						</h:panelGrid>
+
+					</rich:column>					
+
+					<rich:column sortBy="">
+						<f:facet name="header">
+							<h:outputText value="# ACTUAL" />
+						</f:facet>
+
+						<h:outputText value="#{inventarioFastView.almacenProductoCantidadActual}"/>
+
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="$ VENTA" />
+						</f:facet>
+
+						<h:outputText value="#{inventarioFastView.almacenProductoPrecioVenta}">
+							<f:convertNumber maxFractionDigits="2" pattern="###,###,##0.00" locale="es_MX"/>
+						</h:outputText>
+
+					</rich:column>
+
+				
+				</rich:dataTable>
+				
+				<rich:dataTable	 id="movimientoHistoricoTable"
+								 rendered="#{inventariosViewMB.codigoBuscarEnabled and not empty inventariosViewMB.inventarioFastViewList}"
+								 value="#{inventariosViewMB.movimientoHistoricoProductoFastView}"
+								 var="vovimientoHistoricoProductoFastView"
+								 width="100%" >
+
+					<f:facet name="header">
+						<h:panelGrid columns="2" styleClass="center" width="100%" 
+									 columnClasses="columnWidth50 leftAlign, columnWidth50 rightAlign">
+
+							<h:panelGroup>
+								<h:outputText value="MOVIMIENTOD DE ENTRADA Y SALIDA" />
+							</h:panelGroup>
+
+							<rich:spacer width="10"/>
+						</h:panelGrid>						
+					</f:facet>
+
+					<rich:column >
+						<f:facet name="header">
+							<h:outputText value="FECHA" />
+						</f:facet>
+						
+						<h:outputText value="#{vovimientoHistoricoProductoFastView.fecha}" >
+							<f:convertDateTime timeZone="America/Mexico_City" locale="es_MX" pattern="yyyy/MM/dd HH:mm"/>
+						</h:outputText>
+						
+					</rich:column>
+					
+					<rich:column >
+						<f:facet name="header">
+							<h:outputText value="USUARIO" />
+						</f:facet>
+
+						<h:outputText value="#{vovimientoHistoricoProductoFastView.usuarioId}" />
+					</rich:column>
+				
+					<rich:column >
+						<f:facet name="header">
+							<h:outputText value="TIPO MOVIMIENTO" />
+						</f:facet>
+						
+						<h:outputText value="#{vovimientoHistoricoProductoFastView.tipoMovimientoDescripcion}" />
+					</rich:column>					
+
+					<rich:column sortBy="">
+						<f:facet name="header">
+							<h:outputText value="+ CANTIDAD" />
+						</f:facet>
+
+						<h:outputText rendered="#{vovimientoHistoricoProductoFastView.entrada}"
+									  value="#{vovimientoHistoricoProductoFastView.cantidad}" />
+					</rich:column>
+
+					<rich:column sortBy="">
+						<f:facet name="header">
+							<h:outputText value="- CANTIDAD" />
+						</f:facet>
+						
+						<h:outputText rendered="#{vovimientoHistoricoProductoFastView.salida}"
+									  value="#{vovimientoHistoricoProductoFastView.cantidad}" />
+					</rich:column>
+					
+					<rich:column sortBy="">
+						<f:facet name="header">
+							<h:outputText value="SALDO" />
+						</f:facet>
+
+						<h:outputText value="#{vovimientoHistoricoProductoFastView.saldo}" />
+					</rich:column>
+				
+				</rich:dataTable>
+				
+			</h:panelGrid>
+        </a4j:form>
+    </ui:define>
+
+</ui:composition>

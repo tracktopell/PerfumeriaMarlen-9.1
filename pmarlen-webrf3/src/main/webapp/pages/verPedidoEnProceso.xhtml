@@ -1,0 +1,589 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+
+                template="/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+		<h:outputFormat value=" {0} >> {1} ">
+			<f:param value="#{UIMessages.MAIN_SHORT_TITLE}" />
+			<f:param value="PEDIDO EN PROCESO" />
+		</h:outputFormat>		
+    </ui:define>
+
+    <ui:define name="location">
+
+		<h:outputFormat value=" {0} > {1}">
+			<f:param value="#{UIMessages.MENU_OPERATION}" />
+			<f:param value="PEDIDO EN PROCESO" />
+		</h:outputFormat>
+
+    </ui:define>
+
+    <ui:define name="body">
+
+		<style>
+			.tooltip {
+				background-color:#{richSkin.generalBackgroundColor};
+				border-width:3px;
+				padding:10px;
+			}
+			.tooltip-text {
+				width:100%;
+				height:100%;
+				cursor:url;
+				border-width:0px;
+				text-align:center;
+				display: table-cell;
+				vertical-align: middle;
+			}
+			.tooltipData {
+				font-weight: bold;
+			}
+		</style>
+
+        <a4j:form id="listarPedidoNuevoForm">
+
+			<h:panelGrid id="panelGridPrincipal"
+						 width="100%" 
+						 columns="1">
+
+				<rich:messages passedLabel="OK" layout="list" globalOnly="true" 
+							   showDetail="true"
+							   infoClass="littleInfoMessage_bold"
+							   warnClass="littleWarnMessage_bold"
+							   errorClass="littleErrorMessage_bold">
+					<f:facet name="infoMarker">
+                        <h:graphicImage  value="/images/info16x16.gif" /> 
+                    </f:facet>
+                    <f:facet name="warnMarker">
+                        <h:graphicImage value="/images/alerta16x16.gif" />   
+                    </f:facet>
+					<f:facet name="errorMarker">
+                        <h:graphicImage value="/images/error16x16.gif" />   
+                    </f:facet>
+                </rich:messages>
+
+				<h:panelGrid	columns="2" styleClass="center" width="100%" 
+							 border="0" 
+							 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign" >
+
+					<h:outputText	value="#{UIEntityLabels.LABEL_PEDIDOVENTA}:" 
+								  styleClass="label_bold_right"/>
+					<h:panelGroup >
+						<h:outputText	value="#{verPedidoEnProcesoMB.pedidoVenta.id}"/>
+
+						<rich:spacer width="10"/>
+
+						<a4j:commandLink	ignoreDupResponses="true"
+											action="#{navigationMB.pedidosVentasView}">
+							<h:graphicImage style="border-style:none;" value="/images/ico_DataTable.gif" title="Volver a lista de Pedidos"/>
+						</a4j:commandLink> 
+					</h:panelGroup>
+
+
+					<h:outputText	value="#{UIEntityLabels.LABEL_ALMACEN}:" 
+								  styleClass="label_bold_right"/>
+					<h:outputText	value="#{verPedidoEnProcesoMB.tipoAlmacenSeleccionado}"/>					
+
+					<h:outputText value="ESTADO ACTUAL: " styleClass="label_bold_right"/>
+					<h:panelGroup >
+						<rich:panel  id="sample3" styleClass="tooltip-text" bodyClass="rich-laguna-panel-no-header no_padding">
+
+							<h:outputText	value="#{verPedidoEnProcesoMB.pedidoVentaEstado.estado.descripcion}" title="Ver Historico Estados"/>
+							<!--
+							<rich:spacer width="20"/>
+							<h:graphicImage style="border-style:none;" value="/images/view_detail.gif" title="Ver Historico Estados"/>
+							-->
+							<rich:toolTip direction="top-right" mode="ajax" styleClass="tooltip" layout="block" event="onclick">
+								<f:facet name="defaultContent">
+									<strong>Recuperando Historico, espere un momento ...</strong>
+								</f:facet>
+								<rich:dataTable var="pedidoVentaEstado" value="#{verPedidoEnProcesoMB.pedidoVentaEstadoList}" width="300px">
+									<h:column>
+										<h:outputText value="#{pedidoVentaEstado.estado.descripcion}" styleClass="common_font_component"/>
+									</h:column>
+									<h:column>
+										<h:outputText value="#{pedidoVentaEstado.fecha}" styleClass="common_font_component">
+											<f:convertDateTime timeZone="America/Mexico_City" locale="es_MX" pattern="yyyy/MM/dd HH:mm"/>
+										</h:outputText>
+									</h:column>
+									<h:column>
+										<h:outputText value="#{pedidoVentaEstado.usuario.nombreCompleto}" styleClass="common_font_component"/>
+									</h:column>
+								</rich:dataTable>
+							</rich:toolTip>				
+						</rich:panel>
+
+					</h:panelGroup>
+
+					<h:outputText value="VISTA PREVIA(REMISIÓN): " styleClass="label_bold_right"/>
+					<h:panelGroup >
+
+						<h:outputLink value="#{facesContext.externalContext.requestContextPath}/docs/notas/Nota_PerfumeriaMarlen_No_#{verPedidoEnProcesoMB.pedidoVenta.id}.pdf"
+									  target="_blank">
+							<h:graphicImage style="border-style:none;" value="/images/pdf.gif" title="PDF REMISIÓN PARA ENVIO POR EMAIL"/>
+						</h:outputLink>
+						<rich:spacer width="10"/>
+						<h:outputLink value="#{facesContext.externalContext.requestContextPath}/docs/notas/Nota_PerfumeriaMarlen_No_#{verPedidoEnProcesoMB.pedidoVenta.id}_paraImprimir.pdf"
+									  target="_blank">
+							<h:graphicImage style="border-style:none;" value="/images/printer.gif" title="PDF REMISIÓN PARA IMPRIMIR SIN IMAGENES"/>
+						</h:outputLink>
+
+					</h:panelGroup>
+
+
+					<h:outputText value="COMPROBANTE FISCAL DIGITAL:" styleClass="label_bold_right"/>
+
+					<h:panelGroup>
+						<h:outputText	value="NO SE HA GENERADO EL C.F.D."								  
+									  styleClass="common_font_component"
+									  rendered="#{empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta or not verPedidoEnProcesoMB.pedidoVentaEstado_FACTURADO}"/>
+
+						<h:outputLink value="#{facesContext.externalContext.requestContextPath}/docs/facturas/Factura_PerfumeriaMarlen_No_#{verPedidoEnProcesoMB.pedidoVenta.id}.pdf"
+									  rendered="#{not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta and not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta.contenidoOriginalXml}"
+									  target="_blank">						
+							<h:graphicImage style="border-style:none;" value="/images/pdf.gif" title="PDF DE FACTURA PARA ENVIAR POR EMAIL"/>
+						</h:outputLink>
+						<rich:spacer width="10"/>
+						<h:outputLink value="#{facesContext.externalContext.requestContextPath}/docs/facturas/Factura_PerfumeriaMarlen_No_#{verPedidoEnProcesoMB.pedidoVenta.id}_paraImprimir.pdf"
+									  rendered="#{not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta and not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta.contenidoOriginalXml}"
+									  target="_blank">						
+							<h:graphicImage style="border-style:none;" value="/images/printer.gif" title="PDF FACTURA PARA IMPRIMIR SIN IMAGENES"/>
+						</h:outputLink>
+
+						<rich:spacer width="10"/>
+
+						<rich:spacer width="10"
+									 rendered="#{not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta and not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta.contenidoOriginalXml}"/>
+
+						<h:outputLink value="#{facesContext.externalContext.requestContextPath}/docs/xml/CFD_PerfumeriaMarlen_No_#{verPedidoEnProcesoMB.pedidoVenta.id}.xml"
+									  rendered="#{not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta and not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta.contenidoOriginalXml}"
+									  target="_blank">						
+							<h:graphicImage style="border-style:none;" value="/images/xml.gif" title="Descagar el Archivo XML del CFD"/>
+						</h:outputLink>
+
+						<rich:spacer width="10"
+									 rendered="#{not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta and not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta.contenidoOriginalXml}"/>
+
+						<h:panelGroup  rendered="#{not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta and not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta.callingErrorResult}">
+							<h:outputText value="ERROR AL GENERAR: #{verPedidoEnProcesoMB.pedidoVenta.cfdVenta.callingErrorResult}"/>
+							<br/>
+							<a4j:commandButton  value="GENRAR CFD NUEVAMENTE ( SICOFI )"
+												action="#{verPedidoEnProcesoMB.generarCFDPedido}"
+												rendered="#{sessionUserMB.adminUser and not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta and not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta.callingErrorResult}"/>
+						</h:panelGroup>
+						<rich:spacer width="10"/>
+						
+						<a4j:commandButton  value="HUBO UN ERROR, GENRAR CFD NUEVAMENTE ( SICOFI )"
+												action="#{verPedidoEnProcesoMB.generarCFDPedido}"
+												rendered="#{sessionUserMB.adminUser and verPedidoEnProcesoMB.pedidoVentaEstado_FACTURADO and empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta}"/>
+						
+						<a4j:commandButton  value="GENERAR CFD ( SICOFI )"
+											action="#{verPedidoEnProcesoMB.generarCFDPedido}"
+											rendered="#{sessionUserMB.adminUser and verPedidoEnProcesoMB.pedidoVentaEstado_SURTIDO and not verPedidoEnProcesoMB.pedidoVentaEstado_CANCELADO}"/>
+					</h:panelGroup>
+
+					<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO_NOMBRE} / #{UIEntityLabels.LABEL_PRODUCTO_PRESENTACION}:" styleClass="label_bold_right"
+								  rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"/>
+					<h:panelGroup rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}">
+						<h:inputText value="#{verPedidoEnProcesoMB.nombreDescripcion}"
+									 valueChangeListener="#{verPedidoEnProcesoMB.nombreDescripcionChanged}">
+							<a4j:support event="onchange" reRender="listarPedidoNuevoForm" />
+						</h:inputText>									
+					</h:panelGroup>
+
+					<rich:spacer  rendered="#{empty verPedidoEnProcesoMB.productoConNombreDescripcion}" 
+								  rendererType="ajax" width="10" height="28" />
+
+					<h:outputText value="SELCCIONE PRODUCTO Y CANTIDAD:" styleClass="label_bold_right"
+								  rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE and not empty verPedidoEnProcesoMB.productoConNombreDescripcion}"/>
+
+					<rich:spacer  rendered="#{empty verPedidoEnProcesoMB.productoConNombreDescripcion}" 
+								  rendererType="ajax" width="10" height="28" />
+
+					<h:panelGroup rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE and not empty verPedidoEnProcesoMB.productoConNombreDescripcion}">
+
+						<h:selectOneMenu id="resultProductoByNombreDescripcion"
+										 value="#{verPedidoEnProcesoMB.productoSelected}">
+							<f:selectItems  value="#{verPedidoEnProcesoMB.productoConNombreDescripcion}"/>
+						</h:selectOneMenu>
+						<h:outputText value=" x " />
+						<h:inputText id="cantidadAgregarDesc" value="#{verPedidoEnProcesoMB.cantidadAgregar}" size="2">
+							<f:convertNumber integerOnly="true"/>
+							<f:validateLongRange minimum="1" maximum="9999"/>
+						</h:inputText>
+
+						<a4j:commandButton   value="+"
+											 id="agregarPorNombreBtn"
+											 actionListener="#{verPedidoEnProcesoMB.agregarNProductoBuscado}"
+											 reRender="listarPedidoNuevoForm"
+											 ignoreDupResponses="true">
+						</a4j:commandButton>
+
+					</h:panelGroup>
+
+					<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO_CODIGOBARRAS}:" styleClass="label_bold_right"
+								  rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"/>
+					<h:panelGroup rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}">
+
+						<h:inputText id="cantidadAgregarCB" value="#{verPedidoEnProcesoMB.cantidadCBAgregar}" size="2" class="inputCant">
+							<f:convertNumber integerOnly="true"/>
+							<f:validateLongRange minimum="1" maximum="9999"/>
+						</h:inputText>
+						<h:outputText value=" x " />											
+						<h:inputText value="#{verPedidoEnProcesoMB.codigoBuscar}" id="codigoBuscar" size="12" maxlength="18" class="inputCant">
+
+							<a4j:support	event="onchange" actionListener="#{verPedidoEnProcesoMB.buscarNProductoPorCodigo}"
+										 reRender="listarPedidoNuevoForm"
+										 oncomplete="#{rich:element('listarPedidoNuevoForm:codigoBuscar')}.text='';#{rich:element('listarPedidoNuevoForm:codigoBuscar')}.focus();"/>
+
+						</h:inputText>
+						<a4j:commandButton value="+"
+										   actionListener="#{verPedidoEnProcesoMB.buscarNProductoPorCodigo}"
+										   reRender="listarPedidoNuevoForm"
+										   ignoreDupResponses="true">
+						</a4j:commandButton>
+
+					</h:panelGroup>
+
+				</h:panelGrid>
+
+				<rich:dataTable value="#{verPedidoEnProcesoMB.pedidoVentaDetalleList}"
+								id="pedidoVentaDetalleListTable"
+								var="dvp"
+								width="100%"  
+								styleClass="center" columnClasses="columnWidth5 centerAlign,columnWidth10 rightAlign,columnWidth15 rightAlign,columnWidth10 rightAlign valign_td,columnWidth40 leftAlign,columnWidth10 rightAlign,columnWidth10 rightAlign" >
+
+					<f:facet name="header">
+						<h:panelGroup style="display:block; text-align:left; background-color:transparent;" >
+							<h:outputText value="ACCIONES DEL PEDIDO (#{verPedidoEnProcesoMB.pedidoVentaActualSize} elem.): " />
+							<rich:spacer width="10"/>
+							<a4j:commandButton value="GUARDAR CAMBIOS" 
+											   rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE  and verPedidoEnProcesoMB.pedidoVentaActualSize gt 0}"
+											   action="#{verPedidoEnProcesoMB.actualizarPedido}"/>
+							<rich:spacer width="10"/>
+							<a4j:commandButton  value="DESHACER CAMBIOS" 
+												actionListener="#{verPedidoEnProcesoMB.cancelarCambios}"
+												reRender="listarPedidoNuevoForm"
+												ignoreDupResponses="true"
+												rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE and verPedidoEnProcesoMB.pedidoVentaActualSize gt 0}" />
+
+							<rich:spacer width="50"/>
+							<a4j:commandButton  value="VERIFICAR PEDIDO"
+												action="#{verPedidoEnProcesoMB.verificarPedido}"
+												rendered="#{sessionUserMB.adminUser and (verPedidoEnProcesoMB.pedidoVentaEstado_CAPTURADO or verPedidoEnProcesoMB.pedidoVentaEstado_SINCRONIZADO) and not verPedidoEnProcesoMB.pedidoVentaEstado_CANCELADO}"/>
+
+							<a4j:commandButton  value="SURTIR PEDIDO (DESCARGA INVENTARIO)"
+												action="#{verPedidoEnProcesoMB.surtirPedido}"
+												rendered="#{sessionUserMB.adminUser and verPedidoEnProcesoMB.pedidoVentaEstado_VERIFICADO  and not verPedidoEnProcesoMB.pedidoVentaEstado_CANCELADO}"/>
+
+							<a4j:commandButton  value="HA SIDO ENVIADO A RUTA"
+												action="#{verPedidoEnProcesoMB.enviarPedido}"
+												rendered="#{sessionUserMB.adminUser and verPedidoEnProcesoMB.pedidoVentaEstado_ENVIABLE  and not verPedidoEnProcesoMB.pedidoVentaEstado_ENVIADO  and not verPedidoEnProcesoMB.pedidoVentaEstado_CANCELADO}"/>
+							<!--
+							<rich:spacer width="10"/>
+							<a4j:commandButton  value="A SIDO ENTREGADO A CLIENTE"
+												action="#{verPedidoEnProcesoMB.confirmarEntregaPedido}"
+												rendered="#{sessionUserMB.adminUser and verPedidoEnProcesoMB.pedidoVentaEstado_ENVIADO     and not verPedidoEnProcesoMB.pedidoVentaEstado_ENTREGADO  and not verPedidoEnProcesoMB.pedidoVentaEstado_CANCELADO}"/>
+							<rich:spacer width="10"/>
+							<a4j:commandButton  value="A SIDO DEVUELTO POR CLIENTE"
+												action="#{verPedidoEnProcesoMB.confirmarDevolucionPedido}"
+												rendered="#{sessionUserMB.adminUser and verPedidoEnProcesoMB.pedidoVentaEstado_ENTREGADO     and not verPedidoEnProcesoMB.pedidoVentaEstado_DEVUELTO  and not verPedidoEnProcesoMB.pedidoVentaEstado_CANCELADO}"/>
+							<rich:spacer width="50"/>
+							-->
+							<rich:spacer width="10"/>
+							<a4j:commandButton	value="CANCELAR PEDIDO" 
+											   action="#{verPedidoEnProcesoMB.cancelarPedidoVenta}" 
+											   reRender="listarPedidoNuevoForm"
+											   rendered="#{sessionUserMB.adminUser  and verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"
+											   ignoreDupResponses="true"/>
+						</h:panelGroup>
+
+					</f:facet>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<h:panelGroup >
+							<a4j:commandLink rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"
+											 actionListener="#{verPedidoEnProcesoMB.eliminarProducto}"
+											 reRender="listarPedidoNuevoForm,panelEditarCantidad"
+											 ignoreDupResponses="true">
+								<h:graphicImage style="border-style:none;" value="/images/eliminar.gif" title="#{UIMessages.COMMON_DELETE}"/>
+								<f:param name="productoId" value="#{dvp.producto.id}"/>
+							</a4j:commandLink>
+
+						</h:panelGroup>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="CODIGO" />
+						</f:facet>
+						<h:outputText value="#{dvp.producto.codigoBarras}" />                    
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="D.D. / O.P.|  MAX." />
+						</f:facet>
+						<h:panelGroup>
+							<h:panelGrid	width="100%" columns="3"
+										 columnClasses="columnWidth45 centerAlign, columnWidth10  centerAlign,columnWidth45 centerAlign">
+
+								<h:outputText   rendered="#{dvp.cantDemanda gt 0}"
+												value="#{dvp.cantDemanda} / #{dvp.otrosPedidos}"/>									
+								<rich:spacer	width="10" 
+											 rendered="#{dvp.cantDemanda eq 0}" />
+
+								<h:outputText   value="|"/>
+
+								<h:outputText   value="#{dvp.cantMax}"/>
+							</h:panelGrid>
+						</h:panelGroup>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="CANT." />
+						</f:facet>
+
+						<h:inputText value="#{dvp.cantidad}"   size="3" class="inputCant"
+									 rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}" >
+							<f:convertNumber integerOnly="true"/>
+							<f:validateLongRange minimum="1" maximum="9999"/>
+						</h:inputText>
+						<a4j:commandLink	actionListener="#{verPedidoEnProcesoMB.cantidadDetalleBtnChanged}"
+										 rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"									  
+										 reRender="listarPedidoNuevoForm"
+										 ignoreDupResponses="true">
+							<h:graphicImage class="valign_td" value="/images/update.gif" 
+											title="#{UIMessages.COMMON_UPDATE}"/>
+							<f:param name="productoId" value="#{dvp.producto.id}"/>
+						</a4j:commandLink>
+
+						<h:outputText rendered="#{not verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"
+									  value="#{dvp.cantidad}"/>
+
+					</rich:column>
+
+					<rich:column  >
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO} / #{UIEntityLabels.LABEL_PRODUCTO_PRESENTACION}" />
+						</f:facet>
+						<h:outputText value="#{dvp.producto.nombre} / #{dvp.producto.presentacion}"/><br/>
+						<h:outputText value="( #{dvp.producto.contenido} #{dvp.producto.unidadMedida} / #{dvp.producto.unidadesPorCaja} UxCj.)"/>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="#{UIEntityLabels.LABEL_PEDIDOVENTADETALLE_PRECIOVENTA}" />
+						</f:facet>
+						<h:outputText value="#{dvp.precioVenta}">
+							<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+						</h:outputText>
+
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="IMPORTE" />
+						</f:facet>
+						<h:outputText value="#{dvp.precioVenta * dvp.cantidad}">
+							<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+						</h:outputText>
+
+					</rich:column>
+
+				</rich:dataTable>
+				<h:panelGrid	
+					id="panelGridResumen"
+					width="100%" 
+					columns="2"
+					columnClasses="columnWidth90 rightAlign, columnWidth10 rightAlign">
+					<h:outputText value="SUBTOTAL:"/>
+					<rich:panel  style="border-width:1px; background-color:transparent; width: 100%" >
+
+						<h:outputText value="#{verPedidoEnProcesoMB.pedidoFooter.subtotal}">
+							<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+						</h:outputText>
+					</rich:panel>
+
+					<h:outputText value="I.V.A. :"/>
+					<rich:panel  style="border-width:1px; background-color:transparent; width: 100%" >
+
+						<h:outputText   value="#{verPedidoEnProcesoMB.pedidoFooter.impuesto}">
+							<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+						</h:outputText>
+					</rich:panel>
+
+					<h:outputText value="DESCUENTO:"/>
+
+					<rich:panel  style="border-width:1px; background-color:transparent; width: 100%" >
+
+						<h:outputText value="#{verPedidoEnProcesoMB.pedidoFooter.descuento}">
+							<f:convertNumber maxFractionDigits="2" pattern="$ -###,###,##0.00" locale="es_MX"/>
+						</h:outputText>
+
+						<rich:toolTip direction="top-right" mode="ajax" 
+									  styleClass="tooltip" layout="block" showEvent="onclick">						
+							<strong>DESCUENTO APLICADO</strong>
+							<h:panelGrid columns="2" styleClass="center" width="100%" columnClasses="columnWidth50 rightAlign,columnWidth50 leftAlign">
+								<h:outputText value="#{verPedidoEnProcesoMB.descuentoCalculado}%" />
+								<h:outputText value=" + #{verPedidoEnProcesoMB.descuentoEspecial}%" />
+							</h:panelGrid>
+						</rich:toolTip>
+					</rich:panel>
+
+					<h:outputText value="TOTAL:" styleClass="label_bold_right"/>
+					<rich:panel  style="border-width:1px; background-color:transparent; width: 100%" >
+
+						<h:outputText value="#{verPedidoEnProcesoMB.pedidoFooter.total}" styleClass="label_bold_right">
+							<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+						</h:outputText>
+					</rich:panel>
+				</h:panelGrid>
+
+
+				<h:panelGrid	columns="2" styleClass="center" width="100%" 
+							 border="0" 
+							 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign" >
+
+						<h:outputText	value="#{UIEntityLabels.LABEL_CLIENTE}:" 
+									    class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PEDIDOVENTA_CLIENTEID}"/>
+						<h:outputText	rendered="#{not verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"
+									    value="#{verPedidoEnProcesoMB.pedidoVenta.cliente.razonSocial}" />
+						<h:panelGrid	rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"
+									 columns="2" border="0" styleClass="center" width="100%" columnClasses="columnWidth50 leftAlign,columnWidth50 leftAlign">
+
+							<h:selectOneMenu id="clientePedido"
+											 value="#{verPedidoEnProcesoMB.clienteId}"
+											 required="false">
+								<f:selectItems  value="#{verPedidoEnProcesoMB.clienteList}"/>							
+								<a4j:support	reRender="listarPedidoNuevoForm" event="onchange"/>						
+							</h:selectOneMenu>
+
+							<rich:panel  id="clientePanelForTooltip" styleClass="tooltip-text" bodyClass="rich-laguna-panel-no-header no_padding">
+
+								<h:graphicImage style="border-style:none;" value="/images/vcard.gif" title="Ver detalles del Cliente"/>
+
+								<rich:toolTip rendered="#{not empty verPedidoEnProcesoMB.clienteSelected}"
+											  direction="top-right" mode="ajax" styleClass="tooltip" layout="block" event="onclick">
+									<f:facet name="defaultContent">
+										<strong>Recuperando Datos del Cliente, espere un momento ...</strong>
+									</f:facet>
+									<h:panelGrid columns="2" styleClass="center" width="100%" columnClasses="columnWidth30 rightAlign,columnWidth70 leftAlign"
+												 rendered="#{not empty verPedidoEnProcesoMB.clienteSelected}">
+
+										<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_RAZONSOCIAL}:" />
+										<h:outputText value="#{verPedidoEnProcesoMB.clienteSelected.razonSocial}"/>
+
+										<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_NOMBREESTABLECIMIENTO}:" />
+										<h:outputText value="#{verPedidoEnProcesoMB.clienteSelected.nombreEstablecimiento}"/>
+
+										<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_RFC}:" />
+										<h:outputText value="#{verPedidoEnProcesoMB.clienteSelected.rfc}"/>
+
+										<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_CONTACTO}:" />
+										<h:outputText value="#{verPedidoEnProcesoMB.clienteSelected.contacto}"/>
+
+										<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_TELEFONOS}:" />
+										<h:outputText value="#{verPedidoEnProcesoMB.clienteSelected.telefonos}"/>
+
+										<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_EMAIL}:" />
+										<h:outputText value="#{verPedidoEnProcesoMB.clienteSelected.email}"/>
+
+										<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_CALLE}:" />
+										<h:outputText value="#{verPedidoEnProcesoMB.clienteSelected.calle}"/>
+
+										<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_NUMEXTERIOR}:" />									
+										<h:outputText value="#{verPedidoEnProcesoMB.clienteSelected.numExterior}"/>
+
+										<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_NUMINTERIOR}:" />									
+										<h:outputText value="#{verPedidoEnProcesoMB.clienteSelected.numInterior}"/>
+
+										<h:outputText value="#{UIEntityLabels.LABEL_POBLACION}:" />									
+										<h:outputText value="#{verPedidoEnProcesoMB.clienteSelected.poblacion.nombre}"/>
+
+										<h:outputText value="#{UIEntityLabels.LABEL_POBLACION_MUNICIPIOODELEGACION}:" />									
+										<h:outputText value="#{verPedidoEnProcesoMB.clienteSelected.poblacion.municipioODelegacion}"/>
+
+										<h:outputText value="#{UIEntityLabels.LABEL_POBLACION_ENTIDADFEDERATIVA}:" />
+										<h:outputText value="#{verPedidoEnProcesoMB.clienteSelected.poblacion.entidadFederativa}"/>
+
+										<h:outputText value="#{UIEntityLabels.LABEL_POBLACION_CODIGOPOSTAL}:" />
+										<h:outputText value="#{verPedidoEnProcesoMB.clienteSelected.poblacion.codigoPostal}"/>									
+									</h:panelGrid>
+
+								</rich:toolTip>	
+							</rich:panel>
+						</h:panelGrid>
+						
+						<h:outputText value="#{UIEntityLabels.LABEL_FORMADEPAGO}:" 
+									  class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PEDIDOVENTA_FORMADEPAGOID}"/>
+						<h:selectOneMenu id="formaDePago"
+										 value="#{verPedidoEnProcesoMB.formaDePagoId}"
+										 rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"
+										 required="false">
+							<f:selectItems  value="#{verPedidoEnProcesoMB.formaDePagoList}"/>
+						</h:selectOneMenu>
+						<h:outputText value="#{verPedidoEnProcesoMB.pedidoVenta.formaDePago.descripcion}" 
+									  rendered="#{not verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"/>
+						
+						<h:outputText value="#{UIEntityLabels.LABEL_METODODEPAGO}:" 
+									  class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PEDIDOVENTA_METODODEPAGOID}"/>
+						<h:selectOneMenu id="metodoDePago"
+										 value="#{verPedidoEnProcesoMB.metodoDePagoId}"
+										 rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"
+										 required="false">
+							<f:selectItems  value="#{verPedidoEnProcesoMB.metodoDePagoList}"/>
+						</h:selectOneMenu>
+						<h:outputText value="#{verPedidoEnProcesoMB.pedidoVenta.metodoDePago.descripcion}" 
+									  rendered="#{not verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"/>
+						
+
+						<h:outputText value="DESCUENTO ESPECIAL:"
+									  rendered="#{sessionUserMB.adminUser}"/>
+
+						<h:selectOneMenu	id="descuentoEspecial"
+										 rendered="#{sessionUserMB.adminUser and verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"
+										 value="#{verPedidoEnProcesoMB.descuentoEspecial}"
+										 required="false">
+							<a4j:support		reRender="listarPedidoNuevoForm" event="onchange"/>
+							<f:selectItems	value="#{verPedidoEnProcesoMB.descuentosPosiblesList}"/>
+						</h:selectOneMenu>
+						<h:outputText value="#{verPedidoEnProcesoMB.descuentoEspecial}"
+									  rendered="#{sessionUserMB.adminUser and not verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"/>
+						
+						<h:outputLabel  value="#{UIEntityLabels.LABEL_PEDIDOVENTA_COMENTARIOS}:" for="inputTextComentarios"
+										class="input-required-#{UIEntityLabels.INPUT_REQUIRED_PEDIDOVENTA_COMENTARIOS}"/>
+						<h:panelGroup rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}">
+							<h:inputText id="inputTextComentarios"
+										 value="#{verPedidoEnProcesoMB.pedidoVenta.comentarios}" 
+										 label="#{UIEntityLabels.LABEL_PEDIDOVENTA_COMENTARIOS}"
+										 required="false"
+										 size="55"
+										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_PEDIDOVENTA_COMENTARIOS}">
+								<f:validateLength minimum="3" maximum="#{UIEntityLabels.TEXT_MAXCHARS_PEDIDOVENTA_COMENTARIOS}"/>								
+							</h:inputText>
+							<rich:message for="inputTextComentarios" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+						<h:outputText value="#{verPedidoEnProcesoMB.pedidoVenta.comentarios}" 
+									  rendered="#{not verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"/>
+						
+
+
+					</h:panelGrid>
+				</h:panelGrid>
+        </a4j:form>
+    </ui:define>
+
+</ui:composition>

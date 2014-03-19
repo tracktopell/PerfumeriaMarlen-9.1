@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+		xmlns:jaxws="http://cxf.apache.org/jaxws"
+		xmlns:task="http://www.springframework.org/schema/task"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context 
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/jdbc
+                           http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+                           http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+						   http://www.springframework.org/schema/task
+						   http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+    <import resource="classpath:META-INF/cxf/cxf.xml" />
+    <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+    <context:component-scan base-package="com.pmarlen" />
+
+    <tx:annotation-driven />
+
+	<bean	id="dataSourceX" 
+			class="org.springframework.jndi.JndiObjectFactoryBean">
+        <!--
+		<property name="jndiName" value="java:comp/env/jdbc/PMARLEN_DB_PROD_DS"/>
+        -->
+        <property name="jndiName" value="java:comp/env/jdbc/PMARLEN_DB_TEST_DS"/>
+		<property name="lookupOnStartup" value="true"/>
+		<property name="cache" value="true"/>
+		<property name="proxyInterface" value="javax.sql.DataSource"/>
+    </bean>
+	
+    <bean id="entityManagerFactory" 
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+    	  p:dataSource-ref="dataSourceX"
+          p:persistenceUnitName="PMARLEN_LOGIC_PU"
+          lazy-init="true">
+
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+        </property>
+
+    </bean>
+
+    <bean id="transactionManager" 
+          class="org.springframework.orm.jpa.JpaTransactionManager"
+          p:entityManagerFactory-ref="entityManagerFactory"
+          lazy-init="true"/>
+
+	<!-- WebServices START Declaration-->
+    <bean  id="authenticateServiceInstance" 
+           class="com.pmarlen.ws.services.AuthenticateServiceImpl" />
+
+	<jaxws:endpoint  id="authenticateService" 
+                     address="/AuthenticateService">
+       <jaxws:implementor> 
+          <bean parent="authenticateServiceInstance" /> 
+       </jaxws:implementor>  
+    </jaxws:endpoint>
+
+    <bean  id="getListDataBusinessInstance"
+           class="com.pmarlen.ws.services.GetListDataBusinessImpl" />
+    <jaxws:endpoint  id="getListDataBusiness"
+                     address="/GetListDataBusiness">
+       <jaxws:implementor>
+          <bean parent="getListDataBusinessInstance" />
+       </jaxws:implementor>
+    </jaxws:endpoint>
+
+    <bean  id="sincronizadorDePedidosInstance"
+           class="com.pmarlen.ws.services.SincronizadorDePedidosImpl" />
+	<jaxws:endpoint  id="SincronizadorDePedidos"
+                     address="/SincronizadorDePedidos">
+       <jaxws:implementor>
+          <bean parent="sincronizadorDePedidosInstance" />
+       </jaxws:implementor>
+    </jaxws:endpoint>	
+
+	<bean  id="desktopSessionImplInstance"
+		   class="com.pmarlen.ws.services.DesktopSessionImpl" />
+	<jaxws:endpoint  id="desktopSessionService"
+					 address="/DesktopSessionService">
+		<jaxws:implementor>
+			<bean parent="desktopSessionImplInstance" />
+		</jaxws:implementor>
+	</jaxws:endpoint>
+
+	<!-- WebServices END Declaration-->
+
+	<task:scheduler id="taskScheduler"/>
+	
+    <task:executor  id="taskExecutor" pool-size="1"/>
+	
+    <task:annotation-driven executor="taskExecutor" scheduler="taskScheduler"/>
+
+</beans>

@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.pmarlen.erp</groupId>
+		<artifactId>pmarlen-parent</artifactId>
+		<version>9.1.140319</version>
+	</parent>
+	<artifactId>pmarlen-backend</artifactId>
+	<version>${parent.version}</version>
+	<name>Perfumeria Marlen 9.1.x - Backend</name>
+
+	<!-- ======================== DEPENDENCIES ==================== -->
+
+	<dependencies>
+		<!-- ================= MAIN DEPENDENCIES ============ --> 
+		<dependency>
+			<groupId>com.pmarlen.erp</groupId>
+			<artifactId>pmarlen-jpa-entity</artifactId>
+			<version>${parent.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.pmarlen.erp</groupId>
+			<artifactId>pmarlen-commons</artifactId>
+			<version>${parent.version}</version>
+		</dependency>
+
+		<!-- ================= LIBRARY DEPENDENCIES ============ --> 
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.beans</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.transaction</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.aspectj</artifactId>
+			<version>1.6.8_1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>com.springsource.org.hibernate</artifactId>
+			<version>3.2.6.ga</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>com.springsource.org.hibernate.annotations</artifactId>
+			<version>3.3.0.ga</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>com.springsource.org.hibernate.ejb</artifactId>
+			<version>3.3.1.ga</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>com.springsource.javax.persistence</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>com.springsource.javax.transaction</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<!-- MySQL database driver -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.9</version>
+		</dependency>
+ 
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>com.springsource.slf4j.api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>com.springsource.slf4j.org.apache.commons.logging</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<!--
+    No Commons Logging -
+    Based on http://day-to-day-stuff.blogspot.com/2007/07/no-more-commons-logging.html
+  <dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>com.springsource.org.apache.commons.logging</artifactId>
+    <version>99.0-does-not-exist</version>
+    <scope>provided</scope>
+  </dependency>
+  -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>com.springsource.ch.qos.logback.classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<!-- Apache CXF included with ws-commons -->
+		<!--
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxws</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		-->
+
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>4.6.0</version>
+		</dependency>
+        
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+	</dependencies>
+  <!--
+	<build>
+		<plugins>
+
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<compress/>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>com.pmarlen.erp.logic.CommandExecutor</mainClass>
+							<classpathPrefix>lib/</classpathPrefix>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+-->
+	<profiles>
+		<profile>
+			<id>prod</id>
+			<build>
+				<plugins>
+
+					<plugin>
+						<artifactId>maven-jar-plugin</artifactId>
+						<configuration>
+							<archive>
+								<compress/>
+								<manifest>
+									<addClasspath>true</addClasspath>
+									<mainClass>com.pmarlen.erp.logic.CommandExecutor</mainClass>
+									<classpathPrefix>lib/</classpathPrefix>
+								</manifest>
+							</archive>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.1</version>
+						<executions>
+                         
+							<execution>
+								<id>copy-environment-resources</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<echo message="======================= PMarlen-Backend in process-resources phase [PROD]==============>>>"/>
+                                        
+										<copy file="src/main/resources/jdbc_prod.properties" tofile="src/main/resources/jdbc.properties" />
+										<copy file="src/main/resources/logback_prod.xml"     tofile="src/main/resources/logback.xml" />
+                                        
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>dev</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-jar-plugin</artifactId>
+						<configuration>
+							<archive>
+								<compress/>
+								<manifest>
+									<addClasspath>true</addClasspath>
+									<mainClass>com.pmarlen.erp.logic.CommandExecutor</mainClass>
+									<classpathPrefix>lib/</classpathPrefix>
+								</manifest>
+							</archive>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.1</version>
+						<executions>
+                         
+							<execution>
+								<id>copy-environment-resources</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<echo message="======================= PMarlen-Backend in process-resources phase [DEV]==============>>>"/>
+                                        
+										<copy file="src/main/resources/jdbc_dev.properties" tofile="src/main/resources/jdbc.properties" />
+										<copy file="src/main/resources/logback_dev.xml"     tofile="src/main/resources/logback.xml" />
+                                        
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<reporting>   
+		<plugins>   
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>emma-maven-plugin</artifactId>
+				<version>1.0-alpha-3</version>
+				<inherited>true</inherited>
+			</plugin>
+		</plugins>	
+	</reporting>
+	
+	<repositories>
+		<repository>
+			<id>jasperreports</id>
+			<url>http://jasperreports.sourceforge.net/maven2</url>
+		</repository>
+	</repositories>
+
+</project>
