@@ -6,24 +6,23 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.pmarlen.erp</groupId>
 	<artifactId>pmarlen-parent</artifactId>
-	<version>9.1.140319</version>
+	<version>9.1.140320</version>
 	<packaging>pom</packaging>
-	<name>Perfumeria Marlen 9.1.x - ERP Parent Project</name>
+	<name>Perfumeria Marlen 9.1 - ERP Parent Project</name>
 
 	<inceptionYear>2012</inceptionYear>
 
 	<organization>
-		<name>perfumeriamarlen</name>
-		<url>http://perfumeriamarlen.com.mx</url>
+		<name>xpressosystems</name>
+		<url>http://xpressosystems.com</url>
 	</organization>
-
 	<developers>
 		<developer>
 			<id>tracktopell</id>
 			<name>Alfredo Estrada</name>
 			<email>desarrollador@perfumeriamarlen.com.mx</email>
-			<organization>perfumeriamarlen</organization>
-			<organizationUrl>http://perfumeriamarlen.com.mx</organizationUrl>
+			<organization>xpressosystems</organization>
+			<organizationUrl>http://xpressosystems.com</organizationUrl>
 			<roles>
 				<role>Architect</role>
 				<role>Developer</role>
@@ -46,17 +45,11 @@
 	</properties>
   
 	<modules>
-		<!--
 		<module>pmarlen-development-tasks</module>
-		-->
 		<module>pmarlen-commons</module>
 		<module>pmarlen-jpa-entity</module>
         <module>pmarlen-backend</module>                
-		<module>pmarlen-webrf3</module>
-		<!--
-		<module>pmarlen-ws-client</module>
-		<module>pmarlen-desktop-client</module>
-		-->
+		<module>pmarlen-webrf3</module>		
 	</modules>
 
 	<build>
@@ -80,50 +73,6 @@
 					<forkMode>pertest</forkMode>
 				</configuration>
 			</plugin>
-<!--
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>create</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<doCheck>false</doCheck>
-					<doUpdate>false</doUpdate>
-				</configuration>
-			</plugin>
--->
-			<!--
-			<plugin>      
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>emma-maven-plugin</artifactId>
-				<version>1.0-alpha-3</version>
-				<inherited>true</inherited>
-				<executions>
-					<execution>
-						<phase>process-classes</phase>               
-						<goals>
-							<goal>instrument</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<inherited>true</inherited>
-				<configuration>
-					<forkMode>once</forkMode>
-					<reportFormat>xml</reportFormat>
-					<classesDirectory>${project.build.directory}/generated-classes/emma/classes</classesDirectory>    
-				</configuration>        
-			</plugin>
-			-->
 		</plugins>
 	</build>
 
@@ -135,14 +84,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-
-	<licenses>
-		<license>
-			<name>XPRESSO SYSTEMS PRIVATE LICENSE</name>
-			<url>http://xpressosystems.com/licenses/LICENSE-1.0</url>
-		</license>
-	</licenses>
 
 	<reporting>   
 		<plugins>  

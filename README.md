@@ -1,6 +1,7 @@
                                        Perfumeria Marlen ERP Project.
                                        _____________________________
 
+
 A) Requirements for build.
    0.- Environment 
        * )prefered Unix / Linux ( In Windows used CyGWin ( + make tools ) ) 
@@ -9,7 +10,7 @@ A) Requirements for build.
    1.- JDK 6 
    2.- Maven 2.x or 3.x
    3.- MySQL 5.x ( root password need)
-   4.- Apache-Tomcat-6 or Apache-Tomcat-7(for web deployment ) or 
+   4.- Apache-Tomcat-6-0-x (for web deployment )
    
 B) IDE's Compatibility
 
@@ -37,17 +38,19 @@ C) Building with Maven 2.x or 3.x
 
 	mvn  clean tomcat:deploy -Dmaven.test.skip -P devinjob
 
-	mvn  clean install -P preprod -Dmaven.test.skip 
+	mvn  clean install -P preprod
 
-	mvn  tomcat:deploy -P preprod -Dmaven.test.skip 
+	mvn  tomcat:deploy -P preprod
 
-	mvn  tomcat:undeploy -P preprod -Dmaven.test.skip 
+	mvn  tomcat:undeploy -P preprod
 
     3.2 - Explore development database
 
 	mysql --default-character-set=utf8 -u PMARLEN_TEST -pPMARLEN_TEST_PASSWORD PMARLEN_DB_TEST
 	
 	mysql --default-character-set=utf8 -u PMARLEN_TEST -pPMARLEN_TEST_PASSWORD PMARLEN_DB_TEST < pmarlen-backend/src/test/resources/initScenarioForTest.sql
+
+	mysql --default-character-set=utf8 -u PMARLEN_TEST -pPMARLEN_TEST_PASSWORD PMARLEN_DB_TEST < pmarlen-jpa-entity/db_resources/import/preprod_import_1.sql
 
     3.3 - Update when Model has changed 
 	

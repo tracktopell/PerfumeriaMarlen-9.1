@@ -7,11 +7,11 @@
 	<parent>
 		<groupId>com.pmarlen.erp</groupId>
 		<artifactId>pmarlen-parent</artifactId>
-		<version>9.1.140319</version>
+		<version>9.1.140320</version>
 	</parent>
 	<artifactId>pmarlen-commons</artifactId>
 	<version>${parent.version}</version>
-	<name>Perfumeria Marlen 9.1.x - Commons</name>
+	<name>Perfumeria Marlen 9.1 - Commons</name>
 
   <!-- ======================== DEPENDENCIES ==================== -->
 
@@ -110,6 +110,27 @@
 					</archive>
 				</configuration>
 			</plugin>
+			<!--
+			<plugin>
+				<groupId>com.google.code.maven-svn-revision-number-plugin</groupId>
+				<artifactId>maven-svn-revision-number-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<entries>
+						<entry>
+							<prefix>svnInfo</prefix>
+						</entry>
+					</entries>
+				</configuration>			
+			<plugin>
+			-->
 			
 			<plugin> 
 				<artifactId>maven-antrun-plugin</artifactId> 
@@ -119,7 +140,7 @@
 						<phase>process-resources</phase> 
 						<configuration> 
 							<tasks> 
-								<echo message="======================= set-build-time, in process-resources phase : version_timeStamp=${version_timeStamp}  ==============>>>"/>
+								<echo message="======================= set-build-time, in process-resources phase : version_timeStamp=${version_timeStamp}  ==============>>>"/>								
 							</tasks> 
 						</configuration> 
 						<goals> 
@@ -135,7 +156,7 @@
 				<version>1.0</version>
 				<configuration>
 					<propertyName>version_timeStamp</propertyName>
-					<timestampPattern>yyMMdd_HHmm</timestampPattern>
+					<timestampPattern>yyDDDHHmmss</timestampPattern>
 				</configuration>
 				<executions>
 					<execution>

@@ -7,11 +7,11 @@
 	<parent>
 		<groupId>com.pmarlen.erp</groupId>
 		<artifactId>pmarlen-parent</artifactId>
-		<version>9.1.140319</version>
+		<version>9.1.140320</version>
 	</parent>
 	<artifactId>pmarlen-development-tasks</artifactId>
 	<version>${parent.version}</version>
-	<name>Perfumeria Marlen 9.1.x - Development Tasks</name>
+	<name>Perfumeria Marlen 9.1 - Development Tasks</name>
 
   <!-- ======================== DEPENDENCIES ==================== -->
 

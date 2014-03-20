@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>com.pmarlen.erp</groupId>
 		<artifactId>pmarlen-parent</artifactId>
-		<version>0.9-SNAPSHOT</version>
+		<version>9.1.140320</version>
 	</parent>
 	<artifactId>pmarlen-webrf3</artifactId>
 	<version>${parent.version}</version>
-	<name>Perfumeria Marlen 9.1.x - Web Application RichFaces3</name>
+	<name>Perfumeria Marlen 9.1 - Web Application RichFaces3</name>
 	<packaging>war</packaging>
 
 	
