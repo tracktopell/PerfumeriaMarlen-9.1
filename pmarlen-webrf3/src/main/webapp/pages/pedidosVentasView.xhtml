@@ -137,7 +137,7 @@
 						<h:graphicImage value="/images/error16x16.gif" />   
 					</f:facet>
 				</rich:messages>
-				
+
 				<rich:dataTable		id="pedidosVentaTable"
 								 value="#{pedidosVentasViewMB.pedidoFastViewList}"
 								 var="pedidoFastView"
@@ -145,12 +145,26 @@
 								 columnClasses="columnWidth10 centerAlign, columnWidth15 centerAlign, columnWidth20 centerAlign, columnWidth25 centerAlign, columnWidth30 rightAlign" >
 
 					<f:facet name="header">
-						<h:panelGrid columns="2" styleClass="center" width="100%" 
-									 columnClasses="columnWidth50 leftAlign, columnWidth50 rightAlign">
+						<h:panelGrid columns="3" styleClass="center" width="100%" 
+									 columnClasses="columnWidth30 leftAlign, columnWidth40 rightAlign,columnWidth30 rightAlign">
 							<h:panelGroup>
 								<h:outputText value="PEDIDOS DE VENTAS" />
 							</h:panelGroup>
-							
+
+							<h:panelGroup>
+								<!--
+								<h:selectOneRadio id="verCuantos" value="#{pedidosVentasViewMB.mostrar}">
+									<f:selectItems value="#{pedidosVentasViewMB.descuentosPosiblesList}"/>
+								</h:selectOneRadio>
+								-->
+								<h:outputText value="SOLO MOSTRAR :" />
+								<h:selectOneMenu id="verCuantos" value="#{pedidosVentasViewMB.mostrar}" 
+												 valueChangeListener="#{pedidosVentasViewMB.mostrarChanged}">
+									<f:selectItems value="#{pedidosVentasViewMB.descuentosPosiblesList}"/>
+									<a4j:support event="onchange" reRender="listarPedidosVentasForm"/>
+								</h:selectOneMenu>
+							</h:panelGroup>
+
 							<h:panelGroup>
 								<h:outputText value="BUSQUEDA RÁPIDA :" />
 								<h:inputText value="#{pedidosVentasViewMB.pedidoBuscar}" size="3" maxlength="4" class="inputCant">
