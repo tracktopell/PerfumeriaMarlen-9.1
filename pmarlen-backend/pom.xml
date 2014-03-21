@@ -104,8 +104,10 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.9</version>
+			<version>5.1.29</version>
+<!--
 			<scope>provided</scope>
+-->
 		</dependency>
  
 		<dependency>
@@ -154,26 +156,7 @@
 			<version>2.0.0</version>
 		</dependency>
 	</dependencies>
-  <!--
-	<build>
-		<plugins>
-
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<compress/>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<mainClass>com.pmarlen.erp.logic.CommandExecutor</mainClass>
-							<classpathPrefix>lib/</classpathPrefix>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
--->
+	  
 	<profiles>
 		<profile>
 			<id>prod</id>
@@ -222,7 +205,7 @@
 		</profile>
 
 		<profile>
-			<id>dev</id>
+			<id>test</id>
 			<build>
 				<plugins>
 					<plugin>

@@ -25,13 +25,12 @@
     <context:component-scan base-package="com.pmarlen" />
 
     <tx:annotation-driven />
-
+	<!--
+	parent.version=${parent.version}
+	-->
 	<bean	id="dataSourceX" 
 			class="org.springframework.jndi.JndiObjectFactoryBean">
-        <!--
-		<property name="jndiName" value="java:comp/env/jdbc/PMARLEN_DB_PROD_DS"/>
-        -->
-        <property name="jndiName" value="java:comp/env/jdbc/PMARLEN_DB_TEST_DS"/>
+        <property name="jndiName" value="java:comp/env/${env.jdbc.jndi}"/>
 		<property name="lookupOnStartup" value="true"/>
 		<property name="cache" value="true"/>
 		<property name="proxyInterface" value="javax.sql.DataSource"/>

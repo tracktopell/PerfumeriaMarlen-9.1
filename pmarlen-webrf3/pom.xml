@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.pmarlen.erp</groupId>
@@ -10,13 +10,18 @@
 	<version>${parent.version}</version>
 	<name>Perfumeria Marlen 9.1 - Web Application RichFaces3</name>
 	<packaging>war</packaging>
-
 	
 	<properties>
 		<org.richfaces.version>3.3.3.Final</org.richfaces.version>
 		<project.distName>pmarlen-webrf3</project.distName>
+		<env.name.es>(AMBIENTE DE PRUEBAS)</env.name.es>
+		<env.name.en>(TEST ENVIRONMENT)</env.name.en>
+		<env.jdbc.url>jdbc:mysql://localhost/PMARLEN_DB_TEST?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true</env.jdbc.url>
+		<env.jdbc.jndi>jdbc/PMARLEN_DB_TEST_DS</env.jdbc.jndi>
+		<env.jdbc.user>PMARLEN_TEST</env.jdbc.user>
+		<env.jdbc.password>PMARLEN_TEST_PASSWORD</env.jdbc.password>
 	</properties>
-	
+				
 	
 	<repositories>
 	
@@ -40,7 +45,7 @@
 	<!-- ======================== DEPENDENCIES ==================== -->
 
 	<dependencies>
-	<!-- ================= MAIN DEPENDENCIES ============ --> 
+		<!-- ================= MAIN DEPENDENCIES ============ --> 
 		<dependency>
 			<groupId>com.pmarlen.erp</groupId>
 			<artifactId>pmarlen-jpa-entity</artifactId>
@@ -58,7 +63,7 @@
 			<artifactId>pmarlen-commons</artifactId>
 			<version>${parent.version}</version>
 		</dependency>
-  <!-- ================= LIBRARY DEPENDENCIES ============ --> 
+		<!-- ================= LIBRARY DEPENDENCIES ============ --> 
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -154,7 +159,7 @@
 			<version>1.2.14</version>
 		</dependency>
 
-                <dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>com.springsource.slf4j.api</artifactId>
 			<version>${slf4j.version}</version>
@@ -164,16 +169,16 @@
 			<artifactId>com.springsource.slf4j.org.apache.commons.logging</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
-<!--
-    No Commons Logging -
-    Based on http://day-to-day-stuff.blogspot.com/2007/07/no-more-commons-logging.html
-            <dependency>
-              <groupId>org.apache.commons</groupId>
-              <artifactId>com.springsource.org.apache.commons.logging</artifactId>
-              <version>99.0-does-not-exist</version>
-              <scope>provided</scope>
-            </dependency>
--->
+		<!--
+			No Commons Logging -
+			Based on http://day-to-day-stuff.blogspot.com/2007/07/no-more-commons-logging.html
+					<dependency>
+					  <groupId>org.apache.commons</groupId>
+					  <artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					  <version>99.0-does-not-exist</version>
+					  <scope>provided</scope>
+					</dependency>
+		-->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>com.springsource.ch.qos.logback.classic</artifactId>
@@ -199,48 +204,102 @@
 
 	</dependencies>
 	
+	<build>				
+		<finalName>${artifactId}-${version}</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/webapp/WEB-INF</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/webapp/META-INF</directory>
+				<filtering>true</filtering>
+			</resource>					
+		</resources>
+		<plugins>
+			<plugin> 
+				<artifactId>maven-antrun-plugin</artifactId> 
+				<executions> 
+					<execution> 
+						<id>set-build-time</id> 
+						<phase>process-resources</phase> 
+						<configuration> 
+							<tasks> 
+								<echo message="======================= set-build-time, in process-resources phase : version_timeStamp=${version_timeStamp}, env.jdbc.user=${env.jdbc.user} ==============>>>"/>								
+								<copy file="target/classes/META-INF/context_environment.xml" tofile="src/main/webapp/META-INF/context.xml" />
+								<copy file="target/classes/WEB-INF/web_environment.xml" tofile="src/main/webapp/WEB-INF/web.xml" />
+							</tasks> 
+						</configuration> 
+						<goals> 
+							<goal>run</goal> 
+						</goals> 
+					</execution> 
+				</executions> 
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>${project.build.sourceEncoding}</encoding>							
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>				
+				<configuration>
+					<overwrite>true</overwrite>
+					<containerConfigXML>src/main/webapp/META-INF/context.xml</containerConfigXML>
+				</configuration>
+			</plugin>
+		</plugins>
+		
+	</build>	
+	
 	<profiles>
         
 		<profile>
 			<id>prod</id>
 			<build>
-				<resources>
-					<resource>
-						<directory>src/main/resources</directory>
-						<filtering>true</filtering>
-					</resource>
-				</resources>
 				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-compiler-plugin</artifactId>
-						<version>2.0.2</version>
-						<configuration>
-							<source>1.6</source>
-							<target>1.6</target>
-							<encoding>${project.build.sourceEncoding}</encoding>
-						</configuration>
+					<plugin> 
+						<artifactId>maven-antrun-plugin</artifactId> 
+						<executions> 
+							<execution> 
+								<id>copy-test-logos</id> 
+								<phase>process-resources</phase> 
+								<configuration> 
+									<tasks> 
+										<echo message="======================= copy-test-logos ==============>>>"/>
+										<copy file="src/main/webapp/images/LogoOriginal_5_Q25_prod.jpg" tofile="target/${artifactId}-${version}/images/LogoOriginal_5_Q25.jpg" />
+										<copy file="src/main/webapp/images/Logo_T1_Q25_prod.jpg"        tofile="target/${artifactId}-${version}/images/Logo_T1_Q25.jpg" />
+										<copy file="src/main/webapp/images/icono_sistema_Q25_prod.jpg"  tofile="target/${artifactId}-${version}/images/icono_sistema_Q25.jpg" />
+									</tasks> 
+								</configuration> 
+								<goals> 
+									<goal>run</goal> 
+								</goals> 
+							</execution> 
+						</executions> 
 					</plugin>
-
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-resources-plugin</artifactId>
-						<version>2.5</version>
-						<configuration>
-							<encoding>${project.build.sourceEncoding}</encoding>
-						</configuration>
-					</plugin>
-
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-war-plugin</artifactId>
-						<version>2.1.1</version>
-						<configuration>
-							<overwrite>true</overwrite>
-							<containerConfigXML>src/main/webapp/META-INF/context.xml</containerConfigXML>
-						</configuration>
-					</plugin>
-
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>tomcat-maven-plugin</artifactId>
@@ -253,59 +312,51 @@
 				</plugins>
 
 			</build>
+			<properties>
+				<env.name.es></env.name.es>
+				<env.name.en></env.name.en>
+				<env.jdbc.url>jdbc:mysql://localhost/PMARLEN_DB_PROD?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true</env.jdbc.url>
+				<env.jdbc.jndi>jdbc/PMARLEN_DB_PROD_DS</env.jdbc.jndi>
+				<env.jdbc.user>PMARLEN_PROD</env.jdbc.user>
+				<env.jdbc.password>PMARLEN_PROD_PASSWORD</env.jdbc.password>
+			</properties>
 		</profile>
       
 		<profile>
-			<id>dev</id>
+			<id>test</id>
 			<build>
-				<resources>
-					<resource>
-						<directory>src/main/resources</directory>
-						<filtering>true</filtering>
-					</resource>
-				</resources>
 				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-compiler-plugin</artifactId>
-						<version>2.0.2</version>
-						<configuration>
-							<source>1.6</source>
-							<target>1.6</target>
-							<encoding>${project.build.sourceEncoding}</encoding>
-						</configuration>
+					<plugin> 
+						<artifactId>maven-antrun-plugin</artifactId> 
+						<executions> 
+							<execution> 
+								<id>copy-test-logos</id> 
+								<phase>process-resources</phase> 
+								<configuration> 
+									<tasks> 
+										<echo message="======================= copy-test-logos ==============>>>"/>
+										<copy file="src/main/webapp/images/LogoOriginal_5_Q25_test.jpg" tofile="target/${artifactId}-${version}/images/LogoOriginal_5_Q25.jpg" />
+										<copy file="src/main/webapp/images/Logo_T1_Q25_test.jpg"        tofile="target/${artifactId}-${version}/images/Logo_T1_Q25.jpg" />
+										<copy file="src/main/webapp/images/icono_sistema_Q25_test.jpg"  tofile="target/${artifactId}-${version}/images/icono_sistema_Q25.jpg" />
+									</tasks> 
+								</configuration> 
+								<goals> 
+									<goal>run</goal> 
+								</goals> 
+							</execution> 
+						</executions> 
 					</plugin>
-
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-resources-plugin</artifactId>
-						<version>2.5</version>
-						<configuration>
-							<encoding>${project.build.sourceEncoding}</encoding>
-						</configuration>
-					</plugin>
-
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-war-plugin</artifactId>
-						<version>2.1.1</version>
-						<configuration>
-							<overwrite>true</overwrite>
-							<containerConfigXML>src/main/webapp/META-INF/context.xml</containerConfigXML>							
-						</configuration>
-					</plugin>
-
+			
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>tomcat-maven-plugin</artifactId>
 						<configuration>
-							<url>http://localhost:2080/manager</url>
+							<url>http://localhost:4080/manager</url>
 							<server>tomcat-6-0-X</server>
 							<path>/pmarlen-webrf3</path>
 						</configuration>
 					</plugin>
 				</plugins>
-
 			</build>
 		</profile>
 	</profiles>

@@ -24,16 +24,16 @@
 				auth="Container" 
 				driverClassName="com.mysql.jdbc.Driver" 
 			
-				url="jdbc:mysql://localhost/PMARLEN_DB_TEST?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true" 
-				name="jdbc/PMARLEN_DB_TEST_DS" 
-				username="PMARLEN_TEST"
-				password="PMARLEN_TEST_PASSWORD" />
+				url="${env.jdbc.url}" 
+				name="${env.jdbc.jndi}" 
+				username="${env.jdbc.user}"
+				password="${env.jdbc.password}" />
 				
 	<Realm		className="org.apache.catalina.realm.JDBCRealm" 
 				driverName="com.mysql.jdbc.Driver"
-				connectionName="PMARLEN_TEST" 				 
-				connectionPassword="PMARLEN_TEST_PASSWORD" 
-				connectionURL="jdbc:mysql://localhost/PMARLEN_DB_TEST?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true" 
+				connectionName="${env.jdbc.user}" 				 
+				connectionPassword="${env.jdbc.password}" 
+				connectionURL="${env.jdbc.url}" 
 				digest="MD5" 
 				userRoleTable="USUARIO_PERFIL" 
 				roleNameCol="PERFIL_ID" 

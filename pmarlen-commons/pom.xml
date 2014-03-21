@@ -110,27 +110,6 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<!--
-			<plugin>
-				<groupId>com.google.code.maven-svn-revision-number-plugin</groupId>
-				<artifactId>maven-svn-revision-number-plugin</artifactId>
-				<version>1.6</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>revision</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<entries>
-						<entry>
-							<prefix>svnInfo</prefix>
-						</entry>
-					</entries>
-				</configuration>			
-			<plugin>
-			-->
 			
 			<plugin> 
 				<artifactId>maven-antrun-plugin</artifactId> 
@@ -140,7 +119,7 @@
 						<phase>process-resources</phase> 
 						<configuration> 
 							<tasks> 
-								<echo message="======================= set-build-time, in process-resources phase : version_timeStamp=${version_timeStamp}  ==============>>>"/>								
+								<echo message="======================= set-build-time, in process-resources phase : version_timeStamp=${version_timeStamp}  ==============>>>"/>
 							</tasks> 
 						</configuration> 
 						<goals> 
