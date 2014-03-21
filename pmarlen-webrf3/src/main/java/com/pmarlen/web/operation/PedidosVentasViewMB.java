@@ -47,7 +47,7 @@ public class PedidosVentasViewMB {
 			descuentosPosiblesList = new ArrayList<SelectItem>();
 			
 			descuentosPosiblesList.add(new SelectItem(25, "ÚLTIMOS 25"));
-			descuentosPosiblesList.add(new SelectItem(100, "ÚLTIMOS 10"));
+			descuentosPosiblesList.add(new SelectItem(100, "ÚLTIMOS 100"));
 			descuentosPosiblesList.add(new SelectItem(200, "ÚLTIMOS 200"));			
 			descuentosPosiblesList.add(new SelectItem(0, "TODOS"));
 			

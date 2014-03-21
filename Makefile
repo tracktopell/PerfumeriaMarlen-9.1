@@ -29,21 +29,21 @@ uallp: pom.xml
 #	~/apache-tomcat-6.0.37/bin/shutdown.sh
 #	~/apache-tomcat-6.0.37/bin/startup.sh
 
-pall: pom.xml
+pallt: pom.xml
 	mvn  clean install -Ptest -e -Dmaven.test.skip
 	mvn  tomcat:deploy -Ptest -Dmaven.test.skip
 
-puall: pom.xml
-	mvn  tomcat:undeploy -Pprod
+puallt: pom.xml
+	mvn  tomcat:undeploy -Ptest
+	mvn  clean install -Ptest -e -Dmaven.test.skip 
+	mvn  tomcat:deploy -Ptest -Dmaven.test.skip
+
+
+pallp: pom.xml
 	mvn  clean install -Pprod -e -Dmaven.test.skip 
 	mvn  tomcat:deploy -Pprod -Dmaven.test.skip
 
-
-palld: pom.xml
-	mvn  clean install -Pprod -e -Dmaven.test.skip 
-	mvn  tomcat:deploy -Pprod -Dmaven.test.skip
-
-pualld: pom.xml
+puallp: pom.xml
 	mvn  tomcat:undeploy -Pprod
 	mvn  clean install -Pprod -e -Dmaven.test.skip 
 	mvn  tomcat:deploy -Pprod -Dmaven.test.skip
