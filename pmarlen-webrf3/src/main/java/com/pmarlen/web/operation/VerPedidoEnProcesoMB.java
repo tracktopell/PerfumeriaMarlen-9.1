@@ -33,6 +33,7 @@ import com.pmarlen.web.security.managedbean.SessionUserMB;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.TreeSet;
@@ -518,7 +519,7 @@ public class VerPedidoEnProcesoMB {
 			return null;
 		}
 	}
-
+	
 	public String enviarPedido() {
 		logger.debug("========================================================>>");
 		logger.debug("-->>enviarPedido():");
@@ -544,6 +545,39 @@ public class VerPedidoEnProcesoMB {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					ve.getFacesMessage());
+			return null;
+		}
+	}
+	
+	public String actualizarCFDVenta() {
+		logger.debug("========================================================>>");
+		logger.debug("-->>actualizarCFDVenta():");
+		logger.debug("========================================================>>");
+		
+		String callingErrorResult   = pedidoVenta.getCfdVenta().getCallingErrorResult();
+		if(callingErrorResult != null && callingErrorResult.equals("<null>")){
+			callingErrorResult = null;			
+		}
+		String contenidoOriginalXml = pedidoVenta.getCfdVenta().getContenidoOriginalXml();
+		if(contenidoOriginalXml != null && contenidoOriginalXml.equals("<null>")){
+			contenidoOriginalXml = null;			
+		}
+		pedidoVenta.getCfdVenta().setCallingErrorResult(callingErrorResult);
+		pedidoVenta.getCfdVenta().setUltimaActualizacion(new Date());		
+		pedidoVenta.getCfdVenta().setContenidoOriginalXml(contenidoOriginalXml);
+		try {
+			pedidoVentaBusinessLogic.updateCFD(pedidoVenta,pedidoVenta.getCfdVenta());
+			logger.debug("-->>actualizarCFDVenta():OK, updated !");
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "actualizarCFDVenta: OK:", "Recargar"));
+			
+		} catch (Exception ex) {
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "actualizarCFDVenta: ERROR:", ex.getLocalizedMessage()));
+			
+		} finally{
 			return null;
 		}
 	}

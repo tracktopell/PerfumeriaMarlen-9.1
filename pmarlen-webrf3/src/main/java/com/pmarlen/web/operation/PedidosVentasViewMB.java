@@ -32,47 +32,35 @@ public class PedidosVentasViewMB {
 	private List<PedidoFastView> pedidoFastViewList;
 	private int scrollerPage;
 	private Integer pedidoBuscar;
-	private Integer mostrar;
+	
 	private int numRecShow;
 	private final Logger logger = LoggerFactory.getLogger(PedidosVentasViewMB.class);
 	
 	public PedidosVentasViewMB() {
 		numRecShow = 25;
-		mostrar = 25;
 	}
 	private List descuentosPosiblesList;
 	
-	public List<SelectItem> getDescuentosPosiblesList() {
+	public List<SelectItem> getRegistrosMaxVerList() {
 		if (descuentosPosiblesList == null) {
 			descuentosPosiblesList = new ArrayList<SelectItem>();
 			
 			descuentosPosiblesList.add(new SelectItem(25, "ÚLTIMOS 25"));
 			descuentosPosiblesList.add(new SelectItem(100, "ÚLTIMOS 100"));
 			descuentosPosiblesList.add(new SelectItem(200, "ÚLTIMOS 200"));			
-			descuentosPosiblesList.add(new SelectItem(0, "TODOS"));
-			
+			descuentosPosiblesList.add(new SelectItem(Integer.MAX_VALUE, "TODOS"));			
 		}
 		return descuentosPosiblesList;
-	}
-	
-	public Integer getMostrar() {
-		return mostrar;
-	}
-	
-	public void setMostrar(Integer mostrar) {
-		this.mostrar = mostrar;
 	}
 	
 	public void updateRecShow(ActionEvent e) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		
 		String numRecShowToSet = context.getExternalContext().getRequestParameterMap().get("numRecShowToSet");
-		
-		reinicializarLista();
-		
-		actualizarLista();
-		
 		numRecShow = Integer.parseInt(numRecShowToSet);
+		
+		reinicializarLista();		
+		actualizarLista();
 	}
 	
 	public void reinicializarLista() {
@@ -135,26 +123,10 @@ public class PedidosVentasViewMB {
 	
 	private void actualizarLista() {
 		
-		logger.info("-->>> actualizarLista : before");
+		logger.info("-->>> actualizarLista : before, just: numRecShow="+numRecShow);
 		try {
-			final List<PedidoFastView> findPedidoFastViewOriginal = pedidoVentaBusinessLogic.findPedidoFastView();
-			logger.info("-->>> actualizarLista : after: findPedidoFastViewOriginal size =" + findPedidoFastViewOriginal.size()+", mostrar="+mostrar);
-			pedidoFastViewList = null;
-			if (mostrar == 0) {
-				pedidoFastViewList = findPedidoFastViewOriginal;
-			} else {
-				pedidoFastViewList = new ArrayList<PedidoFastView>();
-				int i=0;
-				
-				for (PedidoFastView x : findPedidoFastViewOriginal) {
-					if(i<mostrar){
-						pedidoFastViewList.add(x);
-					} else {
-						break;
-					}
-					i++;
-				}
-			}
+			pedidoFastViewList  = pedidoVentaBusinessLogic.findPedidoFastViewLimitTo(numRecShow);
+			logger.info("-->>> actualizarLista : after: findPedidoFastViewOriginal size =" + pedidoFastViewList.size()+", numRecShow="+numRecShow);			
 		} catch (Exception e) {
 			pedidoFastViewList = new ArrayList<PedidoFastView>();
 			logger.error("-->>> actualizarLista : STRATERGY FAILS:", e);
@@ -207,8 +179,10 @@ public class PedidosVentasViewMB {
 	}
 	
 	public void mostrarChanged(ValueChangeEvent vce){
-		logger.error("-->>> mostrarChanged: mostrar=:" + mostrar);
-		pedidoFastViewList = null;
+		numRecShow = (Integer)vce.getNewValue();
+		logger.error("-->>> mostrarChanged: numRecShow changed to =" + numRecShow);
+		reinicializarLista();		
+		actualizarLista();
 	}
 	
 	public String buscarPedidoDirectoForzado(ActionEvent ae) {

@@ -172,9 +172,21 @@
 						<h:panelGroup  rendered="#{not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta and not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta.callingErrorResult}">
 							<h:outputText value="ERROR AL GENERAR: #{verPedidoEnProcesoMB.pedidoVenta.cfdVenta.callingErrorResult}"/>
 							<br/>
-							<a4j:commandButton  value="GENRAR CFD NUEVAMENTE ( SICOFI )"
+							<a4j:commandButton  value="GENERAR CFD NUEVAMENTE ( SICOFI )"
 												action="#{verPedidoEnProcesoMB.generarCFDPedido}"
 												rendered="#{sessionUserMB.adminUser and not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta and not empty verPedidoEnProcesoMB.pedidoVenta.cfdVenta.callingErrorResult}"/>
+							
+							<h:panelGrid columns="2" columnClasses="columnWidth30 rightAlign, columnWidth70 leftAlign"
+										 rendered="#{sessionUserMB.rootUser}">
+								<h:outputText value="callingErrorResult:" />
+								<h:inputText        value="#{verPedidoEnProcesoMB.pedidoVenta.cfdVenta.callingErrorResult}" size="15"/>
+								<h:outputText value="contenidoOriginalXml:" />
+								<h:inputTextarea    value="#{verPedidoEnProcesoMB.pedidoVenta.cfdVenta.contenidoOriginalXml}" rows="3" cols="25"/>
+								<h:outputText value="ACCIONES:" />
+								<a4j:commandButton  value="ACTUALIZAR"
+													action="#{verPedidoEnProcesoMB.actualizarCFDVenta}" />							
+							</h:panelGrid>
+							
 						</h:panelGroup>
 						<rich:spacer width="10"/>
 						

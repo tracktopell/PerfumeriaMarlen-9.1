@@ -1030,6 +1030,34 @@ public class PedidoVentaBusinessLogic {
 		}
 	}
 
+	public void updateCFD(PedidoVenta pedidoVenta, CfdVenta cfdVenta) {		
+		EntityManager em = null;
+		try {
+			em = emf.createEntityManager();
+			em.getTransaction().begin();
+
+			CfdVenta cfdVentaActualizado = em.find(CfdVenta.class, cfdVenta.getId()); //new CfdVenta();
+
+			cfdVentaActualizado.setContenidoOriginalXml(cfdVenta.getContenidoOriginalXml());
+			cfdVentaActualizado.setUltimaActualizacion(cfdVenta.getUltimaActualizacion());
+			cfdVentaActualizado.setCallingErrorResult(cfdVenta.getCallingErrorResult());
+
+			em.flush();
+
+			PedidoVenta pedidoVentaUpdate = em.find(PedidoVenta.class, pedidoVenta.getId());
+
+			pedidoVentaUpdate.setCfdVenta(cfdVentaActualizado);
+
+			em.getTransaction().commit();
+			logger.debug("\t->updateCFD: ok");
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
+
+
 	public void enviarPedido(PedidoVenta pedidoVenta, Usuario usuarioModifico) {
 		Estado ultimoEstado = new Estado(Constants.ESTADO_FACTURADO);
 
@@ -1212,18 +1240,30 @@ public class PedidoVentaBusinessLogic {
 		return almacenDefault;
 	}
 
-	public List<PedidoFastView> findPedidoFastView() {
+	public List<PedidoFastView> findPedidoFastViewLimitTo(int limitRows) {
 		EntityManager em = getEntityManager();
 		List<PedidoFastView> result = new ArrayList<PedidoFastView>();
 		try {
-			Query q = em.createNativeQuery(QueryXMLLoader.getInstance().loadQuery("verPedidos"));
-
+			logger.debug("-->>findPedidoFastView: limitRows="+limitRows);
+			Query q = em.createNativeQuery(QueryXMLLoader.getInstance().loadQuery("verPedidos2"));
+			q.setParameter("limitRows", limitRows);
 			List<Object[]> firstResult = q.getResultList();
-			//logger.debug("-->>findPedidoFastView: firstResult.size="+firstResult.size());
-
+			logger.debug("-->>findPedidoFastView: firstResult.size="+firstResult.size());
+			int i=0;
 			for (Object[] r : firstResult) {
+//					logger.debug("------------------>>findPedidoFastView: Row["+i+"]:");
+//					int col=0;
+//					for(Object ri:r){
+//						if(ri != null){
+//							logger.debug("-->>findPedidoFastView: Column["+col+"]:"+ri+", calss:"+ri.getClass());
+//						} else {
+//							logger.debug("-->>findPedidoFastView: Column["+col+"]:"+ri);
+//						}
+//						col++;
+//					}
 				final PedidoFastView pedidoFastView = new PedidoFastView(r);
 				result.add(pedidoFastView);
+				i++;
 			}
 
 			return result;

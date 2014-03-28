@@ -120,9 +120,9 @@ public class PedidosPreVisorMB {
 			PedidoVentaEasyView pvev = new PedidoVentaEasyView(pv) ;
 			pedidoVentaEasyViewList.add(pvev);
 		}
-		logger.info("-->>> getPedidoVentaList: NEW strategy");
+		logger.info("-->>> getPedidoVentaList: NEW strategy, just: numRecShow="+numRecShow);
 		try{
-			List<PedidoFastView> pedidoFastViewList = pedidoVentaBusinessLogic.findPedidoFastView();
+			List<PedidoFastView> pedidoFastViewList = pedidoVentaBusinessLogic.findPedidoFastViewLimitTo(numRecShow);
 			logger.info("-->>> getPedidoVentaList: pedidoFastViewList size ="+pedidoFastViewList.size());
 
 			for(PedidoFastView pvfv: pedidoFastViewList){

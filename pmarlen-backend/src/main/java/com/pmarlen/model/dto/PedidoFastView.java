@@ -34,6 +34,10 @@ public class PedidoFastView {
 	private Double  importeFinalPedido;
 	private String  estadoActualDescripcion;
 	private Double  factorIva;
+	private Integer cfdId;
+	private Date    cfdUltimaActualizacion;
+	private Integer cfdContenidoXMLOriginal;
+	private String  cfdErrorCallingresult;	
 	
 	private static DecimalFormat df = new DecimalFormat("###,###,##0.00");
 
@@ -62,6 +66,10 @@ public class PedidoFastView {
 		this.importeFinalPedido					= ((Double)rs[16]);
 		this.estadoActualDescripcion			= ((String)rs[17]);
 		this.factorIva							= ((Double)rs[18]);
+		this.cfdId								= ((Integer)rs[19]);
+		this.cfdUltimaActualizacion				= ((Timestamp)rs[20]);
+		this.cfdContenidoXMLOriginal			= ((Integer)rs[21]);
+		this.cfdErrorCallingresult				= ((String)rs[22]);		
 	}
 
 	@Override
@@ -336,6 +344,62 @@ public class PedidoFastView {
 	@Override
 	public boolean equals(Object obj) {
 		return this.pedidoId == ((PedidoFastView)obj).pedidoId;
+	}
+
+	/**
+	 * @return the cfdId
+	 */
+	public Integer getCfdId() {
+		return cfdId;
+	}
+
+	/**
+	 * @param cfdId the cfdId to set
+	 */
+	public void setCfdId(Integer cfdId) {
+		this.cfdId = cfdId;
+	}
+
+	/**
+	 * @return the cfdUltimaActualizacion
+	 */
+	public Date getCfdUltimaActualizacion() {
+		return cfdUltimaActualizacion;
+	}
+
+	/**
+	 * @param cfdUltimaActualizacion the cfdUltimaActualizacion to set
+	 */
+	public void setCfdUltimaActualizacion(Date cfdUltimaActualizacion) {
+		this.cfdUltimaActualizacion = cfdUltimaActualizacion;
+	}
+
+	/**
+	 * @return the cfdContenidoXMLOriginal
+	 */
+	public Integer getCfdContenidoXMLOriginal() {
+		return cfdContenidoXMLOriginal;
+	}
+
+	/**
+	 * @param cfdContenidoXMLOriginal the cfdContenidoXMLOriginal to set
+	 */
+	public void setCfdContenidoXMLOriginal(Integer cfdContenidoXMLOriginal) {
+		this.cfdContenidoXMLOriginal = cfdContenidoXMLOriginal;
+	}
+
+	/**
+	 * @return the cfdErrorCallingresult
+	 */
+	public String getCfdErrorCallingresult() {
+		return cfdErrorCallingresult;
+	}
+
+	/**
+	 * @param cfdErrorCallingresult the cfdErrorCallingresult to set
+	 */
+	public void setCfdErrorCallingresult(String cfdErrorCallingresult) {
+		this.cfdErrorCallingresult = cfdErrorCallingresult;
 	}
 	
 }
