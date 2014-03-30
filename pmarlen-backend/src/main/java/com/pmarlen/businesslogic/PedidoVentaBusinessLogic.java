@@ -1315,6 +1315,74 @@ public class PedidoVentaBusinessLogic {
 			em.close();
 		}
 	}
+	public List<InventarioFastView> findInventarioFastViewByIndustria(Integer almacenId, Integer industriaId) {
+		EntityManager em = getEntityManager();
+		List<InventarioFastView> result = new ArrayList<InventarioFastView>();
+		try {
+			Query q = em.createNativeQuery(QueryXMLLoader.getInstance().loadQuery("inventarioEspecificoByIndustria"));
+			q.setParameter("almacenId", almacenId);
+			q.setParameter("industriaId", industriaId);
+
+			List<Object[]> firstResult = q.getResultList();
+			//logger.debug("-->>findInventarioFastView: firstResult.size="+firstResult.size());
+
+			for (Object[] r : firstResult) {
+				//logger.debug("-->>findInventarioFastView: r="+Arrays.asList(r));
+				InventarioFastView ifv = new InventarioFastView(r);
+				result.add(ifv);
+			}
+
+			return result;
+		} finally {
+			em.close();
+		}
+	}
+	
+	public List<InventarioFastView> findInventarioFastViewByLinea(Integer almacenId, Integer lineaId) {
+		EntityManager em = getEntityManager();
+		List<InventarioFastView> result = new ArrayList<InventarioFastView>();
+		try {
+			Query q = em.createNativeQuery(QueryXMLLoader.getInstance().loadQuery("inventarioEspecificoByLinea"));
+			q.setParameter("almacenId", almacenId);
+			q.setParameter("lineaId", lineaId);
+
+			List<Object[]> firstResult = q.getResultList();
+			//logger.debug("-->>findInventarioFastView: firstResult.size="+firstResult.size());
+
+			for (Object[] r : firstResult) {
+				//logger.debug("-->>findInventarioFastView: r="+Arrays.asList(r));
+				InventarioFastView ifv = new InventarioFastView(r);
+				result.add(ifv);
+			}
+
+			return result;
+		} finally {
+			em.close();
+		}
+	}
+
+	public List<InventarioFastView> findInventarioFastViewByMarca(Integer almacenId, Integer marcaId) {
+		EntityManager em = getEntityManager();
+		List<InventarioFastView> result = new ArrayList<InventarioFastView>();
+		try {
+			Query q = em.createNativeQuery(QueryXMLLoader.getInstance().loadQuery("inventarioEspecificoByMarca"));
+			q.setParameter("almacenId", almacenId);
+			q.setParameter("marcaId", marcaId);
+
+			List<Object[]> firstResult = q.getResultList();
+			//logger.debug("-->>findInventarioFastView: firstResult.size="+firstResult.size());
+
+			for (Object[] r : firstResult) {
+				//logger.debug("-->>findInventarioFastView: r="+Arrays.asList(r));
+				InventarioFastView ifv = new InventarioFastView(r);
+				result.add(ifv);
+			}
+
+			return result;
+		} finally {
+			em.close();
+		}
+	}
 
 	public List<MovimientoHistoricoProductoFastView> findMovimientoHistoricoProductoFastView(Integer almacenId, String codigoBarras) {
 		EntityManager em = getEntityManager();

@@ -20,6 +20,8 @@
 				</h:panelGroup>
 			</f:facet>
 			
+			<rich:menuItem value="GALERIA DE PRODUCTOS" action="#{navigationMB.galeriaProductos}"/>			
+						
 			<rich:menuGroup value="VENTAS">
 				<rich:menuItem value="#{UIMessages.MENU_SALES_ORDER}" action="#{navigationMB.pedidoNuevo}"/>			
 				
@@ -69,10 +71,10 @@
 
 			<rich:menuGroup value="INVENTARIOS">
 				
-				<rich:menuItem value="INVENTARIOS ACTUALES" action="#{navigationMB.inventariosView}" />
-				<!--
-				<rich:menuItem value="TRASPASOS A SURSAL" action="#{navigationMB.home}"/>
-				-->
+				<rich:menuItem value="GENERAL / FILTRADO" action="#{navigationMB.galeriaProductos}"/>
+				
+				<rich:menuItem value="PRODUCTO / MOVIMIENTOS" action="#{navigationMB.inventariosView}" />
+				
 			</rich:menuGroup>
 
 		</rich:dropDownMenu>

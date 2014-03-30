@@ -56,6 +56,8 @@ public class NavigationMB {
 	private SessionUserMB sessionUserMB;
 	private PedidosVentasViewMB pedidosVentasViewMB;
 	private InventariosViewMB inventariosViewMB;
+	private GaleriaProductosMB galeriaProductosMB;
+
 	private CompraMB compraMB;
 	
 	public NavigationMB() {
@@ -117,6 +119,10 @@ public class NavigationMB {
 
 	public void setInventariosViewMB(InventariosViewMB inventariosViewMB) {
 		this.inventariosViewMB = inventariosViewMB;
+	}
+
+	public void setGaleriaProductosMB(GaleriaProductosMB galeriaProductosMB) {
+		this.galeriaProductosMB = galeriaProductosMB;
 	}
 	
 	public void setCompraMB(CompraMB compraMB) {
@@ -315,6 +321,12 @@ public class NavigationMB {
 		sessionUserMB.updateLastVisitedPage("inventariosView");
 		inventariosViewMB.reinicializarLista();
 		return "inventariosView";
+	}
+	
+	public String galeriaProductos() {
+		sessionUserMB.updateLastVisitedPage("galeriaProductos");
+		inventariosViewMB.reinicializarLista();
+		return "galeriaProductos";
 	}
 
 

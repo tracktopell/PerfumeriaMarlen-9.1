@@ -1,0 +1,320 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+
+                template="/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+		<h:outputFormat value=" {0} >> {1} ">
+			<f:param value="#{UIMessages.MAIN_SHORT_TITLE}" />
+			<f:param value="INVENTARIOS ACTUALES" />
+		</h:outputFormat>		
+
+    </ui:define>
+
+    <ui:define name="location">
+		<h:outputFormat value=" {0} > {1} > {2}">
+			<f:param value="#{UIMessages.MENU_ADMINISTRATION}" />
+			<f:param value="INVENTARIOS" />
+			<f:param value="GENERAL / FILTRADO" />
+		</h:outputFormat>			
+
+    </ui:define>
+
+    <ui:define name="body">
+
+		<style>
+			.onTop{
+				vertical-align: top;
+				background-color: transparent;
+			}
+			.deplecatedPrice{
+				font-size: smaller;
+				font-family: sans-serif;
+				color: red;
+				text-decoration: line-through;
+			}
+		</style>
+
+        <a4j:form id="galeriaProductosForm">
+			<h:panelGrid id="panelGridPrincipal"
+						 width="100%" 
+						 columns="1">
+
+				<rich:messages passedLabel="OK" layout="list" globalOnly="true" 
+							   showDetail="true"
+							   infoClass="littleInfoMessage_bold"
+							   warnClass="littleWarnMessage_bold"
+							   errorClass="littleErrorMessage_bold">
+					<f:facet name="infoMarker">
+						<h:graphicImage  value="/images/info16x16.gif" /> 
+					</f:facet>
+					<f:facet name="warnMarker">
+						<h:graphicImage value="/images/alerta16x16.gif" />   
+					</f:facet>
+					<f:facet name="errorMarker">
+						<h:graphicImage value="/images/error16x16.gif" />   
+					</f:facet>
+				</rich:messages>
+				
+				<h:panelGrid columns="2" styleClass="center" width="100%"
+							 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign">
+					<h:outputText		value="#{UIEntityLabels.LABEL_ALMACEN}:" styleClass="label_bold_right"/>
+					<h:outputText		value="#{galeriaProductosMB.almacenObjetivoDescripcionTipo}"/>
+					
+					<!--
+					<h:outputText		value="#{UIEntityLabels.LABEL_ALMACEN}:" styleClass="label_bold_right"/>
+					<h:panelGroup >
+						<h:selectOneRadio id="selectOneRadioAlmacen"
+										  value="#{galeriaProductosMB.tipoAlmacen}" 
+										  valueChangeListener="#{galeriaProductosMB.almacenSelected}">
+							<a4j:support	reRender="galeriaProductosForm" event="onchange"/>
+							<f:selectItems  value="#{galeriaProductosMB.tipoAlmacenList}"/>
+						</h:selectOneRadio>						
+					</h:panelGroup>
+					-->
+					<h:outputText		value="BUSCAR POR:" styleClass="label_bold_right"/>
+					<h:panelGroup >
+						<h:selectOneRadio id="selectOneRadioSelectMode"
+										  value="#{galeriaProductosMB.selecionMode}" 
+										  valueChangeListener="#{galeriaProductosMB.selectModeChanged}">
+							<a4j:support	reRender="galeriaProductosForm" event="onchange"/>
+
+							<f:selectItem  itemValue="#{galeriaProductosMB.SELECTION_MODE_INDUSTRIA_MARCA}"
+										   itemLabel="INDUSTRIA Y MARCA"/>
+
+							<f:selectItem  itemValue="#{galeriaProductosMB.SELECTION_MODE_LINEA_MARCA}"     
+										   itemLabel="LINEA Y MARCA"/>
+						</h:selectOneRadio>
+					</h:panelGroup>
+
+					<h:outputText		value="INDUSTRIA:" styleClass="label_bold_right" 
+								   rendered="#{galeriaProductosMB.selecionMode eq galeriaProductosMB.SELECTION_MODE_INDUSTRIA_MARCA}"/>
+					<h:selectOneMenu	id="selectOneMenuIndustria"
+									 rendered="#{galeriaProductosMB.selecionMode eq galeriaProductosMB.SELECTION_MODE_INDUSTRIA_MARCA}"
+									 value="#{galeriaProductosMB.industriaSelectedId}" 
+									 valueChangeListener="#{galeriaProductosMB.industriaChanged}">
+						<a4j:support	reRender="galeriaProductosForm" event="onchange"/>
+						<f:selectItems	value="#{galeriaProductosMB.industriaList}"/>
+					</h:selectOneMenu>
+
+					<h:outputText		value="LINEA:" styleClass="label_bold_right" 
+								   rendered="#{galeriaProductosMB.selecionMode eq galeriaProductosMB.SELECTION_MODE_LINEA_MARCA}"/>
+					<h:selectOneMenu	id="selectOneMenuLinea"
+									 rendered="#{galeriaProductosMB.selecionMode eq galeriaProductosMB.SELECTION_MODE_LINEA_MARCA}"
+									 value="#{galeriaProductosMB.lineaSelectedId}"
+									 valueChangeListener="#{galeriaProductosMB.lineaChanged}">
+						<a4j:support	reRender="galeriaProductosForm" event="onchange"/>
+						<f:selectItems	value="#{galeriaProductosMB.lineaList}"/>
+					</h:selectOneMenu>
+
+					<h:outputText		value="MARCA:" styleClass="label_bold_right" 
+								   rendered="#{not empty galeriaProductosMB.industriaSelectedId or not empty galeriaProductosMB.lineaSelectedId}"/>
+					<h:selectOneMenu	id="selectOneMenuMarca"
+									 rendered="#{not empty galeriaProductosMB.industriaSelectedId or not empty galeriaProductosMB.lineaSelectedId}"
+									 value="#{galeriaProductosMB.marcaSelectedId}" 
+									 valueChangeListener="#{galeriaProductosMB.marcaChanged}">
+						<a4j:support	reRender="galeriaProductosForm" event="onchange"/>
+						<f:selectItems	value="#{galeriaProductosMB.marcaList}"/>
+					</h:selectOneMenu>
+
+				</h:panelGrid>
+				<!--
+				<rich:dataGrid	id="galeriaProdsTable" 
+							   value="#{galeriaProductosMB.inventarioFastViewList}"
+							   var="inventarioFastView"
+							   columns="4"
+							   elements="#{galeriaProductosMB.numRecShow}"															   
+							   width="100%"
+							   styleClass="onTop">
+					<f:facet name="header">
+
+						<h:panelGroup style="display:block; text-align:left; background-color:transparent; width: 100%;" >
+							<h:outputText value="PRODUCTOS ENCONTRADOS: #{galeriaProductosMB.entityCount}" />
+							<rich:spacer width="20"/>
+
+							<h:outputText value="#{UIMessages.COMMON_VIEW_REG_PAGE} : " />
+
+							[
+							<h:outputText value="10" rendered="#{galeriaProductosMB.numRecShow eq 10}"/>
+							<a4j:commandLink reRender="galeriaProdsTable,sc1" actionListener="#{galeriaProductosMB.updateRecShow}" rendered="#{galeriaProductosMB.numRecShow ne 10}">
+								<f:param name="numRecShowToSet" value="10"/>
+								<h:outputText value="10" /> 
+							</a4j:commandLink>
+							|
+							<h:outputText value="25" rendered="#{galeriaProductosMB.numRecShow eq 25}"/>
+							<a4j:commandLink reRender="galeriaProdsTable,sc1" actionListener="#{galeriaProductosMB.updateRecShow}" rendered="#{galeriaProductosMB.numRecShow ne 25}">
+								<f:param name="numRecShowToSet" value="25"/>
+								<h:outputText value="25" /> 
+							</a4j:commandLink>
+							|
+							<h:outputText value="100" rendered="#{galeriaProductosMB.numRecShow eq 100}"/>
+							<a4j:commandLink reRender="galeriaProdsTable,sc1" actionListener="#{galeriaProductosMB.updateRecShow}" rendered="#{galeriaProductosMB.numRecShow ne 100}">
+								<f:param name="numRecShowToSet" value="100"/>
+								<h:outputText value="100" /> 
+							</a4j:commandLink>				
+							|
+							<h:outputText value="500" rendered="#{galeriaProductosMB.numRecShow eq 500}"/>
+							<a4j:commandLink reRender="galeriaProdsTable, sc1" actionListener="#{galeriaProductosMB.updateRecShow}" rendered="#{galeriaProductosMB.numRecShow ne 500}">
+								<f:param name="numRecShowToSet" value="500"/>
+								<h:outputText value="500" /> 
+							</a4j:commandLink>
+							]
+						</h:panelGroup>
+
+					</f:facet>
+
+					<h:panelGrid columns="2" columnClasses="columnWidth30 rightAlign, columnWidth70 leftAlign">
+						<h:outputText value="CODIGO:" styleClass="label_bold_right"/>
+						<h:outputText value="#{inventarioFastView.productoCodigoBarras}" />
+						<h:outputText value="NOMBRE:" styleClass="label_bold_right"/>
+						<h:outputText value="#{inventarioFastView.productoNombre}" />
+						<h:outputText value="PRESENTACION:" styleClass="label_bold_right"/>
+						<h:outputText value="#{inventarioFastView.productoPresentacion}" />
+						<h:outputText value="INDUSTRIA:" styleClass="label_bold_right"/>
+						<h:outputText value="#{inventarioFastView.inductriaNombre}" />
+						<h:outputText value="LINEA:" styleClass="label_bold_right"/>
+						<h:outputText value="#{inventarioFastView.lineaNombre}" />
+						<h:outputText value="MARCA:" styleClass="label_bold_right"/>
+						<h:outputText value="#{inventarioFastView.marcaNombre}" />
+						<h:outputText value="PRECIO:" styleClass="label_bold_right"/>
+						<h:outputText value="#{inventarioFastView.almacenProductoPrecioVenta}" >
+							<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+						</h:outputText>
+						<h:outputText value="EXISTENCIA:" styleClass="label_bold_right"/>
+						<h:outputText value="#{inventarioFastView.almacenProductoCantidadActual}" />							
+					</h:panelGrid>
+
+					<f:facet name="footer">
+						<rich:datascroller	rendered="#{galeriaProductosMB.entityCount ge 11}"
+										   align="center" for="galeriaProdsTable" 
+										   maxPages="10" 
+										   page="#{galeriaProductosMB.scrollerPage}" 									
+										   id="sc1" />
+
+					</f:facet>
+				</rich:dataGrid>
+				-->
+
+				<rich:dataTable		id="galeriaProdsTable"
+								 value="#{galeriaProductosMB.inventarioFastViewList}"
+								 var="inventarioFastView"
+								 rows="#{galeriaProductosMB.numRecShow}"								
+								 width="100%" >
+
+					<f:facet name="header">
+
+						<h:panelGroup style="display:block; text-align:left; background-color:transparent; width: 100%;" >
+							<h:outputText value="PRODUCTOS ENCONTRADOS: #{galeriaProductosMB.entityCount}" />
+							<rich:spacer width="20"/>
+
+							<h:outputText value="#{UIMessages.COMMON_VIEW_REG_PAGE} : " />
+
+							[
+							<h:outputText value="10" rendered="#{galeriaProductosMB.numRecShow eq 10}"/>
+							<a4j:commandLink reRender="galeriaProdsTable,sc1" actionListener="#{galeriaProductosMB.updateRecShow}" rendered="#{galeriaProductosMB.numRecShow ne 10}">
+								<f:param name="numRecShowToSet" value="10"/>
+								<h:outputText value="10" /> 
+							</a4j:commandLink>
+							|
+							<h:outputText value="25" rendered="#{galeriaProductosMB.numRecShow eq 25}"/>
+							<a4j:commandLink reRender="galeriaProdsTable,sc1" actionListener="#{galeriaProductosMB.updateRecShow}" rendered="#{galeriaProductosMB.numRecShow ne 25}">
+								<f:param name="numRecShowToSet" value="25"/>
+								<h:outputText value="25" /> 
+							</a4j:commandLink>
+							|
+							<h:outputText value="100" rendered="#{galeriaProductosMB.numRecShow eq 100}"/>
+							<a4j:commandLink reRender="galeriaProdsTable,sc1" actionListener="#{galeriaProductosMB.updateRecShow}" rendered="#{galeriaProductosMB.numRecShow ne 100}">
+								<f:param name="numRecShowToSet" value="100"/>
+								<h:outputText value="100" /> 
+							</a4j:commandLink>				
+							|
+							<h:outputText value="500" rendered="#{galeriaProductosMB.numRecShow eq 500}"/>
+							<a4j:commandLink reRender="galeriaProdsTable,sc1" actionListener="#{galeriaProductosMB.updateRecShow}" rendered="#{galeriaProductosMB.numRecShow ne 500}">
+								<f:param name="numRecShowToSet" value="500"/>
+								<h:outputText value="500" /> 
+							</a4j:commandLink>
+							]
+						</h:panelGroup>
+
+					</f:facet>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<h:panelGroup>
+							<h:outputText value="#{inventarioFastView.productoCodigoBarras}" />
+						</h:panelGroup>
+					</rich:column>
+
+					<rich:column >
+						<f:facet name="header">
+							<h:outputText value="NOMBRE / PRESENTACIÓN" />
+						</f:facet>
+
+						<h:panelGrid columns="1" width="100%" columnClasses="centerAlign">
+
+							<h:outputText value="#{inventarioFastView.productoNombre}" />
+
+							<h:outputText value="#{inventarioFastView.productoPresentacion}" />
+
+						</h:panelGrid>
+
+					</rich:column>
+
+					<rich:column >
+						<f:facet name="header">
+							<h:outputText value="MARCA / LINEA / INDUSTRIA" />
+						</f:facet>
+
+						<h:panelGrid columns="1" width="100%" columnClasses="centerAlign">
+
+							<h:outputText value="#{inventarioFastView.marcaNombre}" />
+
+							<h:outputText value="#{inventarioFastView.lineaNombre}" />
+
+							<h:outputText value="#{inventarioFastView.inductriaNombre}" />
+						</h:panelGrid>
+
+					</rich:column>					
+
+					<rich:column sortBy="">
+						<f:facet name="header">
+							<h:outputText value="# ACTUAL" />
+						</f:facet>
+
+						<h:outputText value="#{inventarioFastView.almacenProductoCantidadActual}"/>
+
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="$ VENTA" />
+						</f:facet>
+
+						<h:outputText value="#{inventarioFastView.almacenProductoPrecioVenta}">
+							<f:convertNumber maxFractionDigits="2" pattern="###,###,##0.00" locale="es_MX"/>
+						</h:outputText>
+
+					</rich:column>
+                    <f:facet name="footer">                
+						<rich:datascroller	rendered="#{galeriaProductosMB.entityCount ge 11}"
+										   align="center" for="galeriaProdsTable" 
+										   maxPages="10" 
+										   page="#{galeriaProductosMB.scrollerPage}" 									
+										   id="sc1" />
+
+                    </f:facet>				
+
+				</rich:dataTable>
+
+
+			</h:panelGrid>
+        </a4j:form>
+    </ui:define>
+
+</ui:composition>

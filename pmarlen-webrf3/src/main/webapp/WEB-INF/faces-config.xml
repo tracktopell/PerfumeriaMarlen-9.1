@@ -112,6 +112,11 @@
 			<property-name>inventariosViewMB</property-name>
 			<value>#{inventariosViewMB}</value>
         </managed-property>		
+		
+		<managed-property>
+			<property-name>galeriaProductosMB</property-name>
+			<value>#{galeriaProductosMB}</value>
+        </managed-property>		
 
 		<managed-property>
 			<property-name>pedidosPreVisorMB</property-name>
@@ -457,6 +462,38 @@
         </managed-property>
 		
     </managed-bean>
+	<managed-bean>
+        <managed-bean-name>galeriaProductosMB</managed-bean-name>
+        <managed-bean-class>com.pmarlen.web.operation.GaleriaProductosMB</managed-bean-class>
+
+        <managed-bean-scope>session</managed-bean-scope>
+
+		<managed-property>
+            <property-name>pedidoVentaBusinessLogic</property-name>
+            <value>#{pedidoVentaBusinessLogic}</value>
+        </managed-property>		
+		
+		<managed-property>
+            <property-name>marcaJPAController</property-name>
+            <value>#{marcaJPAController}</value>
+        </managed-property>
+        
+		<managed-property>
+            <property-name>industriaJPAController</property-name>
+            <value>#{industriaJPAController}</value>
+        </managed-property>
+        
+		<managed-property>
+            <property-name>lineaJPAController</property-name>
+            <value>#{lineaJPAController}</value>
+        </managed-property>
+        
+		<managed-property>
+            <property-name>sucursalJPAController</property-name>
+            <value>#{sucursalJPAController}</value>
+        </managed-property>
+		
+    </managed-bean>
 
     <managed-bean>
         <managed-bean-name>pedidoEnProcesoMB</managed-bean-name>
@@ -639,6 +676,11 @@
 		<navigation-case>
             <from-outcome>inventariosView</from-outcome>
             <to-view-id>/pages/inventariosView.xhtml</to-view-id>
+        </navigation-case>
+
+		<navigation-case>
+            <from-outcome>galeriaProductos</from-outcome>
+            <to-view-id>/pages/galeriaProductos.xhtml</to-view-id>
         </navigation-case>
 		
         <navigation-case>
