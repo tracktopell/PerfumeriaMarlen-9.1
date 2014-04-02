@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facturaDesign1" language="groovy" pageWidth="612" pageHeight="792" columnWidth="556" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="27" uuid="11a92365-c4f5-4806-b1a1-ad327ebfdc78">
-	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="12"/>
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="329"/>
+	<property name="ireport.y" value="867"/>
 	<property name="ireport.callouts" value="##Sat Jul 21 10:43:27 CDT 2012"/>
 	<parameter name="codigoPedido" class="java.lang.Integer"/>
 	<parameter name="fecha" class="java.lang.String"/>
@@ -433,10 +433,10 @@
 		<band height="184" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="a10ff203-96d1-4b8f-b970-180ecdda85c6" x="145" y="176" width="240" height="7"/>
-				<textElement>
+				<textElement textAlignment="Center">
 					<font size="5" isItalic="true"/>
 				</textElement>
-				<text><![CDATA[ESTE DOCUMENTO ES UNA REPRESENTACIÓN IMPRESA DE UN COMPROBANTE FISCAL DIGITAL]]></text>
+				<text><![CDATA[ESTE DOCUMENTO ES UNA REPRESENTACIÓN IMPRESA DE UN C.F.D.I.]]></text>
 			</staticText>
 			<line>
 				<reportElement uuid="228a99fd-2379-4af8-a1b6-5f2dc8a3a4dc" x="0" y="183" width="556" height="1"/>
@@ -584,10 +584,10 @@
 			</image>
 			<staticText>
 				<reportElement uuid="a10ff203-96d1-4b8f-b970-180ecdda85c6" x="145" y="171" width="240" height="7"/>
-				<textElement>
+				<textElement textAlignment="Center">
 					<font size="5" isItalic="true"/>
 				</textElement>
-				<text><![CDATA[ESTE DOCUMENTO ES UNA REPRESENTACIÓN IMPRESA DE UN COMPROBANTE FISCAL DIGITAL]]></text>
+				<text><![CDATA[ESTE DOCUMENTO ES UNA REPRESENTACIÓN IMPRESA DE UN C.F.D.I.]]></text>
 			</staticText>
 			<line>
 				<reportElement uuid="228a99fd-2379-4af8-a1b6-5f2dc8a3a4dc" x="0" y="177" width="556" height="1"/>
