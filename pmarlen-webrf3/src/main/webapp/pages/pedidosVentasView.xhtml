@@ -166,33 +166,65 @@
 								 value="#{pedidosVentasViewMB.pedidoFastViewList}"
 								 var="pedidoFastView"
 								 width="100%"
+								 rows="#{pedidosVentasViewMB.numRecShow}"
 								 columnClasses="columnWidth10 centerAlign, columnWidth15 centerAlign, columnWidth20 centerAlign, columnWidth25 centerAlign, columnWidth30 rightAlign" >
 
 					<f:facet name="header">
 						<h:panelGrid columns="3" styleClass="center" width="100%" 
 									 columnClasses="columnWidth30 leftAlign, columnWidth40 rightAlign,columnWidth30 rightAlign">
 							<h:panelGroup>
-								<h:outputText value="PEDIDOS DE VENTAS" />
+								<h:outputText value="PEDIDOS DE VENTAS ENCONTRADOS : #{pedidosVentasViewMB.entityCount}" />
 							</h:panelGroup>
 
 							<h:panelGroup>
-								
+								<!--
 								<h:outputText value="SOLO MOSTRAR :" />
 								<h:selectOneMenu id="verCuantos" value="#{pedidosVentasViewMB.numRecShow}" 
 												 valueChangeListener="#{pedidosVentasViewMB.mostrarChanged}">
 									<f:selectItems value="#{pedidosVentasViewMB.registrosMaxVerList}"/>
 									<a4j:support event="onchange" reRender="listarPedidosVentasForm"/>
-								</h:selectOneMenu>
+								</h:selectOneMenu>-->
+								<h:outputText value="#{UIMessages.COMMON_VIEW_REG_PAGE} : " />
+								[
+								<h:outputText value="10" rendered="#{pedidosVentasViewMB.numRecShow eq 10}"/>
+								<a4j:commandLink reRender="pedidosVentaTable,sc1" actionListener="#{pedidosVentasViewMB.updateRecShow}" rendered="#{pedidosVentasViewMB.numRecShow ne 10}">
+									<f:param name="numRecShowToSet" value="10"/>
+									<h:outputText value="10" /> 
+								</a4j:commandLink>
+								|
+								<h:outputText value="25" rendered="#{pedidosVentasViewMB.numRecShow eq 25}"/>
+								<a4j:commandLink reRender="pedidosVentaTable,sc1" actionListener="#{pedidosVentasViewMB.updateRecShow}" rendered="#{pedidosVentasViewMB.numRecShow ne 25}">
+									<f:param name="numRecShowToSet" value="25"/>
+									<h:outputText value="25" /> 
+								</a4j:commandLink>
+								|
+								<h:outputText value="100" rendered="#{pedidosVentasViewMB.numRecShow eq 100}"/>
+								<a4j:commandLink reRender="pedidosVentaTable,sc1" actionListener="#{pedidosVentasViewMB.updateRecShow}" rendered="#{pedidosVentasViewMB.numRecShow ne 100}">
+									<f:param name="numRecShowToSet" value="100"/>
+									<h:outputText value="100" /> 
+								</a4j:commandLink>				
+								|
+								<h:outputText value="500" rendered="#{pedidosVentasViewMB.numRecShow eq 500}"/>
+								<a4j:commandLink reRender="pedidosVentaTable,sc1" actionListener="#{pedidosVentasViewMB.updateRecShow}" rendered="#{pedidosVentasViewMB.numRecShow ne 500}">
+									<f:param name="numRecShowToSet" value="500"/>
+									<h:outputText value="500" /> 
+								</a4j:commandLink>
+								]
 							</h:panelGroup>
 
 							<h:panelGroup>
 								<h:outputText value="BUSQUEDA RÁPIDA :" />
-								<h:inputText value="#{pedidosVentasViewMB.pedidoBuscar}" size="3" maxlength="4" class="inputCant">
+								<h:inputText value="#{pedidosVentasViewMB.pedidoBuscar}" 
+											 size="3" maxlength="4" class="inputCant">
 									<f:convertNumber integerOnly="true"/>
+									<a4j:support	event="onchange" actionlistener="#{pedidosVentasViewMB.pedidoBuscarAction}"
+													reRender="pedidosVentaTable,sc1"/>
 								</h:inputText>
+								
 								<a4j:commandLink action="#{pedidosVentasViewMB.buscarPedidoDirecto}">
 									<h:graphicImage style="border-style:none;" value="/images/buscar.gif" title="BUSCAR" alt="BUSCAR"/>								
 								</a4j:commandLink>
+								
 							</h:panelGroup>							
 						</h:panelGrid>						
 					</f:facet>
@@ -203,7 +235,7 @@
 						</f:facet>
 						<h:panelGroup>
 							<h:panelGrid columns="1" styleClass="center" width="100%" columnClasses="centerAlign">
-
+								<!--
 								<a4j:commandLink reRender="listarPedidosVentasForm,panelEditarCantidad"
 												 ignoreDupResponses="true"
 												 action="#{verPedidoEnProcesoMB.prepararPedidoParaEdicion}">
@@ -212,6 +244,11 @@
 
 									<f:param name="pedidoVentaId" value="#{pedidoFastView.pedidoId}"/>
 								</a4j:commandLink> 
+								-->
+								<h:outputLink value="#{facesContext.externalContext.requestContextPath}/pages/abrirPedidoVenta/#{pedidoFastView.pedidoId}"
+											  title="EDITAR PEDIDO VENTA #{pedidoFastView.pedidoId}" >
+									<h:outputText value="#{pedidoFastView.pedidoId}"/>									
+								</h:outputLink>
 
 								<h:outputLink value="#{facesContext.externalContext.requestContextPath}/docs/notas/Nota_PerfumeriaMarlen_No_#{pedidoFastView.pedidoId}.pdf"
 											  target="_blank">
@@ -315,13 +352,17 @@
 
 						</h:panelGrid>
 					</rich:column>
+
+					<f:facet name="footer">                
+
+                    </f:facet>				
+
 				</rich:dataTable>
-				<!--
-				<rich:datascroller	align="center" for="pedidosVentaTable" 
+				<rich:datascroller	align="center" 
+								   for="pedidosVentaTable" 
 								   maxPages="15" 
-								   page="#{pedidosVentasViewMB.scrollerPage}" 									
+								   page="#{pedidosVentasViewMB.scrollerPage}"
 								   id="sc1" />
-				-->
 			</h:panelGrid>
         </a4j:form>
     </ui:define>

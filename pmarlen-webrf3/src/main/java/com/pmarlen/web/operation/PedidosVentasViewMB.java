@@ -37,7 +37,8 @@ public class PedidosVentasViewMB {
 	private final Logger logger = LoggerFactory.getLogger(PedidosVentasViewMB.class);
 	
 	public PedidosVentasViewMB() {
-		numRecShow = 25;
+		//numRecShow = 25;
+		numRecShow = 10;
 	}
 	private List descuentosPosiblesList;
 	
@@ -125,7 +126,8 @@ public class PedidosVentasViewMB {
 		
 		logger.info("-->>> actualizarLista : before, just: numRecShow="+numRecShow);
 		try {
-			pedidoFastViewList  = pedidoVentaBusinessLogic.findPedidoFastViewLimitTo(numRecShow);
+			//pedidoFastViewList  = pedidoVentaBusinessLogic.findPedidoFastViewLimitTo(numRecShow);
+			pedidoFastViewList  = pedidoVentaBusinessLogic.findPedidoFastViewLimitTo(Integer.MAX_VALUE-1);
 			logger.info("-->>> actualizarLista : after: findPedidoFastViewOriginal size =" + pedidoFastViewList.size()+", numRecShow="+numRecShow);			
 		} catch (Exception e) {
 			pedidoFastViewList = new ArrayList<PedidoFastView>();
@@ -139,6 +141,11 @@ public class PedidosVentasViewMB {
 	
 	public void setPedidoBuscar(Integer pedidoBuscar) {
 		this.pedidoBuscar = pedidoBuscar;
+	}
+	
+	public void pedidoBuscarActionListener(ActionEvent e){
+		logger.debug("-->>> pedidoBuscarActionListener: this.pedidoBuscar:" + this.pedidoBuscar);		
+		buscarPedidoDirecto();
 	}
 	
 	public String buscarPedidoDirecto() {

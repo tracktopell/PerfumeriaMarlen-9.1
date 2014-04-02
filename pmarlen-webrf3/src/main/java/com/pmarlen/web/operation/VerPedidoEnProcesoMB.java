@@ -168,7 +168,12 @@ public class VerPedidoEnProcesoMB {
 		logger.debug("## >> prepararPedidoParaEdicionFromList: pedidoVentaId=" + pedidoVentaId);
 		cargarPadidoVenta(pedidoVentaId);
 	}
-	
+
+	public void prepararPedidoParaEdicion(Integer pedidoVentaId) {
+		logger.debug("## >> prepararPedidoParaEdicion(int): paramPedidoVentaId=" + pedidoVentaId);
+		cargarPadidoVenta(pedidoVentaId);
+	}
+
 	public String prepararPedidoParaEdicion() {
 
 		FacesContext context = FacesContext.getCurrentInstance();
