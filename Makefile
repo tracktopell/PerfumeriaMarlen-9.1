@@ -30,20 +30,28 @@ uallp: pom.xml
 #	~/apache-tomcat-6.0.37/bin/startup.sh
 
 pallt: pom.xml
+	sudo /etc/init.d/tomcat6_hudson stop
+	sudo /etc/init.d/tomcat6_hudson start
 	mvn  clean install -Ptest -e -Dmaven.test.skip
 	mvn  tomcat:deploy -Ptest -Dmaven.test.skip
 
 puallt: pom.xml
 	mvn  tomcat:undeploy -Ptest
+	sudo /etc/init.d/tomcat6_hudson stop
+	sudo /etc/init.d/tomcat6_hudson start
 	mvn  clean install -Ptest -e -Dmaven.test.skip 
 	mvn  tomcat:deploy -Ptest -Dmaven.test.skip
 
 
 pallp: pom.xml
+	sudo /etc/init.d/tomcat6 stop
+	sudo /etc/init.d/tomcat6 start
 	mvn  clean install -Pprod -e -Dmaven.test.skip 
 	mvn  tomcat:deploy -Pprod -Dmaven.test.skip
 
 puallp: pom.xml
 	mvn  tomcat:undeploy -Pprod
+	sudo /etc/init.d/tomcat6 stop
+	sudo /etc/init.d/tomcat6 start
 	mvn  clean install -Pprod -e -Dmaven.test.skip 
 	mvn  tomcat:deploy -Pprod -Dmaven.test.skip
