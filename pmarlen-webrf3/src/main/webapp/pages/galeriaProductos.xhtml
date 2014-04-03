@@ -36,6 +36,23 @@
 				font-family: sans-serif;
 				color: red;				
 			}
+			.tooltip {
+				background-color:#{richSkin.generalBackgroundColor};
+				border-width:3px;
+				padding:10px;
+			}
+			.tooltip-text {
+				width:100%;
+				height:100%;
+				cursor:url;
+				border-width:0px;
+				text-align:center;
+				display: table-cell;
+				vertical-align: middle;
+			}
+			.tooltipData {
+				font-weight: bold;
+			}
 		</style>
 
         <a4j:form id="galeriaProductosForm">
@@ -58,12 +75,12 @@
 						<h:graphicImage value="/images/error16x16.gif" />   
 					</f:facet>
 				</rich:messages>
-				
+
 				<h:panelGrid columns="2" styleClass="center" width="100%"
 							 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign">
 					<h:outputText		value="#{UIEntityLabels.LABEL_ALMACEN}:" styleClass="label_bold_right"/>
 					<h:outputText		value="#{galeriaProductosMB.almacenObjetivoDescripcionTipo}"/>
-					
+
 					<!--
 					<h:outputText		value="#{UIEntityLabels.LABEL_ALMACEN}:" styleClass="label_bold_right"/>
 					<h:panelGroup >
@@ -121,7 +138,7 @@
 					</h:selectOneMenu>
 
 				</h:panelGrid>
-				
+
 				<rich:dataGrid	id="galeriaProdsTable" 
 							   value="#{galeriaProductosMB.inventarioFastViewList}"
 							   var="inventarioFastView"
@@ -166,34 +183,54 @@
 
 					</f:facet>
 
-					<h:panelGrid columns="2" columnClasses="columnWidth30 rightAlign, columnWidth70 leftAlign">
-						<h:outputText value="CODIGO:" styleClass="label_bold_right"/>
-						<h:outputText value="#{inventarioFastView.productoCodigoBarras}" />
-						<h:outputText value="NOMBRE:" styleClass="label_bold_right"/>
-						<h:outputText value="#{inventarioFastView.productoNombre}" />
-						<h:outputText value="PRESENTACION:" styleClass="label_bold_right"/>
-						<h:outputText value="#{inventarioFastView.productoPresentacion}" />
-						
-						<h:outputText value="INDUSTRIA:" styleClass="label_bold_right"/>
-						<h:outputText value="#{inventarioFastView.inductriaNombre}" />
-						<h:outputText value="LINEA:" styleClass="label_bold_right"/>
-						<h:outputText value="#{inventarioFastView.lineaNombre}" />
-						<h:outputText value="MARCA:" styleClass="label_bold_right"/>
-						<h:outputText value="#{inventarioFastView.marcaNombre}" />
-						<h:outputText value="PRECIO:" styleClass="label_bold_right"/>
-						<h:outputText value="#{inventarioFastView.almacenProductoPrecioVenta}" >
-							<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
-						</h:outputText>
-						<h:outputText value="EXISTENCIA:" styleClass="label_bold_right"/>
-						
-						<h:outputText value="#{inventarioFastView.almacenProductoCantidadActual}" rendered="#{inventarioFastView.almacenProductoCantidadActual ge 1}" />
-						<h:outputText value="#{inventarioFastView.almacenProductoCantidadActual}" rendered="#{inventarioFastView.almacenProductoCantidadActual lt 1}" class="deplecatedPrice"/>
-						
-						<!--
-						<h:outputText value="SUFICIENTE" rendered="#{inventarioFastView.almacenProductoCantidadActual ge 1}" />
-						<h:outputText value="AGOTADO"	 rendered="#{inventarioFastView.almacenProductoCantidadActual lt 1}" class="deplecatedPrice"/>
-						-->
+					<!--
+					<h:panelGrid columns="1" columnClasses="centerAlign">
+
 					</h:panelGrid>
+					-->
+
+					<rich:panel  id="sample3" bodyClass="centerAlign" style="width: 100%">
+						<h:panelGrid columns="1" columnClasses="columnWidth95 centerAlign">
+							
+							<h:graphicImage value="/images/producto/MIN_PRODUCTO_${inventarioFastView.productoId}.jpg"/>
+
+							<h:outputText value="#{inventarioFastView.productoNombre} / #{inventarioFastView.productoPresentacion}" />
+						</h:panelGrid>
+						
+						<rich:toolTip direction="top-right" styleClass="tooltip" layout="block" event="onclick">
+							<f:facet name="defaultContent">
+								<strong>Recuperando Historico, espere un momento ...</strong>
+							</f:facet>
+
+							<h:panelGrid columns="2" columnClasses="columnWidth30 rightAlign, columnWidth70 leftAlign">
+								<h:outputText value="CODIGO:" styleClass="label_bold_right"/>
+								<h:outputText value="#{inventarioFastView.productoCodigoBarras}" />
+								<h:outputText value="NOMBRE:" styleClass="label_bold_right"/>
+								<h:outputText value="#{inventarioFastView.productoNombre}" />
+								<h:outputText value="PRESENTACION:" styleClass="label_bold_right"/>
+								<h:outputText value="#{inventarioFastView.productoPresentacion}" />
+
+								<h:outputText value="INDUSTRIA:" styleClass="label_bold_right"/>
+								<h:outputText value="#{inventarioFastView.inductriaNombre}" />
+								<h:outputText value="LINEA:" styleClass="label_bold_right"/>
+								<h:outputText value="#{inventarioFastView.lineaNombre}" />
+								<h:outputText value="MARCA:" styleClass="label_bold_right"/>
+								<h:outputText value="#{inventarioFastView.marcaNombre}" />
+								<h:outputText value="PRECIO:" styleClass="label_bold_right"/>
+								<h:outputText value="#{inventarioFastView.almacenProductoPrecioVenta}" >
+									<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+								</h:outputText>
+								<h:outputText value="EXISTENCIA:" styleClass="label_bold_right"/>
+
+								<h:outputText value="#{inventarioFastView.almacenProductoCantidadActual}" rendered="#{inventarioFastView.almacenProductoCantidadActual ge 1}" />
+								<h:outputText value="#{inventarioFastView.almacenProductoCantidadActual}" rendered="#{inventarioFastView.almacenProductoCantidadActual lt 1}" class="deplecatedPrice"/>
+								<!--
+								<h:outputText value="SUFICIENTE" rendered="#{inventarioFastView.almacenProductoCantidadActual ge 1}" />
+								<h:outputText value="AGOTADO"	 rendered="#{inventarioFastView.almacenProductoCantidadActual lt 1}" class="deplecatedPrice"/>
+								-->
+							</h:panelGrid>
+						</rich:toolTip>				
+					</rich:panel>
 
 					<f:facet name="footer">
 						<rich:datascroller	rendered="#{galeriaProductosMB.entityCount ge 11}"
@@ -204,7 +241,7 @@
 
 					</f:facet>
 				</rich:dataGrid>
-				
+
 				<!--
 				<rich:dataTable		id="galeriaProdsTable"
 								 value="#{galeriaProductosMB.inventarioFastViewList}"
