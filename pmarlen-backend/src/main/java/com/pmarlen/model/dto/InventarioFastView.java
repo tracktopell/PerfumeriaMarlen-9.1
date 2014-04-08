@@ -4,6 +4,9 @@
  */
 package com.pmarlen.model.dto;
 
+import com.pmarlen.web.model.FileUploaded;
+import java.util.ArrayList;
+
 /**
  *
  * @author alfredo
@@ -28,6 +31,7 @@ AP.CANTIDAD_ACTUAL,AP.PRECIO_VENTA,AP.COSTO,AP.PRECIO_MAYOREO
 	private Integer almacenProductoCantidadActual;
 	private Double almacenProductoPrecioVenta;
 	private Double almacenProductoPrecioMayoreo;
+	private ArrayList<FileUploaded> fuList;
 
 	public InventarioFastView(Object[] rs) {		
 		this.sucursalId = ((Integer)rs[ 0 ]);
@@ -44,8 +48,6 @@ AP.CANTIDAD_ACTUAL,AP.PRECIO_VENTA,AP.COSTO,AP.PRECIO_MAYOREO
 		this.almacenProductoPrecioVenta = ((Double)rs[ 11 ]);
 		this.almacenProductoPrecioMayoreo = ((Double)rs[ 12 ]);
 	}
-	
-	
 	
 	@Override
 	public boolean equals(Object obj) {
@@ -234,6 +236,16 @@ AP.CANTIDAD_ACTUAL,AP.PRECIO_VENTA,AP.COSTO,AP.PRECIO_MAYOREO
 	public void setAlmacenProductoPrecioMayoreo(Double almacenProductoPrecioMayoreo) {
 		this.almacenProductoPrecioMayoreo = almacenProductoPrecioMayoreo;
 	}
-	
+
+	public ArrayList<FileUploaded> getFuList() {
+		if(fuList == null){
+			fuList = new ArrayList<FileUploaded>(); 
+		}
+		return fuList;
+	}
+
+	public void setFuList(ArrayList<FileUploaded> fuList) {
+		this.fuList = fuList;
+	}
 	
 }

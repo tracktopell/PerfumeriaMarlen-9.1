@@ -22,12 +22,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.NoSuchElementException;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import org.richfaces.event.DropEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -495,5 +495,5 @@ public class GaleriaProductosMB {
 	public void setMarcaSelectedId(Integer marcaSelectedId) {
 		this.marcaSelectedId = marcaSelectedId;
 	}
-	
+		
 }

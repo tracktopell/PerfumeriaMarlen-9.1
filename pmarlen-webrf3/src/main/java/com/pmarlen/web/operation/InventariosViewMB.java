@@ -72,7 +72,7 @@ public class InventariosViewMB {
 
     public InventariosViewMB() {
 		numRecShow = 25;
-		codigoBuscarEnabled=false;
+		codigoBuscarEnabled=true;
 		//almacenId = 1;
 		tipoAlmacen = Constants.ALMACEN_LINEA;
     }
@@ -164,8 +164,9 @@ public class InventariosViewMB {
 				}
 				
 			} else {
-				logger.debug(">> actualizarLista : \tfind all");
-				inventarioFastViewList = pedidoVentaBusinessLogic.findInventarioFastView(almacenId);			
+				logger.debug(">> actualizarLista : \tfind nothing !");
+				inventarioFastViewList = new ArrayList<InventarioFastView>();
+				//inventarioFastViewList = pedidoVentaBusinessLogic.findInventarioFastView(almacenId);			
 			}
 			
 			logger.debug(">> actualizarLista : after inventarioFastViewList size ="+inventarioFastViewList.size());			

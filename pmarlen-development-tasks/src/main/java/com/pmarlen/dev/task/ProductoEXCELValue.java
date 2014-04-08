@@ -12,16 +12,16 @@ public class ProductoEXCELValue {
     String  unidadMedida;
     String  unidadesXCaja;
 	
-    Double  costo;
-	Double  costoVenta;
-	Double  costoVentaSc;
-	Double  costoVentaOp;
+    double  costo;
+	double  costoVenta;
+	double  costoVentaSc;
+	double  costoVentaOp;
 	
-    Double  precioVenta;
-	Double  precioVentaOp;
-    Double  precioVentaSuc;
-	Double  precioVentaSucOp;
-	Double  precioVentaReg;
+    double  precioVenta;
+	double  precioVentaOp;
+    double  precioVentaSuc;
+	double  precioVentaSucOp;
+	double  precioVentaReg;
 	
 	int     cantidadAlmacen;
 	int     cantidadAlmacenOp;

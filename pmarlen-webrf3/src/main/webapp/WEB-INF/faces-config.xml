@@ -494,6 +494,38 @@
         </managed-property>
 		
     </managed-bean>
+	<managed-bean>
+        <managed-bean-name>galeriaProductosAsignarFotosMB</managed-bean-name>
+        <managed-bean-class>com.pmarlen.web.operation.GaleriaProductosAsignarFotosMB</managed-bean-class>
+
+        <managed-bean-scope>session</managed-bean-scope>
+
+		<managed-property>
+            <property-name>pedidoVentaBusinessLogic</property-name>
+            <value>#{pedidoVentaBusinessLogic}</value>
+        </managed-property>		
+		
+		<managed-property>
+            <property-name>marcaJPAController</property-name>
+            <value>#{marcaJPAController}</value>
+        </managed-property>
+        
+		<managed-property>
+            <property-name>industriaJPAController</property-name>
+            <value>#{industriaJPAController}</value>
+        </managed-property>
+        
+		<managed-property>
+            <property-name>lineaJPAController</property-name>
+            <value>#{lineaJPAController}</value>
+        </managed-property>
+        
+		<managed-property>
+            <property-name>sucursalJPAController</property-name>
+            <value>#{sucursalJPAController}</value>
+        </managed-property>
+		
+    </managed-bean>
 
     <managed-bean>
         <managed-bean-name>pedidoEnProcesoMB</managed-bean-name>

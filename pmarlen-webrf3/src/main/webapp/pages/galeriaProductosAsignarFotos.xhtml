@@ -1,0 +1,334 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+
+                template="/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+		<h:outputFormat value=" {0} >> {1} ">
+			<f:param value="#{UIMessages.MAIN_SHORT_TITLE}" />
+			<f:param value="INVENTARIOS ACTUALES" />
+		</h:outputFormat>		
+
+    </ui:define>
+
+    <ui:define name="location">
+		<h:outputFormat value=" {0} > {1} > {2}">
+			<f:param value="#{UIMessages.MENU_OPERATION}" />
+			<f:param value="GALERIA DE PRODUCTOS" />
+		</h:outputFormat>			
+
+    </ui:define>
+
+    <ui:define name="body">
+
+		<style>
+			.onTop{
+				vertical-align: top;
+				background-color: transparent;
+			}
+			.deplecatedPrice{
+				font-size: smaller;
+				font-family: sans-serif;
+				color: red;				
+			}
+			.tooltip {
+				background-color:#{richSkin.generalBackgroundColor};
+				border-width:3px;
+				padding:10px;
+			}
+			.tooltip-text {
+				width:100%;
+				height:100%;
+				cursor:url;
+				border-width:0px;
+				text-align:center;
+				display: table-cell;
+				vertical-align: middle;
+			}
+			.tooltipData {
+				font-weight: bold;
+			}
+			.infoUploadedData {
+				height: 202px;
+				overflow: auto;
+			}
+		</style>
+
+		<rich:dragIndicator id="indicator" />
+
+		<h:form id="galeriaProductosForm">
+			<h:panelGrid id="panelGridPrincipal"
+						 width="100%" 
+						 columns="1">
+
+				<rich:messages passedLabel="OK" layout="list" globalOnly="true" 
+							   showDetail="true"
+							   infoClass="littleInfoMessage_bold"
+							   warnClass="littleWarnMessage_bold"
+							   errorClass="littleErrorMessage_bold">
+					<f:facet name="infoMarker">
+						<h:graphicImage  value="/images/info16x16.gif" /> 
+					</f:facet>
+					<f:facet name="warnMarker">
+						<h:graphicImage value="/images/alerta16x16.gif" />   
+					</f:facet>
+					<f:facet name="errorMarker">
+						<h:graphicImage value="/images/error16x16.gif" />   
+					</f:facet>
+				</rich:messages>
+				<h:panelGrid columns="2" styleClass="center" width="100%"
+							 columnClasses="columnWidth30 centerAlign onTop, columnWidth70 centerAlign onTop">
+					<h:panelGrid columns="1" styleClass="center" width="100%"
+								 columnClasses="centerAlign">
+						<rich:fileUpload uploadControlLabel="Subir"
+										 cancelEntryControlLabel="Cancelar"
+										 clearAllControlLabel="Limpiar todo"
+										 doneLabel="Subido correctamente"
+										 clearControlLabel="OK"
+										 stopControlLabel="Detener"
+										 id="uploadControl"
+										 autoclear="true"
+										 fileUploadListener="#{galeriaProductosAsignarFotosMB.listener}"
+										 maxFilesQuantity="#{galeriaProductosAsignarFotosMB.uploadsAvailable}"
+										 immediateUpload="#{galeriaProductosAsignarFotosMB.autoUpload}"
+										 allowFlash="#{galeriaProductosAsignarFotosMB.useFlash}"
+										 acceptedTypes="zip, jpg, jpeg, gif, png, bmp"
+										 listWidth="100%"
+										 listHeight="0"
+										 addControlLabel="Agregar Archivo (-#{galeriaProductosAsignarFotosMB.uploadsAvailable})"
+										 cleanButtonClassDisabled="false">
+							<a4j:support event="onuploadcomplete" reRender="uploadControl, infoUploadedData" />
+						</rich:fileUpload>
+
+						<h:panelGroup id="infoUploadedData">
+							<rich:panel>
+								<f:facet name="header">
+									<h:panelGroup>
+										<h:outputText value="ARCHIVOS SUBIDOS : " />
+										<a4j:commandButton action="#{galeriaProductosAsignarFotosMB.clearUploadData}"
+														   reRender="uploadControl, infoUploadedData" 
+														   value="LIMPIAR"
+														   rendered="#{galeriaProductosAsignarFotosMB.size>0}" />
+									</h:panelGroup>
+
+								</f:facet>
+								<h:outputText value="SIN ARCHIVOS"
+											  rendered="#{galeriaProductosAsignarFotosMB.size==0}" />
+
+								<rich:dataGrid columns="1" value="#{galeriaProductosAsignarFotosMB.files}"
+											   var="file" rowKeyVar="row"
+											   width="100%"
+											   columnClasses="centerAlign onTop">
+									
+									
+									<a4j:outputPanel>
+										<rich:dragSupport dragIndicator=":indicator"
+														  dragType="#{file.family}" 
+														  dragValue="#{file}">
+											<rich:dndParam name="label" value="#{file.id}" />
+										</rich:dragSupport>
+										<rich:panel bodyClass="rich-laguna-panel-no-header centerAlign onTop">
+											<h:graphicImage value="/uploaded/#{file.id}" title="#{file.mime} / #{file.humanLength}" />   
+										</rich:panel>									
+
+										<h:outputText value="#{file.mime} / #{file.humanLength}"></h:outputText>
+									</a4j:outputPanel>
+								</rich:dataGrid>
+							</rich:panel>
+
+						</h:panelGroup>
+
+					</h:panelGrid>
+
+					<h:panelGrid columns="1" styleClass="center" width="100%"
+								 columnClasses="centerAlign">
+
+
+						<h:panelGrid columns="2" styleClass="center" width="100%"
+									 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign">
+							<h:outputText		value="#{UIEntityLabels.LABEL_ALMACEN}:" styleClass="label_bold_right"/>
+							<h:outputText		value="#{galeriaProductosAsignarFotosMB.almacenObjetivoDescripcionTipo}"/>
+
+							<!--
+							<h:outputText		value="#{UIEntityLabels.LABEL_ALMACEN}:" styleClass="label_bold_right"/>
+							<h:panelGroup >
+								<h:selectOneRadio id="selectOneRadioAlmacen"
+												  value="#{galeriaProductosAsignarFotosMB.tipoAlmacen}" 
+												  valueChangeListener="#{galeriaProductosAsignarFotosMB.almacenSelected}">
+									<a4j:support	reRender="galeriaProductosForm" event="onchange"/>
+									<f:selectItems  value="#{galeriaProductosAsignarFotosMB.tipoAlmacenList}"/>
+								</h:selectOneRadio>						
+							</h:panelGroup>
+							-->
+							<h:outputText		value="BUSCAR POR:" styleClass="label_bold_right"/>
+							<h:panelGroup >
+								<h:selectOneRadio id="selectOneRadioSelectMode"
+												  value="#{galeriaProductosAsignarFotosMB.selecionMode}" 
+												  valueChangeListener="#{galeriaProductosAsignarFotosMB.selectModeChanged}">
+									<a4j:support	reRender="galeriaProductosForm" event="onchange"/>
+
+									<f:selectItem  itemValue="#{galeriaProductosAsignarFotosMB.SELECTION_MODE_INDUSTRIA_MARCA}"
+												   itemLabel="INDUSTRIA Y MARCA"/>
+
+									<f:selectItem  itemValue="#{galeriaProductosAsignarFotosMB.SELECTION_MODE_LINEA_MARCA}"     
+												   itemLabel="LINEA Y MARCA"/>
+								</h:selectOneRadio>
+							</h:panelGroup>
+
+							<h:outputText		value="INDUSTRIA:" styleClass="label_bold_right" 
+										   rendered="#{galeriaProductosAsignarFotosMB.selecionMode eq galeriaProductosMB.SELECTION_MODE_INDUSTRIA_MARCA}"/>
+							<h:selectOneMenu	id="selectOneMenuIndustria"
+											 rendered="#{galeriaProductosAsignarFotosMB.selecionMode eq galeriaProductosMB.SELECTION_MODE_INDUSTRIA_MARCA}"
+											 value="#{galeriaProductosAsignarFotosMB.industriaSelectedId}" 
+											 valueChangeListener="#{galeriaProductosAsignarFotosMB.industriaChanged}">
+								<a4j:support	reRender="galeriaProductosForm" event="onchange"/>
+								<f:selectItems	value="#{galeriaProductosAsignarFotosMB.industriaList}"/>
+							</h:selectOneMenu>
+
+							<h:outputText		value="LINEA:" styleClass="label_bold_right" 
+										   rendered="#{galeriaProductosAsignarFotosMB.selecionMode eq galeriaProductosMB.SELECTION_MODE_LINEA_MARCA}"/>
+							<h:selectOneMenu	id="selectOneMenuLinea"
+											 rendered="#{galeriaProductosAsignarFotosMB.selecionMode eq galeriaProductosMB.SELECTION_MODE_LINEA_MARCA}"
+											 value="#{galeriaProductosAsignarFotosMB.lineaSelectedId}"
+											 valueChangeListener="#{galeriaProductosAsignarFotosMB.lineaChanged}">
+								<a4j:support	reRender="galeriaProductosForm" event="onchange"/>
+								<f:selectItems	value="#{galeriaProductosAsignarFotosMB.lineaList}"/>
+							</h:selectOneMenu>
+
+							<h:outputText		value="MARCA:" styleClass="label_bold_right" 
+										   rendered="#{not empty galeriaProductosMB.industriaSelectedId or not empty galeriaProductosMB.lineaSelectedId}"/>
+							<h:selectOneMenu	id="selectOneMenuMarca"
+											 rendered="#{not empty galeriaProductosMB.industriaSelectedId or not empty galeriaProductosMB.lineaSelectedId}"
+											 value="#{galeriaProductosAsignarFotosMB.marcaSelectedId}" 
+											 valueChangeListener="#{galeriaProductosAsignarFotosMB.marcaChanged}">
+								<a4j:support	reRender="galeriaProductosForm" event="onchange"/>
+								<f:selectItems	value="#{galeriaProductosAsignarFotosMB.marcaList}"/>
+							</h:selectOneMenu>
+
+						</h:panelGrid>
+
+						<rich:panel id="XPanel">
+
+							<rich:dropSupport id="dnet" 
+											  acceptedTypes="image" 
+											  dropValue="image"											  
+											  dropListener="#{galeriaProductosAsignarFotosMB.processDrop}" 
+											  reRender="XPanel, infoUploadedData">
+							</rich:dropSupport>
+
+							<rich:dataTable id="dnettable" value="#{inventarioFastView.fuList}" var="uf">
+								<h:column>
+									<h:outputText value="#{uf.mime} / #{uf.humanLength}"></h:outputText>
+								</h:column>
+							</rich:dataTable>
+
+						</rich:panel>
+
+						<!--
+						<rich:dataGrid	id="galeriaProdsTable" 
+									   value="#{galeriaProductosAsignarFotosMB.inventarioFastViewList}"
+									   var="inventarioFastView"
+									   columns="4"
+									   elements="#{galeriaProductosAsignarFotosMB.numRecShow}"															   
+									   width="100%"
+									   styleClass="onTop">
+							<f:facet name="header">
+
+								<h:panelGroup style="display:block; text-align:left; background-color:transparent; width: 100%;" >
+									<h:outputText value="PRODUCTOS ENCONTRADOS: #{galeriaProductosAsignarFotosMB.entityCount}" />
+									<rich:spacer width="20"/>
+
+									<h:outputText value="#{UIMessages.COMMON_VIEW_REG_PAGE} : " />
+
+									[
+									<h:outputText value="10" rendered="#{galeriaProductosAsignarFotosMB.numRecShow eq 10}"/>
+									<a4j:commandLink reRender="galeriaProdsTable,sc1" actionListener="#{galeriaProductosAsignarFotosMB.updateRecShow}" rendered="#{galeriaProductosAsignarFotosMB.numRecShow ne 10}">
+										<f:param name="numRecShowToSet" value="10"/>
+										<h:outputText value="10" /> 
+									</a4j:commandLink>
+									|
+									<h:outputText value="25" rendered="#{galeriaProductosAsignarFotosMB.numRecShow eq 25}"/>
+									<a4j:commandLink reRender="galeriaProdsTable,sc1" actionListener="#{galeriaProductosAsignarFotosMB.updateRecShow}" rendered="#{galeriaProductosAsignarFotosMB.numRecShow ne 25}">
+										<f:param name="numRecShowToSet" value="25"/>
+										<h:outputText value="25" /> 
+									</a4j:commandLink>
+									|
+									<h:outputText value="100" rendered="#{galeriaProductosAsignarFotosMB.numRecShow eq 100}"/>
+									<a4j:commandLink reRender="galeriaProdsTable,sc1" actionListener="#{galeriaProductosAsignarFotosMB.updateRecShow}" rendered="#{galeriaProductosAsignarFotosMB.numRecShow ne 100}">
+										<f:param name="numRecShowToSet" value="100"/>
+										<h:outputText value="100" /> 
+									</a4j:commandLink>				
+									|
+									<h:outputText value="500" rendered="#{galeriaProductosAsignarFotosMB.numRecShow eq 500}"/>
+									<a4j:commandLink reRender="galeriaProdsTable, sc1" actionListener="#{galeriaProductosAsignarFotosMB.updateRecShow}" rendered="#{galeriaProductosAsignarFotosMB.numRecShow ne 500}">
+										<f:param name="numRecShowToSet" value="500"/>
+										<h:outputText value="500" /> 
+									</a4j:commandLink>
+									]
+								</h:panelGroup>
+
+							</f:facet>
+
+
+							<rich:panel  id="sample3" bodyClass="centerAlign" style="width: 100%">
+								<h:panelGrid columns="1" columnClasses="columnWidth95 centerAlign">
+
+									<h:graphicImage value="/images/producto/MIN_PRODUCTO_${inventarioFastView.productoId}.jpg"/>
+
+									<h:outputText value="#{inventarioFastView.productoNombre} / #{inventarioFastView.productoPresentacion}" />
+								</h:panelGrid>
+								<rich:toolTip direction="top-right" styleClass="tooltip" layout="block" event="onclick">
+									<f:facet name="defaultContent">
+										<strong>Recuperando Historico, espere un momento ...</strong>
+									</f:facet>
+
+									<h:panelGrid columns="2" columnClasses="columnWidth30 rightAlign, columnWidth70 leftAlign">
+										<h:outputText value="CODIGO:" styleClass="label_bold_right"/>
+										<h:outputText value="#{inventarioFastView.productoCodigoBarras}" />
+										<h:outputText value="NOMBRE:" styleClass="label_bold_right"/>
+										<h:outputText value="#{inventarioFastView.productoNombre}" />
+										<h:outputText value="PRESENTACION:" styleClass="label_bold_right"/>
+										<h:outputText value="#{inventarioFastView.productoPresentacion}" />
+
+										<h:outputText value="INDUSTRIA:" styleClass="label_bold_right"/>
+										<h:outputText value="#{inventarioFastView.inductriaNombre}" />
+										<h:outputText value="LINEA:" styleClass="label_bold_right"/>
+										<h:outputText value="#{inventarioFastView.lineaNombre}" />
+										<h:outputText value="MARCA:" styleClass="label_bold_right"/>
+										<h:outputText value="#{inventarioFastView.marcaNombre}" />
+										<h:outputText value="PRECIO:" styleClass="label_bold_right"/>
+										<h:outputText value="#{inventarioFastView.almacenProductoPrecioVenta}" >
+											<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+										</h:outputText>
+										<h:outputText value="EXISTENCIA:" styleClass="label_bold_right"/>
+
+										<h:outputText value="#{inventarioFastView.almacenProductoCantidadActual}" rendered="#{inventarioFastView.almacenProductoCantidadActual ge 1}" />
+										<h:outputText value="#{inventarioFastView.almacenProductoCantidadActual}" rendered="#{inventarioFastView.almacenProductoCantidadActual lt 1}" class="deplecatedPrice"/>
+										
+									</h:panelGrid>
+								</rich:toolTip>				
+							</rich:panel>
+
+							<f:facet name="footer">
+								<rich:datascroller	rendered="#{galeriaProductosAsignarFotosMB.entityCount ge 11}"
+												   align="center" for="galeriaProdsTable" 
+												   maxPages="10" 
+												   page="#{galeriaProductosAsignarFotosMB.scrollerPage}" 									
+												   id="sc1" />
+
+							</f:facet>
+						</rich:dataGrid>
+						-->
+
+					</h:panelGrid>
+
+				</h:panelGrid>
+			</h:panelGrid>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
