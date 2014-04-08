@@ -152,6 +152,9 @@ public class TurboUpdateFromXLSX {
 			//System.exit(0);
 			System.out.println("=======>> DB");
 			System.out.println();
+			int tipoMov =	fld.equals("-cantidad") ? 20 :
+							fld.equals("-precio")   ? 50 :  0;
+			
 			for (ProductoEXCELValue productoEV : productoHT.values()) {
 
 				Object productoId = searchFor(connQuery, "SELECT ID FROM PRODUCTO WHERE CODIGO_BARRAS = ?", productoEV.codigoBarras.toUpperCase());
@@ -162,17 +165,25 @@ public class TurboUpdateFromXLSX {
 					
 					resultUpdate = executeFor(connQuery,
 							"INSERT INTO MOVIMIENTO_HISTORICO_PRODUCTO (ALMACEN_ID,PRODUCTO_ID,FECHA,TIPO_MOVIMIENTO_ID,CANTIDAD,COSTO,PRECIO,USUARIO_ID) "
-							+ "VALUES(1,?,?,20,?,?,?,'root')",
-							new Object[]{productoEV.id, new Date(), productoEV.cantidadAlmacen, productoEV.costo, productoEV.precioVenta});
+							+ "VALUES(1,?,?,?,?,?,?,'root')",
+							new Object[]{productoEV.id, new Date(),tipoMov ,productoEV.cantidadAlmacen, productoEV.costo, productoEV.precioVenta});
 					if (resultUpdate == null) {
 						throw new IllegalStateException("Error insert MOVIMIENTO_HISTORICO_PRODUCTO.");
 					}
-					
-					resultUpdate = executeFor(connQuery,
-							"UPDATE ALMACEN_PRODUCTO SET CANTIDAD_ACTUAL=?,PRECIO_VENTA=?,PRECIO_MAYOREO=?,COSTO=? WHERE PRODUCTO_ID=? AND ALMACEN_ID=1 ",
-							new Object[]{productoEV.cantidadAlmacen, productoEV.precioVenta, productoEV.precioVenta, productoEV.costoVenta, productoEV.id});
-					if (resultUpdate == null) {
-						throw new IllegalStateException("Error update ALMACEN_PRODUCTO.");
+					if(tipoMov==20){
+						resultUpdate = executeFor(connQuery,
+								"UPDATE ALMACEN_PRODUCTO SET CANTIDAD_ACTUAL=CANTIDAD_ACTUAL+? WHERE PRODUCTO_ID=? AND ALMACEN_ID=1 ",
+								new Object[]{productoEV.cantidadAlmacen, productoEV.id});
+						if (resultUpdate == null) {
+							throw new IllegalStateException("Error update +CANTIDAD_ACTUAL in ALMACEN_PRODUCTO.");
+						}
+					} else if(tipoMov==50){
+						resultUpdate = executeFor(connQuery,
+								"UPDATE ALMACEN_PRODUCTO SET PRECIO_VENTA=? WHERE PRODUCTO_ID=? AND ALMACEN_ID=1 ",
+								new Object[]{productoEV.precioVenta, productoEV.id});
+						if (resultUpdate == null) {
+							throw new IllegalStateException("Error update PRECIO_VENTA in ALMACEN_PRODUCTO.");
+						}
 					}
 					
 				} 
