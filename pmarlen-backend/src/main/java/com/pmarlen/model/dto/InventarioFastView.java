@@ -31,7 +31,7 @@ AP.CANTIDAD_ACTUAL,AP.PRECIO_VENTA,AP.COSTO,AP.PRECIO_MAYOREO
 	private Integer almacenProductoCantidadActual;
 	private Double almacenProductoPrecioVenta;
 	private Double almacenProductoPrecioMayoreo;
-	private ArrayList<FileUploaded> fuList;
+	private FileUploaded fileUploaded;
 
 	public InventarioFastView(Object[] rs) {		
 		this.sucursalId = ((Integer)rs[ 0 ]);
@@ -237,15 +237,12 @@ AP.CANTIDAD_ACTUAL,AP.PRECIO_VENTA,AP.COSTO,AP.PRECIO_MAYOREO
 		this.almacenProductoPrecioMayoreo = almacenProductoPrecioMayoreo;
 	}
 
-	public ArrayList<FileUploaded> getFuList() {
-		if(fuList == null){
-			fuList = new ArrayList<FileUploaded>(); 
-		}
-		return fuList;
+	public void setFileUploaded(FileUploaded fileUploaded) {
+		this.fileUploaded = fileUploaded;
 	}
 
-	public void setFuList(ArrayList<FileUploaded> fuList) {
-		this.fuList = fuList;
+	public FileUploaded getFileUploaded() {
+		return fileUploaded;
 	}
 	
 }

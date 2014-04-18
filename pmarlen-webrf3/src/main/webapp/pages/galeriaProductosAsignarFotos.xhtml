@@ -123,20 +123,23 @@
 											   var="file" rowKeyVar="row"
 											   width="100%"
 											   columnClasses="centerAlign onTop">
-									
-									
-									<a4j:outputPanel>
-										<rich:dragSupport dragIndicator=":indicator"
-														  dragType="#{file.family}" 
-														  dragValue="#{file}">
-											<rich:dndParam name="label" value="#{file.id}" />
-										</rich:dragSupport>
-										<rich:panel bodyClass="rich-laguna-panel-no-header centerAlign onTop">
-											<h:graphicImage value="/uploaded/#{file.id}" title="#{file.mime} / #{file.humanLength}" />   
-										</rich:panel>									
 
-										<h:outputText value="#{file.mime} / #{file.humanLength}"></h:outputText>
-									</a4j:outputPanel>
+
+									<rich:panel bodyClass="rich-laguna-panel-no-header centerAlign onTop">
+										<h:graphicImage value="/uploaded/#{file.id}" title="#{file.mime} / #{file.humanLength}" />   
+									</rich:panel>	
+									<a4j:commandLink   id="commandButtonSelect"
+													   rendered="#{not file.selected}"
+													   actionListener="#{galeriaProductosAsignarFotosMB.selectPicture}"
+													   ignoreDupResponses="true"
+													   reRender="infoUploadedData">
+										<f:param name="fileId" value="#{file.id}"/>
+										<h:outputText value="(   )"/>
+									</a4j:commandLink>
+									
+									<h:outputText      rendered="#{file.selected}"
+													   value="( * )"/>
+									
 								</rich:dataGrid>
 							</rich:panel>
 
@@ -147,23 +150,12 @@
 					<h:panelGrid columns="1" styleClass="center" width="100%"
 								 columnClasses="centerAlign">
 
-
+						
 						<h:panelGrid columns="2" styleClass="center" width="100%"
 									 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign">
 							<h:outputText		value="#{UIEntityLabels.LABEL_ALMACEN}:" styleClass="label_bold_right"/>
 							<h:outputText		value="#{galeriaProductosAsignarFotosMB.almacenObjetivoDescripcionTipo}"/>
 
-							<!--
-							<h:outputText		value="#{UIEntityLabels.LABEL_ALMACEN}:" styleClass="label_bold_right"/>
-							<h:panelGroup >
-								<h:selectOneRadio id="selectOneRadioAlmacen"
-												  value="#{galeriaProductosAsignarFotosMB.tipoAlmacen}" 
-												  valueChangeListener="#{galeriaProductosAsignarFotosMB.almacenSelected}">
-									<a4j:support	reRender="galeriaProductosForm" event="onchange"/>
-									<f:selectItems  value="#{galeriaProductosAsignarFotosMB.tipoAlmacenList}"/>
-								</h:selectOneRadio>						
-							</h:panelGroup>
-							-->
 							<h:outputText		value="BUSCAR POR:" styleClass="label_bold_right"/>
 							<h:panelGroup >
 								<h:selectOneRadio id="selectOneRadioSelectMode"
@@ -227,8 +219,7 @@
 							</rich:dataTable>
 
 						</rich:panel>
-
-						<!--
+						
 						<rich:dataGrid	id="galeriaProdsTable" 
 									   value="#{galeriaProductosAsignarFotosMB.inventarioFastViewList}"
 									   var="inventarioFastView"
@@ -280,7 +271,22 @@
 									<h:graphicImage value="/images/producto/MIN_PRODUCTO_${inventarioFastView.productoId}.jpg"/>
 
 									<h:outputText value="#{inventarioFastView.productoNombre} / #{inventarioFastView.productoPresentacion}" />
+									
+									<a4j:commandLink   id="commandButtonAssign"
+													   rendered="#{empty inventarioFastView.fileUploaded}"
+													   actionListener="#{galeriaProductosAsignarFotosMB.assignFileUpload}"
+													   ignoreDupResponses="true"
+													   reRender="infoUploadedData,galeriaProdsTable">
+										<f:param name="productoId" value="${inventarioFastView.productoId}"/>
+										<h:outputText value="[ASIGNAR]"/>
+									</a4j:commandLink>
+									
+									<h:graphicImage rendered="#{not empty inventarioFastView.fileUploaded}"
+													value="/uploaded/#{inventarioFastView.fileUploaded.id}" 
+													title="#{inventarioFastView.fileUploaded.mime} / #{inventarioFastView.fileUploaded.humanLength}" />   
+									
 								</h:panelGrid>
+								
 								<rich:toolTip direction="top-right" styleClass="tooltip" layout="block" event="onclick">
 									<f:facet name="defaultContent">
 										<strong>Recuperando Historico, espere un momento ...</strong>
@@ -322,7 +328,7 @@
 
 							</f:facet>
 						</rich:dataGrid>
-						-->
+						
 
 					</h:panelGrid>
 

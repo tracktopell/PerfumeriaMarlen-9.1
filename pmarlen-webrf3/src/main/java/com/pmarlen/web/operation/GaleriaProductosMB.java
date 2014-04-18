@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author VEAXX9M
  */
 public class GaleriaProductosMB {
+
 	private PedidoVentaBusinessLogic pedidoVentaBusinessLogic;
 	
 	private SucursalJPAController sucursalJPAController;
@@ -70,8 +71,6 @@ public class GaleriaProductosMB {
 	
 	private boolean codigoBuscarEnabled;
 	
-	private String codigoBuscar;
-	
 	private Almacen almacenObjetivo;
 	
 	private Hashtable<Integer,String> tipoAlmacenHashTable;	
@@ -79,9 +78,6 @@ public class GaleriaProductosMB {
 	private List<SelectItem> resultTipoAlmacenList;
 
 	private Integer tipoAlmacen;
-
-	//private Integer almacenId;
-	
 	private int numRecShow;
     
 	private final Logger logger = LoggerFactory.getLogger(GaleriaProductosMB.class);
@@ -98,7 +94,6 @@ public class GaleriaProductosMB {
 		numRecShow = 25;
 		selecionMode = SELECTION_MODE_INDUSTRIA_MARCA;
 		codigoBuscarEnabled=false;
-		//almacenId = 1;
 		tipoAlmacen = Constants.ALMACEN_LINEA;
     }
 			
@@ -107,7 +102,10 @@ public class GaleriaProductosMB {
 	private List<Marca> marcaList=null;
 	
 	public List<SelectItem> getIndustriaList() {
+		//logger.debug(">> getIndustriaList: industriaList is null?"+(industriaList==null));
+		
 		if(industriaList == null){
+			//logger.debug("\t>> getIndustriaList: industriaList = industriaJPAController.findAllEntities();");
 			industriaList = industriaJPAController.findAllEntities();
 		}
         List<SelectItem> resultList = new ArrayList<SelectItem>();
@@ -118,8 +116,12 @@ public class GaleriaProductosMB {
         }
         return resultList;
     }
+	
 	public List<SelectItem> getLineaList() {
-        if(lineaList == null) {
+        //logger.debug(">> getLineaList: lineaList is null?"+(lineaList==null));
+		
+		if(lineaList == null) {
+			//logger.debug("\t>> getLineaList: lineaList = lineaJPAController.findAllEntities();");
 			lineaList = lineaJPAController.findAllEntities();
 		}
         List<SelectItem> resultList = new ArrayList<SelectItem>();
@@ -132,7 +134,10 @@ public class GaleriaProductosMB {
     }
 	
 	public List<SelectItem> getMarcaList() {
+		//logger.debug(">> getMarcaList: marcaList is null?"+(marcaList==null)+", selecionMode="+selecionMode);
+		
         if(marcaList == null){
+			//logger.debug(">> getMarcaList: marcaList = marcaJPAController.findAllEntities();");
 			marcaList = marcaJPAController.findAllEntities();
 		}
         List<SelectItem> resultList = new ArrayList<SelectItem>();
@@ -154,25 +159,22 @@ public class GaleriaProductosMB {
     }
 	
 	public void updateRecShow(ActionEvent e) {
+		//logger.debug("\t>> updateRecShow: ");
 		FacesContext context = FacesContext.getCurrentInstance();
 
 		String numRecShowToSet = context.getExternalContext().getRequestParameterMap().get("numRecShowToSet");
 		numRecShow = Integer.parseInt(numRecShowToSet);
 		scrollerPage = 1;
-		
-		logger.debug(">> updateRecShow: numRecShowToSet="+numRecShowToSet+", scrollerPage="+scrollerPage);
-		
-		//reinicializarLista();		
-		//actualizarLista();
 	}
 
 	public void reinicializarLista(){
-		logger.debug(">> reinicializarLista");
+		//logger.debug(">> reinicializarLista");
 		inventarioFastViewList = null;
 		scrollerPage = 1;
 	}
 
     public List<InventarioFastView> getInventarioFastViewList(){
+		//logger.debug(">> getInventarioFastViewList: inventarioFastViewList="+inventarioFastViewList);
 		if(inventarioFastViewList == null){
 			actualizarLista();
 		}
@@ -226,37 +228,182 @@ public class GaleriaProductosMB {
 			return 0;
 		}
 	}
-
+	
+	private boolean aLaVergaSelectionModeSet=false;
+	private boolean aLaVergaIndustriaSet=false;
+	private boolean aLaVergaLineaSet=false;
+	private boolean aLaVergaMarcaSet=false;
+	
+	
+	
+	public void almacenSelected(ValueChangeEvent event){
+		logger.info(">> almacenSelected: old=" + event.getOldValue()+", new="+event.getNewValue()+", selecionMode"+selecionMode);        
+		tipoAlmacen            = (Integer)event.getNewValue();
+		
+		selecionMode			= SELECTION_MODE_INDUSTRIA_MARCA;		
+//		aLaVergaSelectionModeSet= true;
+//		aLaVergaIndustriaSet	= true;
+//		aLaVergaLineaSet		= true;
+//		aLaVergaMarcaSet		= true;
+//		
+		logger.info("\t>> almacenSelected: ?  selecionMode="+selecionMode+",aLaVergaSelectionModeSet="+aLaVergaSelectionModeSet);        
+		almacenObjetivo        = null;
+//		industriaSelectedId    = null;
+//		lineaSelectedId        = null;
+//		marcaSelectedId        = null;		
+		inventarioFastViewList = null;		
+		//actualizarLista();
+	}
+	
+	public void selectModeChanged(ValueChangeEvent event){
+		logger.info(">> selectModeChanged: old=" + event.getOldValue()+", new="+event.getNewValue());        
+		selecionMode           = (Integer)event.getNewValue();
+		
+		industriaSelectedId    = null;
+		lineaSelectedId        = null;		
+		marcaSelectedId        = null;
+		inventarioFastViewList = null;
+		//actualizarLista();			
+	}
+	
 	private void actualizarLista() {		
 		try{
+			//logger.debug("------------>> actualizarLista : ");
 			Integer almacenId = getAlmacenObjetivo().getId();
-			logger.debug(">> actualizarLista : almacenId="+almacenId+", marcaSelectedId="+marcaSelectedId+", industriaSelectedId="+industriaSelectedId+", lineaSelectedId="+lineaSelectedId+", selecionMode="+selecionMode);		
-			
+			//logger.debug("\t>> actualizarLista : almacenId="+almacenId+", marcaSelectedId="+marcaSelectedId+", industriaSelectedId="+industriaSelectedId+", lineaSelectedId="+lineaSelectedId+", selecionMode="+selecionMode);		
 			if( marcaSelectedId != null) {
-				logger.debug(">> actualizarLista : Find by marca");
+				//logger.debug("\t>> actualizarLista : Find by marca");
 				inventarioFastViewList = pedidoVentaBusinessLogic.findInventarioFastViewByMarca(almacenId,marcaSelectedId);
 			} else if(selecionMode == SELECTION_MODE_INDUSTRIA_MARCA && industriaSelectedId != null){
-				logger.debug(">> actualizarLista : Find by industria");
+				//logger.debug("\t>> actualizarLista : Find by industria");
 				inventarioFastViewList = pedidoVentaBusinessLogic.findInventarioFastViewByIndustria(almacenId,industriaSelectedId);				
 			} else if(selecionMode == SELECTION_MODE_LINEA_MARCA && lineaSelectedId != null){
-				logger.debug(">> actualizarLista : Find by linea");
+				//logger.debug("\t>> actualizarLista : Find by linea");
 				inventarioFastViewList = pedidoVentaBusinessLogic.findInventarioFastViewByLinea(almacenId,lineaSelectedId);
 			}
 			
 			if(inventarioFastViewList != null){
-				logger.debug(">> actualizarLista : after inventarioFastViewList size ="+inventarioFastViewList.size());			
+				//logger.debug("\t>> actualizarLista : after inventarioFastViewList size ="+inventarioFastViewList.size());			
 			} else {
-				logger.debug(">> actualizarLista : after inventarioFastViewList EMPTY :(  ");
+				//logger.debug("\t>> actualizarLista : after inventarioFastViewList EMPTY :(  ");
 			}
 			
 		} catch(Exception e){
-			logger.error(">> actualizarLista : ",e);
+			//logger.error("\t>> actualizarLista : Error:",e);
 			FacesContext.getCurrentInstance().addMessage(
                     null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al filtrar:", e.getMessage()));
 		}
 	}
 	
+	public void industriaChanged(ValueChangeEvent event){
+		//logger.info(">> industriaChanged: old=" + event.getOldValue()+", new="+event.getNewValue());
+		industriaSelectedId		= (Integer)event.getNewValue();
+		lineaSelectedId			= null;		
+		marcaSelectedId			= null;
+		inventarioFastViewList	= null;		
+	}
+	
+	public void lineaChanged(ValueChangeEvent event){
+		//logger.info(">> lineaChanged: old=" + event.getOldValue()+", new="+event.getNewValue());        
+		lineaSelectedId			= (Integer)event.getNewValue();
+		industriaSelectedId		= null;
+		marcaSelectedId			= null;
+		inventarioFastViewList	= null;
+	}
+	
+	public void marcaChanged(ValueChangeEvent event){
+		//logger.info(">> marcaChanged: old=" + event.getOldValue()+", new="+event.getNewValue());        
+		marcaSelectedId			= (Integer)event.getNewValue();
+		inventarioFastViewList	= null;
+	}
+	
+	public Sucursal getSucursalObjetivo() {
+		//logger.info(">> getSucursalObjetivo: sucursalObjetivo="+sucursalObjetivo);        
+		if(sucursalObjetivo == null) {
+			sucursalPrincipal = sucursalJPAController.getSucursalPrincipal();
+			sucursalObjetivo = sucursalPrincipal;
+		}
+		return sucursalObjetivo;
+	}
+	
+	public Almacen getAlmacenObjetivo() {
+		//logger.info(">> getAlmacenObjetivo: almacenObjetivo="+almacenObjetivo);        
+		if(almacenObjetivo == null){			
+			Collection<Almacen> almacenCollection = getSucursalObjetivo().getAlmacenCollection();
+			for(Almacen a: almacenCollection){
+				if(a.getTipoAlmacen() == tipoAlmacen){
+					almacenObjetivo = a;
+					break;
+				}
+			}
+		}
+		return almacenObjetivo;
+	}
+
+	public void setIndustriaJPAController(IndustriaJPAController industriaJPAController) {
+		this.industriaJPAController = industriaJPAController;
+	}
+
+	public void setLineaJPAController(LineaJPAController lineaJPAController) {
+		this.lineaJPAController = lineaJPAController;
+	}
+
+	public void setMarcaJPAController(MarcaJPAController marcaJPAController) {
+		this.marcaJPAController = marcaJPAController;
+	}
+
+	public void setSelecionMode(int selecionMode) {
+		//logger.debug(">> setSelecionMode: selecionMode="+selecionMode+", this.selecionMode="+this.selecionMode+", aLaVergaSelectionModeSet="+aLaVergaSelectionModeSet);
+		if(aLaVergaSelectionModeSet){
+			aLaVergaSelectionModeSet=false;
+		} else {
+			this.selecionMode = selecionMode;
+		}
+	}
+
+	public int getSelecionMode() {
+		//logger.debug(">> getSelecionMode: retunr this.selecionMode="+this.selecionMode);				
+		return selecionMode;
+	}
+
+	public int getSELECTION_MODE_INDUSTRIA_MARCA() {
+		return SELECTION_MODE_INDUSTRIA_MARCA;
+	}
+
+	public int getSELECTION_MODE_LINEA_MARCA() {
+		return SELECTION_MODE_LINEA_MARCA;
+	}
+
+	public Integer getIndustriaSelectedId() {
+		return industriaSelectedId;
+	}
+
+	public void setIndustriaSelectedId(Integer industriaSelectedId) {
+		this.industriaSelectedId = industriaSelectedId;		
+	}
+
+	public Integer getLineaSelectedId() {		
+		return lineaSelectedId;
+	}
+
+	public void setLineaSelectedId(Integer lineaSelectedId) {
+		this.lineaSelectedId = lineaSelectedId;
+		
+	}
+
+	public Integer getMarcaSelectedId() {
+		return marcaSelectedId;
+	}
+
+	public void setMarcaSelectedId(Integer marcaSelectedId) {
+		this.marcaSelectedId = marcaSelectedId;
+	}
+	
+	public String getAlmacenObjetivoDescripcionTipo() {
+		return getTipoAlmacenHashTable().get(getAlmacenObjetivo().getTipoAlmacen());
+	}
+
 	public Hashtable<Integer, String> getTipoAlmacenHashTable() {
 		if(tipoAlmacenHashTable == null){
 			tipoAlmacenHashTable = new Hashtable<Integer, String> ();
@@ -296,204 +443,5 @@ public class GaleriaProductosMB {
 	public void setTipoAlmacen(Integer tipoAlmacen) {
 		this.tipoAlmacen = tipoAlmacen;
 	}
-	
-	public void almacenSelected(ValueChangeEvent event){
-		logger.info(">> almacenSelected: old=" + event.getOldValue()+", new="+event.getNewValue());        
-		tipoAlmacen = (Integer)event.getNewValue();
-		almacenObjetivo        = null;
-		industriaSelectedId    = null;
-		lineaSelectedId        = null;		
-		marcaSelectedId        = null;		
-		inventarioFastViewList = null;
-		actualizarLista();			
-	}
-	
-	public void selectModeChanged(ValueChangeEvent event){
-		logger.info(">> selectModeChanged: old=" + event.getOldValue()+", new="+event.getNewValue());        
-		selecionMode = (Integer)event.getNewValue();
-		industriaSelectedId    = null;
-		lineaSelectedId        = null;		
-		marcaSelectedId        = null;
-		inventarioFastViewList = null;
-		actualizarLista();			
-	}
-	
-	public void industriaChanged(ValueChangeEvent event){
-		logger.info(">> industriaChanged: old=" + event.getOldValue()+", new="+event.getNewValue());
-		industriaSelectedId		= (Integer)event.getNewValue();
-		lineaSelectedId			= null;		
-		marcaSelectedId			= null;
-		inventarioFastViewList	= null;
-		actualizarLista();			
-	}
-	
-	public void lineaChanged(ValueChangeEvent event){
-		logger.info(">> lineaChanged: old=" + event.getOldValue()+", new="+event.getNewValue());        
-		lineaSelectedId			= (Integer)event.getNewValue();
-		industriaSelectedId		= null;
-		marcaSelectedId			= null;
-		inventarioFastViewList	= null;
-		actualizarLista();			
-	}
-	
-	public void marcaChanged(ValueChangeEvent event){
-		logger.info(">> marcaChanged: old=" + event.getOldValue()+", new="+event.getNewValue());        
-		marcaSelectedId			= (Integer)event.getNewValue();
-		inventarioFastViewList	= null;
-		actualizarLista();			
-	}
-
-	public Sucursal getSucursalObjetivo() {
-		if(sucursalObjetivo == null) {
-			sucursalPrincipal = sucursalJPAController.getSucursalPrincipal();
-			sucursalObjetivo = sucursalPrincipal;
-		}
-		
-		return sucursalObjetivo;
-	}
-	
-	/**
-	 * @return the almacenObjetivo
-	 */
-	public Almacen getAlmacenObjetivo() {
-		if(almacenObjetivo == null){			
-			Collection<Almacen> almacenCollection = getSucursalObjetivo().getAlmacenCollection();
-			for(Almacen a: almacenCollection){
-				if(a.getTipoAlmacen() == tipoAlmacen){
-					almacenObjetivo = a;
-					break;
-				}
-			}
-
-		}
-		return almacenObjetivo;
-	}
-	
-	public String getAlmacenObjetivoDescripcionTipo() {
-		return getTipoAlmacenHashTable().get(getAlmacenObjetivo().getTipoAlmacen());
-	}
-
-	public String getCodigoBuscar() {
-		return codigoBuscar;
-	}
-
-	public void setCodigoBuscar(String codigoBuscar) {
-		this.codigoBuscar = codigoBuscar;
-	}
-	
-	public void codigoBuscarEnabledChanged(ActionEvent event){
-		logger.debug(">> codigoBuscarEnabledChanged: codigoBuscarEnabled="+codigoBuscarEnabled);
-		if(codigoBuscarEnabled==false && inventarioFastViewList.size() == 1) {
-			codigoBuscar = null;
-			reinicializarLista();
-			actualizarLista();		
-		}
-	}
-	
-	public void codigoBuscarChanged(ValueChangeEvent event){
-		logger.debug(">> codigoBuscarChanged: old="+ event.getOldValue()+", new="+event.getNewValue()+", codigoBuscar="+codigoBuscar);
-		codigoBuscar = event.getNewValue().toString();
-		refrescarFiltroCodigoBarras();
-	}
-	
-	public void buscarProductoPorCodigo(ActionEvent e) {
-		logger.debug(">> buscarProductoPorCodigo: codigoBuscar="+codigoBuscar);
-		refrescarFiltroCodigoBarras();
-	}
-
-	private void refrescarFiltroCodigoBarras() {
-		logger.debug(">> refrescarFiltroCodigoBarras: codigoBuscar= ->"+codigoBuscar+"<-");
-		if(codigoBuscar != null && codigoBuscar.trim().length() >= 5) {			
-			reinicializarLista();
-			actualizarLista();
-		}
-	}
-	
-	public List<MovimientoHistoricoProductoFastView> getMovimientoHistoricoProductoFastView(){
-		if(codigoBuscarEnabled && codigoBuscar != null){
-			return pedidoVentaBusinessLogic.findMovimientoHistoricoProductoFastView(tipoAlmacen, codigoBuscar);
-		} else {
-			return null;
-		}
-	} 
-
-	/**
-	 * @param industriaJPAController the industriaJPAController to set
-	 */
-	public void setIndustriaJPAController(IndustriaJPAController industriaJPAController) {
-		this.industriaJPAController = industriaJPAController;
-	}
-
-	/**
-	 * @param lineaJPAController the lineaJPAController to set
-	 */
-	public void setLineaJPAController(LineaJPAController lineaJPAController) {
-		this.lineaJPAController = lineaJPAController;
-	}
-
-	/**
-	 * @param marcaJPAController the marcaJPAController to set
-	 */
-	public void setMarcaJPAController(MarcaJPAController marcaJPAController) {
-		this.marcaJPAController = marcaJPAController;
-	}
-
-	public void setSelecionMode(int selecionMode) {
-		this.selecionMode = selecionMode;
-	}
-
-	public int getSelecionMode() {
-		return selecionMode;
-	}
-
-	public int getSELECTION_MODE_INDUSTRIA_MARCA() {
-		return SELECTION_MODE_INDUSTRIA_MARCA;
-	}
-
-	public int getSELECTION_MODE_LINEA_MARCA() {
-		return SELECTION_MODE_LINEA_MARCA;
-	}
-
-	/**
-	 * @return the industriaSelectedId
-	 */
-	public Integer getIndustriaSelectedId() {
-		return industriaSelectedId;
-	}
-
-	/**
-	 * @param industriaSelectedId the industriaSelectedId to set
-	 */
-	public void setIndustriaSelectedId(Integer industriaSelectedId) {
-		this.industriaSelectedId = industriaSelectedId;
-	}
-
-	/**
-	 * @return the lineaSelectedId
-	 */
-	public Integer getLineaSelectedId() {
-		return lineaSelectedId;
-	}
-
-	/**
-	 * @param lineaSelectedId the lineaSelectedId to set
-	 */
-	public void setLineaSelectedId(Integer lineaSelectedId) {
-		this.lineaSelectedId = lineaSelectedId;
-	}
-
-	/**
-	 * @return the marcaSelectedId
-	 */
-	public Integer getMarcaSelectedId() {
-		return marcaSelectedId;
-	}
-
-	/**
-	 * @param marcaSelectedId the marcaSelectedId to set
-	 */
-	public void setMarcaSelectedId(Integer marcaSelectedId) {
-		this.marcaSelectedId = marcaSelectedId;
-	}
-		
+			
 }

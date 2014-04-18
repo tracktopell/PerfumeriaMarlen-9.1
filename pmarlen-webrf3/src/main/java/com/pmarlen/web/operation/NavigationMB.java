@@ -325,7 +325,7 @@ public class NavigationMB {
 	
 	public String galeriaProductos() {
 		sessionUserMB.updateLastVisitedPage("galeriaProductos");
-		inventariosViewMB.reinicializarLista();
+		galeriaProductosMB.reinicializarLista();
 		return "galeriaProductos";
 	}
 

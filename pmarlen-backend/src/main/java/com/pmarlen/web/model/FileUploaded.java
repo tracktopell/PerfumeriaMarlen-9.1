@@ -15,6 +15,7 @@ public class FileUploaded {
     private byte[] data;
 	private String id;
 	private String pathDownloaded;
+	private boolean selected;
 	
     public byte[] getData() {
         return data;
@@ -87,6 +88,7 @@ public class FileUploaded {
 		data = null;
 	}
 	static final DecimalFormat df = new DecimalFormat("###,##0.00");
+	
 	public String getHumanLength(){
 		
 		if(length > 1048576) {
@@ -103,4 +105,13 @@ public class FileUploaded {
 	public boolean isAccepted() {
 		return mime.startsWith("image")||mime.equals("application/zip");
 	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
+
+	public boolean isSelected() {
+		return selected;
+	}
+	
 }	

@@ -222,5 +222,32 @@ ORDER BY MHP.FECHA
         </sql>
     </nativequery>
 				
-								
+	<nativequery id="demandaProductoXAlmacen">
+        <sql>
+<![CDATA[
+SELECT    P.ID AS PRODUCTO_ID,P.CODIGO_BARRAS,PVD.CANTIDAD,PV.ALMACEN_ID,AP.CANTIDAD_ACTUAL,AP.PRECIO_VENTA,PV.ID PEDIDO_VENTA_ID,RX.MAX_ESTADO_ID
+FROM      PEDIDO_VENTA_DETALLE PVD,
+          PEDIDO_VENTA PV,  
+          PRODUCTO P,  
+          ALMACEN_PRODUCTO AP,
+          (  
+                SELECT    PEDIDO_VENTA_ID,MAX(ESTADO_ID) AS MAX_ESTADO_ID
+                FROM      PEDIDO_VENTA_ESTADO PVE,PEDIDO_VENTA PV  
+                WHERE     PVE.PEDIDO_VENTA_ID = PV.ID  
+                AND       ESTADO_ID < 8  
+                AND       PV.ALMACEN_ID=:almacenId  
+                GROUP BY  PVE.PEDIDO_VENTA_ID  
+          ) RX  
+WHERE     1=1  
+AND       PVD.PEDIDO_VENTA_ID = PV.ID
+AND       PVD.PEDIDO_VENTA_ID = RX.PEDIDO_VENTA_ID  
+AND       PVD.PRODUCTO_ID     = P.ID  
+AND       PVD.PRODUCTO_ID     = :productoId
+AND       PVD.PRODUCTO_ID     = AP.PRODUCTO_ID
+AND       AP.ALMACEN_ID       = :almacenId
+]]>
+        </sql>
+    </nativequery>
+
+																
 </native_queryes>

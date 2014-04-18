@@ -78,10 +78,10 @@
 
 				<h:panelGrid columns="2" styleClass="center" width="100%"
 							 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign">
-					<h:outputText		value="#{UIEntityLabels.LABEL_ALMACEN}:" styleClass="label_bold_right"/>
-					<h:outputText		value="#{galeriaProductosMB.almacenObjetivoDescripcionTipo}"/>
-
 					<!--
+					<h:outputText		value="VALUES:" styleClass="label_bold_right"/>
+					<h:outputText		value="#{galeriaProductosMB.tipoAlmacen}, #{galeriaProductosMB.selecionMode}, #{galeriaProductosMB.industriaSelectedId}, #{galeriaProductosMB.lineaSelectedId}, #{galeriaProductosMB.marcaSelectedId}, [#{not empty galeriaProductosMB.inventarioFastViewList}]"/>
+					-->
 					<h:outputText		value="#{UIEntityLabels.LABEL_ALMACEN}:" styleClass="label_bold_right"/>
 					<h:panelGroup >
 						<h:selectOneRadio id="selectOneRadioAlmacen"
@@ -91,7 +91,7 @@
 							<f:selectItems  value="#{galeriaProductosMB.tipoAlmacenList}"/>
 						</h:selectOneRadio>						
 					</h:panelGroup>
-					-->
+
 					<h:outputText		value="BUSCAR POR:" styleClass="label_bold_right"/>
 					<h:panelGroup >
 						<h:selectOneRadio id="selectOneRadioSelectMode"
@@ -139,114 +139,11 @@
 
 				</h:panelGrid>
 
-				<rich:dataGrid	id="galeriaProdsTable" 
-							   value="#{galeriaProductosMB.inventarioFastViewList}"
-							   var="inventarioFastView"
-							   columns="4"
-							   elements="#{galeriaProductosMB.numRecShow}"															   
-							   width="100%"
-							   styleClass="onTop">
-					<f:facet name="header">
-
-						<h:panelGroup style="display:block; text-align:left; background-color:transparent; width: 100%;" >
-							<h:outputText value="PRODUCTOS ENCONTRADOS: #{galeriaProductosMB.entityCount}" />
-							<rich:spacer width="20"/>
-
-							<h:outputText value="#{UIMessages.COMMON_VIEW_REG_PAGE} : " />
-
-							[
-							<h:outputText value="10" rendered="#{galeriaProductosMB.numRecShow eq 10}"/>
-							<a4j:commandLink reRender="galeriaProdsTable,sc1" actionListener="#{galeriaProductosMB.updateRecShow}" rendered="#{galeriaProductosMB.numRecShow ne 10}">
-								<f:param name="numRecShowToSet" value="10"/>
-								<h:outputText value="10" /> 
-							</a4j:commandLink>
-							|
-							<h:outputText value="25" rendered="#{galeriaProductosMB.numRecShow eq 25}"/>
-							<a4j:commandLink reRender="galeriaProdsTable,sc1" actionListener="#{galeriaProductosMB.updateRecShow}" rendered="#{galeriaProductosMB.numRecShow ne 25}">
-								<f:param name="numRecShowToSet" value="25"/>
-								<h:outputText value="25" /> 
-							</a4j:commandLink>
-							|
-							<h:outputText value="100" rendered="#{galeriaProductosMB.numRecShow eq 100}"/>
-							<a4j:commandLink reRender="galeriaProdsTable,sc1" actionListener="#{galeriaProductosMB.updateRecShow}" rendered="#{galeriaProductosMB.numRecShow ne 100}">
-								<f:param name="numRecShowToSet" value="100"/>
-								<h:outputText value="100" /> 
-							</a4j:commandLink>				
-							|
-							<h:outputText value="500" rendered="#{galeriaProductosMB.numRecShow eq 500}"/>
-							<a4j:commandLink reRender="galeriaProdsTable, sc1" actionListener="#{galeriaProductosMB.updateRecShow}" rendered="#{galeriaProductosMB.numRecShow ne 500}">
-								<f:param name="numRecShowToSet" value="500"/>
-								<h:outputText value="500" /> 
-							</a4j:commandLink>
-							]
-						</h:panelGroup>
-
-					</f:facet>
-
-					<!--
-					<h:panelGrid columns="1" columnClasses="centerAlign">
-
-					</h:panelGrid>
-					-->
-
-					<rich:panel  id="sample3" bodyClass="centerAlign" style="width: 100%">
-						<h:panelGrid columns="1" columnClasses="columnWidth95 centerAlign">
-							
-							<h:graphicImage value="/images/producto/MIN_PRODUCTO_${inventarioFastView.productoId}.jpg"/>
-
-							<h:outputText value="#{inventarioFastView.productoNombre} / #{inventarioFastView.productoPresentacion}" />
-						</h:panelGrid>
-						
-						<rich:toolTip direction="top-right" styleClass="tooltip" layout="block" event="onclick">
-							<f:facet name="defaultContent">
-								<strong>Recuperando Historico, espere un momento ...</strong>
-							</f:facet>
-
-							<h:panelGrid columns="2" columnClasses="columnWidth30 rightAlign, columnWidth70 leftAlign">
-								<h:outputText value="CODIGO:" styleClass="label_bold_right"/>
-								<h:outputText value="#{inventarioFastView.productoCodigoBarras}" />
-								<h:outputText value="NOMBRE:" styleClass="label_bold_right"/>
-								<h:outputText value="#{inventarioFastView.productoNombre}" />
-								<h:outputText value="PRESENTACION:" styleClass="label_bold_right"/>
-								<h:outputText value="#{inventarioFastView.productoPresentacion}" />
-
-								<h:outputText value="INDUSTRIA:" styleClass="label_bold_right"/>
-								<h:outputText value="#{inventarioFastView.inductriaNombre}" />
-								<h:outputText value="LINEA:" styleClass="label_bold_right"/>
-								<h:outputText value="#{inventarioFastView.lineaNombre}" />
-								<h:outputText value="MARCA:" styleClass="label_bold_right"/>
-								<h:outputText value="#{inventarioFastView.marcaNombre}" />
-								<h:outputText value="PRECIO:" styleClass="label_bold_right"/>
-								<h:outputText value="#{inventarioFastView.almacenProductoPrecioVenta}" >
-									<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
-								</h:outputText>
-								<h:outputText value="EXISTENCIA:" styleClass="label_bold_right"/>
-
-								<h:outputText value="#{inventarioFastView.almacenProductoCantidadActual}" rendered="#{inventarioFastView.almacenProductoCantidadActual ge 1}" />
-								<h:outputText value="#{inventarioFastView.almacenProductoCantidadActual}" rendered="#{inventarioFastView.almacenProductoCantidadActual lt 1}" class="deplecatedPrice"/>
-								<!--
-								<h:outputText value="SUFICIENTE" rendered="#{inventarioFastView.almacenProductoCantidadActual ge 1}" />
-								<h:outputText value="AGOTADO"	 rendered="#{inventarioFastView.almacenProductoCantidadActual lt 1}" class="deplecatedPrice"/>
-								-->
-							</h:panelGrid>
-						</rich:toolTip>				
-					</rich:panel>
-
-					<f:facet name="footer">
-						<rich:datascroller	rendered="#{galeriaProductosMB.entityCount ge 11}"
-										   align="center" for="galeriaProdsTable" 
-										   maxPages="10" 
-										   page="#{galeriaProductosMB.scrollerPage}" 									
-										   id="sc1" />
-
-					</f:facet>
-				</rich:dataGrid>
-
-				<!--
 				<rich:dataTable		id="galeriaProdsTable"
 								 value="#{galeriaProductosMB.inventarioFastViewList}"
 								 var="inventarioFastView"
 								 rows="#{galeriaProductosMB.numRecShow}"								
+								 columnClasses="columnWidth10 rightAlign, columnWidth25 centerAlign, columnWidth25 centerAlign, columnWidth5 rightAlign, columnWidth5 rightAlign"
 								 width="100%" >
 
 					<f:facet name="header">
@@ -288,10 +185,10 @@
 
 					<rich:column>
 						<f:facet name="header">
-							<h:outputText value="" />
+							<h:outputText value="CÓDIGO BARRAS" />
 						</f:facet>
 						<h:panelGroup>
-							<h:outputText value="#{inventarioFastView.productoCodigoBarras}" />
+							<h:outputText value="#{inventarioFastView.productoCodigoBarras}" title="ID:#{inventarioFastView.productoId}" />
 						</h:panelGroup>
 					</rich:column>
 
@@ -326,7 +223,7 @@
 
 					</rich:column>					
 
-					<rich:column sortBy="">
+					<rich:column>
 						<f:facet name="header">
 							<h:outputText value="# ACTUAL" />
 						</f:facet>
@@ -345,6 +242,7 @@
 						</h:outputText>
 
 					</rich:column>
+					
                     <f:facet name="footer">                
 						<rich:datascroller	rendered="#{galeriaProductosMB.entityCount ge 11}"
 										   align="center" for="galeriaProdsTable" 
@@ -355,8 +253,7 @@
                     </f:facet>				
 
 				</rich:dataTable>
-				-->
-
+				
 			</h:panelGrid>
         </a4j:form>
     </ui:define>

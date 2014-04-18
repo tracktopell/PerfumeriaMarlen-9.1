@@ -50,18 +50,18 @@ public class ImageIconGenerator {
 
 	public static BufferedImage getEmptyTransparentImage() {
 		if(emptyTransparentImage == null){
-			try {
-				emptyTransparentImage=ImageIO.read(ImageIconGenerator.class.getResourceAsStream("/imgs/emptyTrasnparent.png"));
-			} catch (IOException ex) {
+//			try {
+//				emptyTransparentImage=ImageIO.read(ImageIconGenerator.class.getResourceAsStream("/imgs/emptyTrasnparent.png"));
+//			} catch (Exception ex) {
 				int w=600;
 				int h=600;
-				int d=15;
-				emptyTransparentImage =  new BufferedImage(BufferedImage.TYPE_INT_RGB, w, h);
+				int d=5;
+				emptyTransparentImage =  new BufferedImage(w, h,BufferedImage.TYPE_INT_RGB);
 				Graphics2D g2D = (Graphics2D)emptyTransparentImage.getGraphics();
 				g2D.setColor(Color.WHITE);
 				g2D.fillRect(0, 0, w, h);
 				
-				g2D.setColor(Color.LIGHT_GRAY);
+				g2D.setColor(Color.GRAY);
 				
 				for(int i=0;i<w;i+=d){
 					for(int j=0;j<h;j+=d){
@@ -70,7 +70,7 @@ public class ImageIconGenerator {
 						}
 					}
 				}				
-			}
+//			}
 		}
 		return emptyTransparentImage;
 	}

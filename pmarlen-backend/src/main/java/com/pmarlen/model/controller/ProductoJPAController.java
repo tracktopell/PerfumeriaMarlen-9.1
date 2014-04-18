@@ -1,9 +1,12 @@
 package com.pmarlen.model.controller;
 
 import com.pmarlen.businesslogic.AlmacenProductoDemanda;
+import com.pmarlen.businesslogic.PedidoVentaEnDemanda;
 import com.pmarlen.model.beans.*;
+import com.pmarlen.util.QueryXMLLoader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -159,7 +162,7 @@ public class ProductoJPAController extends EntityJPAController<Producto> {
 				almacenId    = ((Integer)		resultRow[3]).intValue();
 				otrosPedidos = ((BigInteger)	resultRow[0]).intValue();
 				
-				almacenProductoDemanda = new AlmacenProductoDemanda(productoId,sumDemanda,almacenId,otrosPedidos);
+				almacenProductoDemanda = null;
 				
 				resultHT.put(productoId, almacenProductoDemanda);
 				//logger.debug("->put: almacenProductoDemanda="+almacenProductoDemanda);
@@ -170,6 +173,77 @@ public class ProductoJPAController extends EntityJPAController<Producto> {
 			em.close();
 		}
 	}
-
 	
+	public AlmacenProductoDemanda findDemandaProductoForAlmacen(int almacenIdRearch,int pId) {		
+		logger.debug("->findDemandaProductoForAlmacen: almacenId="+almacenIdRearch+", pId="+pId);
+		
+		EntityManager em = getEntityManager();
+		Hashtable<Integer,AlmacenProductoDemanda> resultHT = new Hashtable<Integer,AlmacenProductoDemanda>();
+		
+		try {			
+			Query q = em.createNativeQuery(QueryXMLLoader.getInstance().loadQuery("demandaProductoXAlmacen"));
+			q.setParameter("almacenId", almacenIdRearch);
+			q.setParameter("productoId", pId);
+			
+			List<Object[]> originalList = q.getResultList();
+			int productoId=-1;
+			int otrosPedidos		= 0;
+			int sumDemanda			= 0;
+			int almacenId			= -1;
+			int cantidadActual		= 0;			
+			double precioVenta		= 0.0;			
+			int pedidoVentaId		= -1;
+			int pedidoVentaEstado	= 0;
+			int catPedidaPD			=0;
+			List<PedidoVentaEnDemanda> pvedList = new ArrayList<PedidoVentaEnDemanda>(); 
+			String productoCodigoBarras = null;
+	
+			AlmacenProductoDemanda almacenProductoDemanda = null;
+			int counter=0;
+			for(Object[] resultRow:originalList){
+				//                  0               1            2             3                  4                     5                6
+				//P.ID AS PRODUCTO_ID,P.CODIGO_BARRAS,PVD.CANTIDAD,PV.ALMACEN_ID,AP.CANTIDAD_ACTUAL,PV.ID PEDIDO_VENTA_ID,RX.MAX_ESTADO_ID
+				
+				productoId				= ((Integer)	resultRow[0]).intValue();
+				productoCodigoBarras	= (String)		resultRow[1];
+				catPedidaPD				=((Integer)	resultRow[2]).intValue();
+				sumDemanda				+= catPedidaPD;
+				almacenId				= ((Integer)	resultRow[3]).intValue();				
+				cantidadActual			= ((Integer)	resultRow[4]).intValue();
+				precioVenta				= ((Double)		resultRow[5]).intValue();
+				pedidoVentaId			= ((Integer)	resultRow[6]).intValue();
+				pedidoVentaEstado		= ((Integer)	resultRow[7]).intValue();
+				otrosPedidos			+= 1;
+				counter++;
+				pvedList.add(new PedidoVentaEnDemanda(pedidoVentaId, pedidoVentaEstado,catPedidaPD));				
+				logger.debug("\t\t->findDemandaProductoForAlmacen: productoCodigoBarras="+productoCodigoBarras+", sumDemanda="+sumDemanda+", cantidadActual="+cantidadActual);
+		
+			}
+			if(counter==0){
+				Query q2 = em.createQuery("select ap from AlmacenProducto ap where ap.producto.id=:productoId and ap.almacen.id=:almacenId order by ap.producto.id,ap.producto.codigoBarras");
+				q2.setParameter("almacenId", almacenIdRearch);
+				q2.setParameter("productoId", pId);
+				AlmacenProducto ap = (AlmacenProducto)q2.getSingleResult();
+				productoId				= pId;
+				productoCodigoBarras	= ap.getProducto().getCodigoBarras();
+				sumDemanda				= 0;
+				almacenId				= almacenIdRearch;				
+				cantidadActual			= ap.getCantidadActual();
+				precioVenta				= ap.getPrecioVenta();
+				pedidoVentaId			= -1;
+				pedidoVentaEstado		= -1;
+				otrosPedidos			= 0;
+				logger.debug("\t\t->findDemandaProductoForAlmacen:  AlmacenProduto: productoCodigoBarras="+productoCodigoBarras+", cantidadActual="+cantidadActual);
+			}
+			
+			almacenProductoDemanda = new AlmacenProductoDemanda(productoId, productoCodigoBarras, sumDemanda, almacenId, 
+					 otrosPedidos, pvedList, cantidadActual,precioVenta);
+				
+			return almacenProductoDemanda;
+		} finally {
+			em.close();
+		}
+	}
+
+		
 }

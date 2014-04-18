@@ -73,6 +73,7 @@ public class GaleriaProductosAsignarFotosMB {
 	private Integer tipoAlmacen;
 	//private Integer almacenId;
 	private int numRecShow;
+	//==========================================================================
 	private LinkedHashMap<String, FileUploaded> files = new LinkedHashMap<String, FileUploaded>();
 	private int uploadsAvailable = 50;
 	private boolean autoUpload = false;
@@ -614,5 +615,48 @@ public class GaleriaProductosAsignarFotosMB {
 		final Object dropValue = de.getDropValue();
 		logger.info("->dorp:"+dropValue.getClass());
 	}
+	
+	public void selectPicture(ActionEvent e) {
+		FacesContext context = FacesContext.getCurrentInstance();
 
+		String fileId = context.getExternalContext().getRequestParameterMap().get("fileId");
+		
+		logger.debug(">> selectPicture: fileId=" + fileId);
+		for(String fids: files.keySet()){
+			files.get(fids).setSelected(false);
+		}
+		
+		files.get(fileId).setSelected(true);
+	}
+	
+	public void assignFileUpload(ActionEvent e) {
+		FacesContext context = FacesContext.getCurrentInstance();
+
+		int productoId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("productoId"));
+		
+		logger.debug(">> assignFileUpload: productoId=" + productoId);
+		InventarioFastView ifvSelected = null;
+		for(InventarioFastView ifv:inventarioFastViewList){
+			if(ifv.getProductoId().intValue() == productoId){
+				ifvSelected = ifv;
+				break;
+			}
+		}
+		if(ifvSelected != null) {
+			String fileSelectedId = null;
+			for(String fids: files.keySet()){
+				if(files.get(fids).isSelected()){
+					fileSelectedId = fids;
+					break;
+				}
+			}
+			
+			if(fileSelectedId != null){
+				ifvSelected.setFileUploaded(files.get(fileSelectedId));
+				logger.debug(">> assignFileUpload: -->>ASSIGNED ");
+				files.remove(fileSelectedId);
+				uploadsAvailable++;
+			}
+		}
+	}	
 }

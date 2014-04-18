@@ -60,17 +60,17 @@ public class UploadedFileServlet extends HttpServlet {
 				
 					final ImageIconGenerator imageIconGenerator = new ImageIconGenerator();
 					byte[] newIconImageByes = null;
-					final String pathDownloaded4Icon = fileUploaded.getPathDownloaded()+"_ICON"+maxSize;
+					final String pathDownloaded4Icon = fileUploaded.getPathDownloaded()+"_ICON"+minSize;
 					File iconFile = new File(pathDownloaded4Icon);
 					int iconifedZize=0;
 					if(!iconFile.exists()){
-						newIconImageByes = imageIconGenerator.writeScaledJpegImageFrom(fileUploaded.getPathDownloaded(), maxSize);
+						newIconImageByes = imageIconGenerator.writeScaledJpegImageFrom(fileUploaded.getPathDownloaded(), minSize);
 						iconifedZize = newIconImageByes.length;
 						FileOutputStream fos = new FileOutputStream(iconFile);
 						fos.write(newIconImageByes);
 						fos.flush();
 						fos.close();
-						ByteArrayInputStream bais = new ByteArrayInputStream(newIconImageByes);						
+						ByteArrayInputStream bais = new ByteArrayInputStream(newIconImageByes);
 						is = bais;
 						System.err.println("-->>AbrirPedidoVenta: iconified to size:"+newIconImageByes.length);
 

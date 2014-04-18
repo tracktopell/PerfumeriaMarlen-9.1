@@ -43,6 +43,18 @@
 			.tooltipData {
 				font-weight: bold;
 			}
+			.panelForToolTip{
+				background-color: white;
+				border-color: white;				
+			}
+			.panelForToolTipBody{
+				padding: 0px;
+				border-width: 0;
+				padding: 0;
+				background-color: white;
+				border-color: white;								
+			}
+		
 		</style>
 
         <a4j:form id="listarPedidoNuevoForm">
@@ -220,7 +232,7 @@
 					<h:panelGroup rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE and not empty verPedidoEnProcesoMB.productoConNombreDescripcion}">
 
 						<h:selectOneMenu id="resultProductoByNombreDescripcion"
-										 value="#{verPedidoEnProcesoMB.productoSelected}">
+										 value="#{verPedidoEnProcesoMB.productoCBSelected}">
 							<f:selectItems  value="#{verPedidoEnProcesoMB.productoConNombreDescripcion}"/>
 						</h:selectOneMenu>
 						<h:outputText value=" x " />
@@ -297,17 +309,7 @@
 							<a4j:commandButton  value="HA SIDO ENVIADO A RUTA"
 												action="#{verPedidoEnProcesoMB.enviarPedido}"
 												rendered="#{sessionUserMB.adminUser and verPedidoEnProcesoMB.pedidoVentaEstado_ENVIABLE  and not verPedidoEnProcesoMB.pedidoVentaEstado_ENVIADO  and not verPedidoEnProcesoMB.pedidoVentaEstado_CANCELADO}"/>
-							<!--
-							<rich:spacer width="10"/>
-							<a4j:commandButton  value="A SIDO ENTREGADO A CLIENTE"
-												action="#{verPedidoEnProcesoMB.confirmarEntregaPedido}"
-												rendered="#{sessionUserMB.adminUser and verPedidoEnProcesoMB.pedidoVentaEstado_ENVIADO     and not verPedidoEnProcesoMB.pedidoVentaEstado_ENTREGADO  and not verPedidoEnProcesoMB.pedidoVentaEstado_CANCELADO}"/>
-							<rich:spacer width="10"/>
-							<a4j:commandButton  value="A SIDO DEVUELTO POR CLIENTE"
-												action="#{verPedidoEnProcesoMB.confirmarDevolucionPedido}"
-												rendered="#{sessionUserMB.adminUser and verPedidoEnProcesoMB.pedidoVentaEstado_ENTREGADO     and not verPedidoEnProcesoMB.pedidoVentaEstado_DEVUELTO  and not verPedidoEnProcesoMB.pedidoVentaEstado_CANCELADO}"/>
-							<rich:spacer width="50"/>
-							-->
+							
 							<rich:spacer width="10"/>
 							<a4j:commandButton	value="CANCELAR PEDIDO" 
 											   action="#{verPedidoEnProcesoMB.cancelarPedidoVenta}" 
@@ -328,7 +330,7 @@
 											 reRender="listarPedidoNuevoForm,panelEditarCantidad"
 											 ignoreDupResponses="true">
 								<h:graphicImage style="border-style:none;" value="/images/eliminar.gif" title="#{UIMessages.COMMON_DELETE}"/>
-								<f:param name="productoId" value="#{dvp.producto.id}"/>
+								<f:param name="productoCB" value="#{dvp.detalleVentaPedido.producto.codigoBarras}"/>
 							</a4j:commandLink>
 
 						</h:panelGroup>
@@ -337,26 +339,69 @@
 						<f:facet name="header">
 							<h:outputText value="CODIGO" />
 						</f:facet>
-						<h:outputText value="#{dvp.producto.codigoBarras}" />                    
+						<h:outputText value="#{dvp.detalleVentaPedido.producto.codigoBarras}" />                    
 					</rich:column>
 
 					<rich:column>
 						<f:facet name="header">
-							<h:outputText value="D.D. / O.P.|  MAX." />
+							<h:outputText value="S.P./O.P. | Cant." title="Suma de Piezas EN Otros Pedidos no SURTIDOS   |   Cantidad actual en Almancén" />
 						</f:facet>
 						<h:panelGroup>
 							<h:panelGrid	width="100%" columns="3"
 										 columnClasses="columnWidth45 centerAlign, columnWidth10  centerAlign,columnWidth45 centerAlign">
 
-								<h:outputText   rendered="#{dvp.cantDemanda gt 0}"
-												value="#{dvp.cantDemanda} / #{dvp.otrosPedidos}"/>									
 								<rich:spacer	width="10" 
-											 rendered="#{dvp.cantDemanda eq 0}" />
+											 rendered="#{dvp.almacenProductoDemanda.otrosPedidos eq 0}" />
+
+								<rich:panel  id="pedidosEnDisputaPanel" rendered="#{dvp.almacenProductoDemanda.otrosPedidos gt 0}" 
+											 styleClass="panelForToolTip" bodyClass="panelForToolTipBody">
+									
+									<h:outputText	id="pedidoEnDemandaTxt"
+													rendered="#{dvp.almacenProductoDemanda.sumDemanda le dvp.almacenProductoDemanda.cantidadActual}"
+													value="#{dvp.almacenProductoDemanda.sumDemanda} / #{dvp.almacenProductoDemanda.otrosPedidos}"/>
+									
+									<h:outputText	id="pedidoEnDemandaTxtUrgente"
+													rendered="#{dvp.almacenProductoDemanda.sumDemanda gt dvp.almacenProductoDemanda.cantidadActual}"
+													style="color: red; font-weight: bold;"
+													title="Puede haber problemas al sutir este o los demas otros pedidos por este Producto por la demanda"
+													value="#{dvp.almacenProductoDemanda.sumDemanda} / #{dvp.almacenProductoDemanda.otrosPedidos}"/>
+									
+									
+									<rich:toolTip styleClass="tooltip" layout="block" event="onclick" direction="bottom-right">
+										<f:facet name="defaultContent">
+											<strong>Recuperando Pedidos en Disputa, espere un momento ...</strong>
+										</f:facet>
+										<h:outputText value="Los sig. Pedidos tambien tiene agregado este producto" />
+										<rich:dataTable value="#{dvp.almacenProductoDemanda.pedidoVentaList}" var="pved" width="300px">
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Pedido Venta" />
+												</f:facet>
+												<h:outputText value="#{pved.pedidoVentaId}" styleClass="common_font_component"/>
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Cant. " />
+												</f:facet>
+												<h:outputText value="#{pved.cantidadPedida}" styleClass="common_font_component"/>
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Estado" />
+												</f:facet>
+												<h:outputText value="CREA" rendered="#{pved.edtadoId eq 1}" styleClass="common_font_component"/>
+												<h:outputText value="SINC" rendered="#{pved.edtadoId eq 2}" styleClass="common_font_component"/>
+												<h:outputText value="SURT" rendered="#{pved.edtadoId eq 4}" styleClass="common_font_component"/>
+											</h:column>
+										</rich:dataTable>
+									</rich:toolTip>				
+								</rich:panel>
 
 								<h:outputText   value="|"/>
 
-								<h:outputText   value="#{dvp.cantMax}"/>
+								<h:outputText   value="#{dvp.almacenProductoDemanda.cantidadActual}"/>
 							</h:panelGrid>
+
 						</h:panelGroup>
 					</rich:column>
 
@@ -365,7 +410,7 @@
 							<h:outputText value="CANT." />
 						</f:facet>
 
-						<h:inputText value="#{dvp.cantidad}"   size="3" class="inputCant"
+						<h:inputText value="#{dvp.detalleVentaPedido.cantidad}"   size="3" class="inputCant"
 									 rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}" >
 							<f:convertNumber integerOnly="true"/>
 							<f:validateLongRange minimum="1" maximum="9999"/>
@@ -376,11 +421,11 @@
 										 ignoreDupResponses="true">
 							<h:graphicImage class="valign_td" value="/images/update.gif" 
 											title="#{UIMessages.COMMON_UPDATE}"/>
-							<f:param name="productoId" value="#{dvp.producto.id}"/>
+							<f:param name="productoId" value="#{dvp.detalleVentaPedido.producto.id}"/>
 						</a4j:commandLink>
 
 						<h:outputText rendered="#{not verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"
-									  value="#{dvp.cantidad}"/>
+									  value="#{dvp.detalleVentaPedido.cantidad}"/>
 
 					</rich:column>
 
@@ -388,15 +433,15 @@
 						<f:facet name="header">
 							<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO} / #{UIEntityLabels.LABEL_PRODUCTO_PRESENTACION}" />
 						</f:facet>
-						<h:outputText value="#{dvp.producto.nombre} / #{dvp.producto.presentacion}"/><br/>
-						<h:outputText value="( #{dvp.producto.contenido} #{dvp.producto.unidadMedida} / #{dvp.producto.unidadesPorCaja} UxCj.)"/>
+						<h:outputText value="#{dvp.detalleVentaPedido.producto.nombre} / #{dvp.detalleVentaPedido.producto.presentacion}"/><br/>
+						<h:outputText value="( #{dvp.detalleVentaPedido.producto.contenido} #{dvp.detalleVentaPedido.producto.unidadMedida} / #{dvp.detalleVentaPedido.producto.unidadesPorCaja} UxCj.)"/>
 					</rich:column>
 
 					<rich:column>
 						<f:facet name="header">
 							<h:outputText value="#{UIEntityLabels.LABEL_PEDIDOVENTADETALLE_PRECIOVENTA}" />
 						</f:facet>
-						<h:outputText value="#{dvp.precioVenta}">
+						<h:outputText value="#{dvp.detalleVentaPedido.precioVenta}">
 							<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
 						</h:outputText>
 
@@ -406,7 +451,7 @@
 						<f:facet name="header">
 							<h:outputText value="IMPORTE" />
 						</f:facet>
-						<h:outputText value="#{dvp.precioVenta * dvp.cantidad}">
+						<h:outputText value="#{dvp.detalleVentaPedido.precioVenta * dvp.detalleVentaPedido.cantidad}">
 							<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
 						</h:outputText>
 
