@@ -443,8 +443,8 @@ public class PedidoVentaBusinessLogic {
 
 					em.persist(mhpFis);
 				} else {
-					throw new IllegalStateException("No hay suficiente para surtir:ProductoId=" + productoASurtir.getId() + ", cantidadRequerida=" + detalleVentaPedido.getCantidad() + 
-							", cantidadAlmacen=" + almacenProducto.getCantidadActual());
+					throw new IllegalStateException("No hay suficiente existencia para surtir: Producto:" + productoASurtir.getCodigoBarras() + ", Cantidad Requerida:" + detalleVentaPedido.getCantidad() + 
+							", Cantidad Actual Almacen:" + almacenProducto.getCantidadActual());
 				}
 			}
 			PedidoVentaEstado pedidoVentaEstado = new PedidoVentaEstado();

@@ -600,7 +600,7 @@ public class VerPedidoEnProcesoMB {
 				logger.debug("Error in MB to create pedido:", ex);
 
 				throw new ValidatorException(
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, ex.toString(), ex.toString()));
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Verificar Pedido : ", ex.getMessage()));
 			} finally {
 				cargarPadidoVenta(pedidoVenta.getId());
 			}
@@ -648,7 +648,7 @@ public class VerPedidoEnProcesoMB {
 				logger.debug("Error in MB to create pedido:", ex);
 
 				throw new ValidatorException(
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, ex.toString(), ex.toString()));
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Surtir Pedido :", ex.getMessage()));
 			} finally {
 				cargarPadidoVenta(pedidoVenta.getId());
 			}
