@@ -175,7 +175,7 @@ public class ProductoJPAController extends EntityJPAController<Producto> {
 	}
 	
 	public AlmacenProductoDemanda findDemandaProductoForAlmacen(int almacenIdRearch,int pId) {		
-		logger.debug("->findDemandaProductoForAlmacen: almacenId="+almacenIdRearch+", pId="+pId);
+		//logger.debug("->findDemandaProductoForAlmacen: almacenId="+almacenIdRearch+", pId="+pId);
 		
 		EntityManager em = getEntityManager();
 		Hashtable<Integer,AlmacenProductoDemanda> resultHT = new Hashtable<Integer,AlmacenProductoDemanda>();
@@ -210,14 +210,13 @@ public class ProductoJPAController extends EntityJPAController<Producto> {
 				sumDemanda				+= catPedidaPD;
 				almacenId				= ((Integer)	resultRow[3]).intValue();				
 				cantidadActual			= ((Integer)	resultRow[4]).intValue();
-				precioVenta				= ((Double)		resultRow[5]).intValue();
+				precioVenta				= ((Double)		resultRow[5]).doubleValue();
 				pedidoVentaId			= ((Integer)	resultRow[6]).intValue();
 				pedidoVentaEstado		= ((Integer)	resultRow[7]).intValue();
 				otrosPedidos			+= 1;
 				counter++;
 				pvedList.add(new PedidoVentaEnDemanda(pedidoVentaId, pedidoVentaEstado,catPedidaPD));				
-				logger.debug("\t\t->findDemandaProductoForAlmacen: productoCodigoBarras="+productoCodigoBarras+", sumDemanda="+sumDemanda+", cantidadActual="+cantidadActual);
-		
+				//logger.debug("\t\t->findDemandaProductoForAlmacen: productoCodigoBarras="+productoCodigoBarras+", sumDemanda="+sumDemanda+", cantidadActual="+cantidadActual);		
 			}
 			if(counter==0){
 				Query q2 = em.createQuery("select ap from AlmacenProducto ap where ap.producto.id=:productoId and ap.almacen.id=:almacenId order by ap.producto.id,ap.producto.codigoBarras");
@@ -233,8 +232,9 @@ public class ProductoJPAController extends EntityJPAController<Producto> {
 				pedidoVentaId			= -1;
 				pedidoVentaEstado		= -1;
 				otrosPedidos			= 0;
-				logger.debug("\t\t->findDemandaProductoForAlmacen:  AlmacenProduto: productoCodigoBarras="+productoCodigoBarras+", cantidadActual="+cantidadActual);
+				//logger.debug("\t\t->findDemandaProductoForAlmacen:  AlmacenProduto: productoCodigoBarras="+productoCodigoBarras+", cantidadActual="+cantidadActual+"");
 			}
+			//logger.debug("\t\t\t->findDemandaProductoForAlmacen: ("+counter+") AlmacenProduto: productoCodigoBarras="+productoCodigoBarras+", cantidadActual="+cantidadActual+", precioVenta="+precioVenta);
 			
 			almacenProductoDemanda = new AlmacenProductoDemanda(productoId, productoCodigoBarras, sumDemanda, almacenId, 
 					 otrosPedidos, pvedList, cantidadActual,precioVenta);

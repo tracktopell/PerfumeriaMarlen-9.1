@@ -426,20 +426,15 @@ public class VerPedidoEnProcesoMB {
 					detalleVentaPedidoAgregar.getDetalleVentaPedido().setCantidad(nuevoTotal);
 				}
 			} else {
-				detalleVentaPedidoAgregar = new PedidoVentaDetalleWrapper(new PedidoVentaDetalle());
+				detalleVentaPedidoAgregar = new PedidoVentaDetalleWrapper(pvdAgregar);
 				detalleVentaPedidoAgregar.getDetalleVentaPedido().setCantidad(cantidad);
 
-				//int cantMaxAlmacen = 0;
-				//double precioObjetivo = 0.0;
-				 
 				if (listAlmacenProductoBuscar == null) {
 					getListAlmacenProductoBuscar();
 				}
 				AlmacenProductoDemanda prodEnDemanda = new AlmacenProductoDemanda();
 
 				detalleVentaPedidoAgregar.setAlmacenProductoDemanda(prodEnDemanda);
-				//detalleVentaPedidoAgregar.getAlmacenProductoDemanda().setCantidadActual(cantMaxAlmacen);
-
 				detalleVentaPedidoAgregar.getDetalleVentaPedido().setProducto(productoAgregar);
 				
 				pedidoVentaDetalleMap.put(productoAgregar.getCodigoBarras(), detalleVentaPedidoAgregar);
@@ -1040,10 +1035,10 @@ public class VerPedidoEnProcesoMB {
 			final PedidoVentaDetalle detalleVentaPedido = pvdw.getDetalleVentaPedido();
 			logger.debug("\t->getPedidoVentaDetalleList:detalleVentaPedido="+detalleVentaPedido.getCantidad()+" x "+detalleVentaPedido.getProducto().getCodigoBarras()+" $"+detalleVentaPedido.getPrecioVenta());
 			final Producto producto = detalleVentaPedido.getProducto();
-			logger.debug("\t->getPedidoVentaDetalleList:producto="+producto);
+			//logger.debug("\t->getPedidoVentaDetalleList:producto="+producto);
 			AlmacenProductoDemanda findDemandaProductoForAlmacen = 
 					productoJPAController.findDemandaProductoForAlmacen(almacenId,producto.getId());
-			logger.debug("\t->getPedidoVentaDetalleList:findDemandaProductoForAlmacen="+findDemandaProductoForAlmacen);
+			//logger.debug("\t\t->getPedidoVentaDetalleList:findDemandaProductoForAlmacen="+findDemandaProductoForAlmacen);
 			boolean pedidoEnDisputa=false;
 			if(findDemandaProductoForAlmacen != null) {
 				if( findDemandaProductoForAlmacen.getOtrosPedidos() > 0 ){
