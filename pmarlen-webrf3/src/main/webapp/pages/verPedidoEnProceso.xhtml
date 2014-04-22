@@ -54,6 +54,26 @@
 				background-color: white;
 				border-color: white;								
 			}
+			
+			.dataTable_TD_PVE_1 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FFFFFF;
+			}
+			.dataTable_TD_PVE_2 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FF33CC;
+			}
+			.dataTable_TD_PVE_4 {
+				font-weight: bold;
+				display:block; 
+				text-align:center; 
+				background-color:#FFFF00;
+			}
+
 		
 		</style>
 
@@ -389,9 +409,9 @@
 												<f:facet name="header">
 													<h:outputText value="Estado" />
 												</f:facet>
-												<h:outputText value="CREA" rendered="#{pved.edtadoId eq 1}" styleClass="common_font_component"/>
-												<h:outputText value="SINC" rendered="#{pved.edtadoId eq 2}" styleClass="common_font_component"/>
-												<h:outputText value="SURT" rendered="#{pved.edtadoId eq 4}" styleClass="common_font_component"/>
+												<h:outputText value="CREA" rendered="#{pved.edtadoId eq 1}" styleClass="dataTable_TD_PVE_1"/>
+												<h:outputText value="SINC" rendered="#{pved.edtadoId eq 2}" styleClass="dataTable_TD_PVE_2"/>
+												<h:outputText value="VERI" rendered="#{pved.edtadoId eq 4}" styleClass="dataTable_TD_PVE_4"/>
 											</h:column>
 										</rich:dataTable>
 									</rich:toolTip>				
