@@ -65,6 +65,7 @@ public class PedidoNuevoMB {
 	private SessionUserMB sessionUserMB;
 	private PedidoVentaBusinessLogic pedidoVentaBusinessLogic;
 	private LinkedHashMap<String, PedidoVentaDetalleWrapper> pedidoVentaDetalleMap;
+	private boolean turboView;
 	private PedidoVenta pedidoVenta;
 	private PedidoVentaDetalleWrapper detalleVentaPedidoSeleccionado;
 	private String nombreDescripcion;
@@ -174,6 +175,7 @@ public class PedidoNuevoMB {
 		almacenObjetivo = null;
 		listAlmacenProductoBuscar = null;
 		cantidadCBAgregar = 1;
+		turboView = true;
 		//actualizarAlmacenObjetivoDesdeModoVenta();
 	}
 
@@ -304,10 +306,33 @@ public class PedidoNuevoMB {
 				detalleVentaPedidoAgregar.getDetalleVentaPedido().setCantidad(cantidad);
 				detalleVentaPedidoAgregar.getDetalleVentaPedido().setPrecioVenta(precioObjetivo);
 
-				AlmacenProductoDemanda prodEnDemanda = new AlmacenProductoDemanda();
-				prodEnDemanda.setCantidadActual(cantMaxAlmacen);
+				if (!turboView) {
+					AlmacenProductoDemanda prodEnDemanda = new AlmacenProductoDemanda();
+					prodEnDemanda.setCantidadActual(cantMaxAlmacen);
 
-				detalleVentaPedidoAgregar.setAlmacenProductoDemanda(prodEnDemanda);
+					detalleVentaPedidoAgregar.setAlmacenProductoDemanda(prodEnDemanda);
+
+				} else {
+					AlmacenProductoDemanda findDemandaProductoForAlmacen =
+							productoJPAController.findDemandaProductoForAlmacen(getAlmacenObjetivo().getId().intValue(), productoAgregar.getId());
+					logger.debug("->getPedidoVentaDetalleList:findDemandaProductoForAlmacen=" + findDemandaProductoForAlmacen);
+
+					if (findDemandaProductoForAlmacen != null) {
+						if (findDemandaProductoForAlmacen.getOtrosPedidos() > 0) {
+							detalleVentaPedidoAgregar.setAlmacenProductoDemanda(findDemandaProductoForAlmacen);
+							detalleVentaPedidoAgregar.getAlmacenProductoDemanda().setCantidadActual(findDemandaProductoForAlmacen.getCantidadActual());
+							detalleVentaPedidoAgregar.getAlmacenProductoDemanda().setOtrosPedidos(findDemandaProductoForAlmacen.getOtrosPedidos());
+							detalleVentaPedidoAgregar.getAlmacenProductoDemanda().setSumDemanda(findDemandaProductoForAlmacen.getSumDemanda());
+
+						}
+						if (detalleVentaPedidoAgregar.getDetalleVentaPedido().getPrecioVenta() == 0.0) {
+							detalleVentaPedidoAgregar.getDetalleVentaPedido().setPrecioVenta(findDemandaProductoForAlmacen.getPrecioVenta());
+						}
+						detalleVentaPedidoAgregar.setAlmacenProductoDemanda(findDemandaProductoForAlmacen);
+					}
+				}
+
+
 				detalleVentaPedidoAgregar.getAlmacenProductoDemanda().setCantidadActual(cantMaxAlmacen);
 
 				pedidoVentaDetalleMap.put(productoAgregar.getCodigoBarras(), detalleVentaPedidoAgregar);
@@ -673,22 +698,24 @@ public class PedidoNuevoMB {
 			logger.debug("->getPedidoVentaDetalleList:detalleVentaPedido=" + detalleVentaPedido);
 			final Producto producto = detalleVentaPedido.getProducto();
 			logger.debug("->getPedidoVentaDetalleList:producto=" + producto);
-			AlmacenProductoDemanda findDemandaProductoForAlmacen =
-					productoJPAController.findDemandaProductoForAlmacen(almacenId, producto.getId());
-			logger.debug("->getPedidoVentaDetalleList:findDemandaProductoForAlmacen=" + findDemandaProductoForAlmacen);
+			if (!turboView) {
+				AlmacenProductoDemanda findDemandaProductoForAlmacen =
+						productoJPAController.findDemandaProductoForAlmacen(almacenId, producto.getId());
+				logger.debug("->getPedidoVentaDetalleList:findDemandaProductoForAlmacen=" + findDemandaProductoForAlmacen);
 
-			if (findDemandaProductoForAlmacen != null) {
-				if (findDemandaProductoForAlmacen.getOtrosPedidos() > 0) {
+				if (findDemandaProductoForAlmacen != null) {
+					if (findDemandaProductoForAlmacen.getOtrosPedidos() > 0) {
+						pvdw.setAlmacenProductoDemanda(findDemandaProductoForAlmacen);
+						pvdw.getAlmacenProductoDemanda().setCantidadActual(findDemandaProductoForAlmacen.getCantidadActual());
+						pvdw.getAlmacenProductoDemanda().setOtrosPedidos(findDemandaProductoForAlmacen.getOtrosPedidos());
+						pvdw.getAlmacenProductoDemanda().setSumDemanda(findDemandaProductoForAlmacen.getSumDemanda());
+
+					}
+					if (pvdw.getDetalleVentaPedido().getPrecioVenta() == 0.0) {
+						pvdw.getDetalleVentaPedido().setPrecioVenta(findDemandaProductoForAlmacen.getPrecioVenta());
+					}
 					pvdw.setAlmacenProductoDemanda(findDemandaProductoForAlmacen);
-					pvdw.getAlmacenProductoDemanda().setCantidadActual(findDemandaProductoForAlmacen.getCantidadActual());
-					pvdw.getAlmacenProductoDemanda().setOtrosPedidos(findDemandaProductoForAlmacen.getOtrosPedidos());
-					pvdw.getAlmacenProductoDemanda().setSumDemanda(findDemandaProductoForAlmacen.getSumDemanda());
-
 				}
-				if (pvdw.getDetalleVentaPedido().getPrecioVenta() == 0.0) {
-					pvdw.getDetalleVentaPedido().setPrecioVenta(findDemandaProductoForAlmacen.getPrecioVenta());
-				}
-				pvdw.setAlmacenProductoDemanda(findDemandaProductoForAlmacen);
 			}
 			pvdwList.add(pvdw);
 		}
@@ -920,4 +947,18 @@ public class PedidoNuevoMB {
 		}
 		return clienteSelected;
 	}
+
+	public boolean isTurboView() {
+		return turboView;
+	}
+
+	public void setTurboView(boolean turboView) {
+		logger.info("## >> setTurboView: this.turboView (" + this.turboView + ") =" + turboView );		
+		this.turboView = turboView;
+	}
+	
+	public void turboViewChanged(ValueChangeEvent event) {
+		logger.info("## >> * turboViewChanged: old=" + event.getOldValue() + ", new=" + event.getNewValue());		
+	}
+
 }

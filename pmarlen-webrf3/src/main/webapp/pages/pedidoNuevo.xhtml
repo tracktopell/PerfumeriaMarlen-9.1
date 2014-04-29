@@ -154,13 +154,6 @@
 										 oncomplete="#{rich:element('listarPedidoNuevoForm:codigoBuscar')}.text='';#{rich:element('listarPedidoNuevoForm:codigoBuscar')}.focus();"/>
 
 						</h:inputText>		
-						<!--
-						<a4j:commandButton value="+"
-										   actionListener="#{pedidoNuevoMB.buscarNProductoPorCodigo}"
-										   reRender="listarPedidoNuevoForm"									   
-										   ignoreDupResponses="true">
-						</a4j:commandButton>
-						-->
 					</h:panelGroup>
 				</h:panelGrid>
 
@@ -182,6 +175,15 @@
 											   actionListener="#{pedidoNuevoMB.cancelarPedidoVenta}" 
 											   reRender="listarPedidoNuevoForm"
 											   ignoreDupResponses="true"/>
+							<rich:spacer width="50"/>
+							<h:panelGroup>
+								<h:outputText value="=TURBO:" style="font-style: italic"/>
+								<h:selectOneMenu value="#{pedidoNuevoMB.turboView}" valueChangeListener="#{pedidoNuevoMB.turboViewChanged}">
+									<f:selectItem itemValue="#{true}"  itemLabel="ACTIVADO"/>
+									<f:selectItem itemValue="#{false}" itemLabel="DESACTIVADO"/>
+									<a4j:support event="onchange" reRender="listarPedidoNuevoForm"/>
+								</h:selectOneMenu>
+							</h:panelGroup>
 						</h:panelGroup>
 
 					</f:facet>
