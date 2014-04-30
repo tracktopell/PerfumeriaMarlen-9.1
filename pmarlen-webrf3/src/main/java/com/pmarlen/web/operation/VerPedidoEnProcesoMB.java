@@ -233,6 +233,7 @@ public class VerPedidoEnProcesoMB {
 		metodoDePagoId = pedidoVenta.getMetodoDePago().getId();
 		final Collection<PedidoVentaDetalle> pedidoVentaDetalleCollection = pedidoVenta.getPedidoVentaDetalleCollection();
 		agregarProductosADetalle(pedidoVentaDetalleCollection);
+		actualizarCantidades=true;
 		descuentoEspecial = pedidoVenta.getPorcentajeDescuentoExtra();
 
 		listAlmacenProductoBuscar = null;
@@ -337,7 +338,7 @@ public class VerPedidoEnProcesoMB {
 
 					FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO,
 							"Agregar Producto : ",
-							"OK, actualizado Producto :" + codigoBuscar + ", cantidad =" + detalleVentaPedidoAgregar.getDetalleVentaPedido().getCantidad() + " + " + cantidad + " = " + nuevoTotal);
+							"OK, actualizado Producto :" + productoAgregar.getCodigoBarras() + ", cantidad =" + detalleVentaPedidoAgregar.getDetalleVentaPedido().getCantidad() + " + " + cantidad + " = " + nuevoTotal);
 					FacesContext.getCurrentInstance().addMessage(
 							null,
 							fm);
@@ -380,7 +381,7 @@ public class VerPedidoEnProcesoMB {
 				} else {
 					FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO,
 							"Agregar Producto : ",
-							"OK, agregado Producto :" + codigoBuscar + ", cantidad=" + cantidad);
+							"OK, agregado Producto :" + productoAgregar.getCodigoBarras() + ", cantidad=" + cantidad);
 					FacesContext.getCurrentInstance().addMessage(
 							null,
 							fm);

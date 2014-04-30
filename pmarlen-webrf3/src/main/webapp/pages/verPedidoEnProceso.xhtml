@@ -77,7 +77,7 @@
 		
 		</style>
 
-        <a4j:form id="listarPedidoNuevoForm">
+        <a4j:form id="listarPedidoNuevoForm" ajaxSingle="true">
 
 			<h:panelGrid id="panelGridPrincipal"
 						 width="100%" 
@@ -101,6 +101,7 @@
 
 				<h:panelGrid	columns="2" styleClass="center" width="100%" 
 							 border="0" 
+							 id="headerPanelGrid"
 							 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign" >
 
 					<h:outputText	value="#{UIEntityLabels.LABEL_PEDIDOVENTA}:" 
@@ -236,7 +237,7 @@
 					<h:panelGroup rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}">
 						<h:inputText value="#{verPedidoEnProcesoMB.nombreDescripcion}"
 									 valueChangeListener="#{verPedidoEnProcesoMB.nombreDescripcionChanged}">
-							<a4j:support event="onchange" reRender="listarPedidoNuevoForm" />
+							<a4j:support event="onchange" reRender="headerPanelGrid" />
 						</h:inputText>									
 					</h:panelGroup>
 
@@ -264,7 +265,7 @@
 						<a4j:commandButton   value="+"
 											 id="agregarPorNombreBtn"
 											 actionListener="#{verPedidoEnProcesoMB.agregarNProductoBuscado}"
-											 reRender="listarPedidoNuevoForm"
+											 reRender="panelGridResumen, pedidoVentaDetalleListTable, headerPanelGrid"
 											 ignoreDupResponses="true">
 						</a4j:commandButton>
 
@@ -282,17 +283,11 @@
 						<h:inputText value="#{verPedidoEnProcesoMB.codigoBuscar}" id="codigoBuscar" size="12" maxlength="18" class="inputCant">
 
 							<a4j:support	event="onchange" actionListener="#{verPedidoEnProcesoMB.buscarNProductoPorCodigo}"
-										 reRender="listarPedidoNuevoForm"
-										 oncomplete="#{rich:element('listarPedidoNuevoForm:codigoBuscar')}.text='';#{rich:element('listarPedidoNuevoForm:codigoBuscar')}.focus();"/>
+										 reRender="inputCant, inputCantY, panelGridResumen"
+										 oncomplete="#{rich:element('listarPedidoNuevoForm:codigoBuscar')}.value='';#{rich:element('listarPedidoNuevoForm:codigoBuscar')}.focus();"/>
 
 						</h:inputText>
-						<!--
-						<a4j:commandButton value="+"
-										   actionListener="#{verPedidoEnProcesoMB.buscarNProductoPorCodigo}"
-										   reRender="listarPedidoNuevoForm"
-										   ignoreDupResponses="true">
-						</a4j:commandButton>
-						-->
+						
 					</h:panelGroup>
 
 				</h:panelGrid>
@@ -439,12 +434,14 @@
 									  rendered="#{not verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"/>
 						
 						<h:inputText value="#{dvp.detalleVentaPedido.cantidad}" size="3" class="inputCant" style="background-color: yellow"
+									 id="inputCantY"
 									 rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE and dvp.detalleVentaPedido.cantidad gt dvp.almacenProductoDemanda.cantidadActual}">
 							<f:convertNumber integerOnly="true"/>
 							<f:validateLongRange minimum="1" maximum="9999"/>
 						</h:inputText>						
 						
 						<h:inputText value="#{dvp.detalleVentaPedido.cantidad}" size="3" class="inputCant" 
+									 id="inputCant"
 									 rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE and dvp.detalleVentaPedido.cantidad le dvp.almacenProductoDemanda.cantidadActual}">
 							<f:convertNumber integerOnly="true"/>
 							<f:validateLongRange minimum="1" maximum="9999"/>
@@ -452,7 +449,7 @@
 						
 						<a4j:commandLink actionListener="#{verPedidoEnProcesoMB.cantidadDetalleBtnChanged}"
 										 rendered="#{verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"									  
-										 reRender="listarPedidoNuevoForm"
+										 reRender="panelGridResumen, pedidoVentaDetalleListTable"
 										 ignoreDupResponses="true">
 							<h:graphicImage class="valign_td" value="/images/update.gif" 
 											title="#{UIMessages.COMMON_UPDATE}"/>
@@ -542,6 +539,7 @@
 
 				<h:panelGrid	columns="2" styleClass="center" width="100%" 
 							 border="0" 
+							 id="footerPanelGrid"
 							 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign" >
 
 						<h:outputText	value="#{UIEntityLabels.LABEL_CLIENTE}:" 
@@ -555,7 +553,7 @@
 											 value="#{verPedidoEnProcesoMB.clienteId}"
 											 required="false">
 								<f:selectItems  value="#{verPedidoEnProcesoMB.clienteList}"/>							
-								<a4j:support	reRender="listarPedidoNuevoForm" event="onchange"/>						
+								<a4j:support	reRender="footerPanelGrid" event="onchange"/>						
 							</h:selectOneMenu>
 
 							<rich:panel  id="clientePanelForTooltip" styleClass="tooltip-text" bodyClass="rich-laguna-panel-no-header no_padding">
@@ -644,7 +642,7 @@
 										 rendered="#{sessionUserMB.adminUser and verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"
 										 value="#{verPedidoEnProcesoMB.descuentoEspecial}"
 										 required="false">
-							<a4j:support		reRender="listarPedidoNuevoForm" event="onchange"/>
+							<a4j:support		reRender="footerPanelGrid" event="onchange"/>
 							<f:selectItems	value="#{verPedidoEnProcesoMB.descuentosPosiblesList}"/>
 						</h:selectOneMenu>
 						<h:outputText value="#{verPedidoEnProcesoMB.descuentoEspecial}"
@@ -670,8 +668,6 @@
 						<h:outputText value="#{verPedidoEnProcesoMB.pedidoVenta.comentarios}" 
 									  rendered="#{not verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"/>
 						
-
-
 					</h:panelGrid>
 				</h:panelGrid>
         </a4j:form>

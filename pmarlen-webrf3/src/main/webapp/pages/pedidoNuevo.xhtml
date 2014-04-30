@@ -57,7 +57,7 @@
 		
 		</style>
 
-        <a4j:form id="listarPedidoNuevoForm">
+        <a4j:form id="listarPedidoNuevoForm" ajaxSingle="true">
 
 			<h:panelGrid id="panelGridPrincipal"
 						 width="100%" 
@@ -81,6 +81,7 @@
 
 				<h:panelGrid	columns="2" styleClass="center" width="100%" 
 							 border="0" 
+							 id="headerPanelGrid"							 
 							 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign" >
 
 					<h:outputText		value="#{UIEntityLabels.LABEL_ALMACEN}:" 
@@ -90,7 +91,7 @@
 						<h:selectOneRadio id="selectOneRadioAlmacen"
 										  value="#{pedidoNuevoMB.modoVenta}" 
 										  valueChangeListener="#{pedidoNuevoMB.almacenSelected}">
-							<a4j:support	reRender="principalForm" event="onchange"/>
+							<a4j:support	reRender="headerPanelGrid" event="onchange"/>
 							<f:selectItems  value="#{pedidoNuevoMB.tipoAlmacenList}"/>
 						</h:selectOneRadio>
 						<rich:message for="selectOneRadioAlmacen" errorClass="littleErrorMessage_bold">
@@ -106,8 +107,8 @@
 					<h:panelGroup>
 						<h:inputText value="#{pedidoNuevoMB.nombreDescripcion}"
 									 valueChangeListener="#{pedidoNuevoMB.nombreDescripcionChanged}">
-							<a4j:support event="onchange" reRender="listarPedidoNuevoForm" />
-						</h:inputText>									
+							<a4j:support event="onchange" reRender="headerPanelGrid" />
+						</h:inputText>
 					</h:panelGroup>
 
 					<rich:spacer  rendered="#{empty pedidoNuevoMB.productoConNombreDescripcion}" 
@@ -134,7 +135,7 @@
 						<a4j:commandButton   value="+"
 											 id="agregarPorNombreBtn"
 											 actionListener="#{pedidoNuevoMB.agregarNProductoBuscado}"
-											 reRender="listarPedidoNuevoForm"
+											 reRender="panelGridResumen, pedidoVentaDetalleListTable, headerPanelGrid"
 											 ignoreDupResponses="true">
 						</a4j:commandButton>
 
@@ -150,7 +151,7 @@
 						<h:inputText value="#{pedidoNuevoMB.codigoBuscar}" id="codigoBuscar" size="12" maxlength="18" class="inputCant">
 
 							<a4j:support	event="onchange" actionListener="#{pedidoNuevoMB.buscarNProductoPorCodigo}"
-										 reRender="listarPedidoNuevoForm"
+										 reRender="inputCant, inputCantY, panelGridResumen"
 										 oncomplete="#{rich:element('listarPedidoNuevoForm:codigoBuscar')}.text='';#{rich:element('listarPedidoNuevoForm:codigoBuscar')}.focus();"/>
 
 						</h:inputText>		
@@ -274,19 +275,21 @@
 						</f:facet>
 
 						<h:inputText value="#{dvp.detalleVentaPedido.cantidad}" size="3" class="inputCant" 
+									 id="inputCant"
 									 rendered="#{dvp.detalleVentaPedido.cantidad le dvp.almacenProductoDemanda.cantidadActual}">
 							<f:convertNumber integerOnly="true"/>
 							<f:validateLongRange minimum="1" maximum="9999"/>
 						</h:inputText>
 
 						<h:inputText value="#{dvp.detalleVentaPedido.cantidad}" size="3" class="inputCant" style="background-color: yellow"
+									 id="inputCantY"
 									 rendered="#{dvp.detalleVentaPedido.cantidad gt dvp.almacenProductoDemanda.cantidadActual}">
 							<f:convertNumber integerOnly="true"/>
 							<f:validateLongRange minimum="1" maximum="9999"/>
 						</h:inputText>						
 
 						<a4j:commandLink	actionListener="#{pedidoNuevoMB.cantidadDetalleBtnChanged}"
-										 reRender="listarPedidoNuevoForm"
+										 reRender="panelGridResumen, pedidoVentaDetalleListTable"
 										 ignoreDupResponses="true">
 							<h:graphicImage class="valign_td" value="/images/update.gif" 
 											title="#{UIMessages.COMMON_UPDATE}"/>
@@ -373,6 +376,7 @@
 				</h:panelGrid>
 
 				<h:panelGrid	columns="2" styleClass="center" width="100%" 
+							 id="footerPanelGrid"
 							 border="0" 
 							 columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign" >
 
@@ -384,7 +388,7 @@
 										 value="#{pedidoNuevoMB.clienteId}"
 										 required="false">
 							<f:selectItems  value="#{pedidoNuevoMB.clienteList}"/>							
-							<a4j:support	reRender="listarPedidoNuevoForm" event="onchange"/>						
+							<a4j:support	reRender="footerPanelGrid" event="onchange"/>						
 						</h:selectOneMenu>
 
 						<rich:panel  id="sample3" styleClass="tooltip-text" bodyClass="rich-laguna-panel-no-header no_padding">
@@ -466,7 +470,7 @@
 									 rendered="#{rich:isUserInRole('admin')}"
 									 value="#{pedidoNuevoMB.descuentoEspecial}"
 									 required="false">
-						<a4j:support		reRender="listarPedidoNuevoForm" event="onchange"/>
+						<a4j:support		reRender="footerPanelGrid" event="onchange"/>
 						<f:selectItems	value="#{pedidoNuevoMB.descuentosPosiblesList}"/>
 					</h:selectOneMenu>
 
