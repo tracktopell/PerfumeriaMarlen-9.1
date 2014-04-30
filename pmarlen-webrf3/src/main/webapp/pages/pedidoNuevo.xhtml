@@ -175,15 +175,7 @@
 											   actionListener="#{pedidoNuevoMB.cancelarPedidoVenta}" 
 											   reRender="listarPedidoNuevoForm"
 											   ignoreDupResponses="true"/>
-							<rich:spacer width="50"/>
-							<h:panelGroup>
-								<h:outputText value="=TURBO:" style="font-style: italic"/>
-								<h:selectOneMenu value="#{pedidoNuevoMB.turboView}" valueChangeListener="#{pedidoNuevoMB.turboViewChanged}">
-									<f:selectItem itemValue="#{true}"  itemLabel="ACTIVADO"/>
-									<f:selectItem itemValue="#{false}" itemLabel="DESACTIVADO"/>
-									<a4j:support event="onchange" reRender="listarPedidoNuevoForm"/>
-								</h:selectOneMenu>
-							</h:panelGroup>
+							
 						</h:panelGroup>
 
 					</f:facet>
@@ -210,7 +202,11 @@
 					</rich:column>
 					<rich:column>
 						<f:facet name="header">
-							<h:outputText value="S.P./O.P. | Cant." title="Suma de Piezas EN Otros Pedidos no SURTIDOS   |   Cantidad actual en Almancén" />
+							<a4j:commandLink actionListener="#{pedidoNuevoMB.actualizarCantidades}"
+											 reRender="listarPedidoNuevoForm"
+											 ignoreDupResponses="true">
+								<h:outputText value="S.P./O.P. | Cant." title="Suma de Piezas EN Otros Pedidos no SURTIDOS   |   Cantidad actual en Almancén" />							
+							</a4j:commandLink>
 						</f:facet>
 						<h:panelGroup>
 							<h:panelGrid	width="100%" columns="3"

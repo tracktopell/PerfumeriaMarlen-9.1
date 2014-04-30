@@ -335,7 +335,7 @@
 											   action="#{verPedidoEnProcesoMB.cancelarPedidoVenta}" 
 											   reRender="listarPedidoNuevoForm"
 											   rendered="#{sessionUserMB.adminUser  and verPedidoEnProcesoMB.pedidoVentaEstado_MODIFICABLE}"
-											   ignoreDupResponses="true"/>
+											   ignoreDupResponses="true"/>							
 						</h:panelGroup>
 
 					</f:facet>
@@ -364,7 +364,12 @@
 
 					<rich:column>
 						<f:facet name="header">
-							<h:outputText value="S.P./O.P. | Cant." title="Suma de Piezas EN Otros Pedidos no SURTIDOS   |   Cantidad actual en Almancén" />
+							<a4j:commandLink actionListener="#{verPedidoEnProcesoMB.actualizarCantidades}"
+											 reRender="listarPedidoNuevoForm"
+											 ignoreDupResponses="true">
+								<h:outputText value="S.P./O.P. | Cant." title="Suma de Piezas EN Otros Pedidos no SURTIDOS   |   Cantidad actual en Almancén" />
+							
+							</a4j:commandLink>
 						</f:facet>
 						<h:panelGroup>
 							<h:panelGrid	width="100%" columns="3"

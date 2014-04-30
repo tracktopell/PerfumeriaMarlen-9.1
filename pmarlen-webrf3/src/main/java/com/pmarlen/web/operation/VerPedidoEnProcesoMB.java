@@ -93,6 +93,7 @@ public class VerPedidoEnProcesoMB {
 	private Integer cantidadAgregar;
 	private Integer cantidadCBAgregar;
 	private String productoCBPattern = "^[0-9]{4,16}$";
+	private boolean actualizarCantidades;	
 
 	/**
 	 * @return the descuentoCalculado
@@ -182,6 +183,7 @@ public class VerPedidoEnProcesoMB {
 		almacenObjetivo = null;
 		listAlmacenProductoBuscar = null;
 		cantidadCBAgregar = 1;
+		actualizarCantidades=false;
 		//actualizarAlmacenObjetivoDesdeModoVenta();
 	}
 
@@ -772,6 +774,10 @@ public class VerPedidoEnProcesoMB {
 		logger.debug("==========>>cancelarPedidoVenta():");
 		reiniciarPedido();
 	}
+	
+	public void actualizarCantidades(ActionEvent ae){
+		actualizarCantidades = true;
+	}
 
 	private void dataValidation() throws ValidatorException {
 		logger.debug("\t## >> dataValidation: clienteId=" + clienteId + ", formaDePagoId=" + formaDePagoId + ", metodoDePagoId=" + metodoDePagoId);
@@ -1031,40 +1037,47 @@ public class VerPedidoEnProcesoMB {
 		final Collection<PedidoVentaDetalleWrapper> values = pedidoVentaDetalleMap.values();
 		List<PedidoVentaDetalleWrapper> pvdwList = new ArrayList<PedidoVentaDetalleWrapper>();
 		Integer almacenId = getAlmacenObjetivo().getId();			
+		
 		for (PedidoVentaDetalleWrapper pvdw : values) {
 			final PedidoVentaDetalle detalleVentaPedido = pvdw.getDetalleVentaPedido();
-			logger.debug("\t->getPedidoVentaDetalleList:detalleVentaPedido="+detalleVentaPedido.getCantidad()+" x "+detalleVentaPedido.getProducto().getCodigoBarras()+" $"+detalleVentaPedido.getPrecioVenta());
+			//logger.debug("\t->getPedidoVentaDetalleList:detalleVentaPedido="+detalleVentaPedido.getCantidad()+" x "+detalleVentaPedido.getProducto().getCodigoBarras()+" $"+detalleVentaPedido.getPrecioVenta());
 			final Producto producto = detalleVentaPedido.getProducto();
 			//logger.debug("\t->getPedidoVentaDetalleList:producto="+producto);
-			AlmacenProductoDemanda findDemandaProductoForAlmacen = 
-					productoJPAController.findDemandaProductoForAlmacen(almacenId,producto.getId());
-			//logger.debug("\t\t->getPedidoVentaDetalleList:findDemandaProductoForAlmacen="+findDemandaProductoForAlmacen);
-			boolean pedidoEnDisputa=false;
-			if(findDemandaProductoForAlmacen != null) {
-				if( findDemandaProductoForAlmacen.getOtrosPedidos() > 0 ){
-					final List<PedidoVentaEnDemanda> pedidoVentaList = findDemandaProductoForAlmacen.getPedidoVentaList();
-					for(PedidoVentaEnDemanda ped: pedidoVentaList){
-						if(ped.getPedidoVentaId() == pedidoVenta.getId()){
-							pedidoEnDisputa = true;
-							break;
+			if(actualizarCantidades){
+				
+				AlmacenProductoDemanda findDemandaProductoForAlmacen = 
+						productoJPAController.findDemandaProductoForAlmacen(almacenId,producto.getId());
+				//logger.debug("\t\t->getPedidoVentaDetalleList:findDemandaProductoForAlmacen="+findDemandaProductoForAlmacen);
+				boolean pedidoEnDisputa=false;
+				if(findDemandaProductoForAlmacen != null) {
+					if( findDemandaProductoForAlmacen.getOtrosPedidos() > 0 ){
+						final List<PedidoVentaEnDemanda> pedidoVentaList = findDemandaProductoForAlmacen.getPedidoVentaList();
+						for(PedidoVentaEnDemanda ped: pedidoVentaList){
+							if(ped.getPedidoVentaId() == pedidoVenta.getId()){
+								pedidoEnDisputa = true;
+								break;
+							}
+						}
+						pvdw.setAlmacenProductoDemanda(findDemandaProductoForAlmacen);
+						pvdw.getAlmacenProductoDemanda().setCantidadActual(findDemandaProductoForAlmacen.getCantidadActual());
+						if( pedidoEnDisputa ){
+							pvdw.getAlmacenProductoDemanda().setOtrosPedidos(findDemandaProductoForAlmacen.getOtrosPedidos() - 1);
+							pvdw.getAlmacenProductoDemanda().setSumDemanda(findDemandaProductoForAlmacen.getSumDemanda() - detalleVentaPedido.getCantidad());			
+						} else {
+							pvdw.getAlmacenProductoDemanda().setOtrosPedidos(findDemandaProductoForAlmacen.getOtrosPedidos());
+							pvdw.getAlmacenProductoDemanda().setSumDemanda(findDemandaProductoForAlmacen.getSumDemanda());					
 						}
 					}
-					pvdw.setAlmacenProductoDemanda(findDemandaProductoForAlmacen);
-					pvdw.getAlmacenProductoDemanda().setCantidadActual(findDemandaProductoForAlmacen.getCantidadActual());
-					if( pedidoEnDisputa ){
-						pvdw.getAlmacenProductoDemanda().setOtrosPedidos(findDemandaProductoForAlmacen.getOtrosPedidos() - 1);
-						pvdw.getAlmacenProductoDemanda().setSumDemanda(findDemandaProductoForAlmacen.getSumDemanda() - detalleVentaPedido.getCantidad());			
-					} else {
-						pvdw.getAlmacenProductoDemanda().setOtrosPedidos(findDemandaProductoForAlmacen.getOtrosPedidos());
-						pvdw.getAlmacenProductoDemanda().setSumDemanda(findDemandaProductoForAlmacen.getSumDemanda());					
+					if(pvdw.getDetalleVentaPedido().getPrecioVenta()==0.0){
+						pvdw.getDetalleVentaPedido().setPrecioVenta(findDemandaProductoForAlmacen.getPrecioVenta());
 					}
+					pvdw.setAlmacenProductoDemanda(findDemandaProductoForAlmacen);
 				}
-				if(pvdw.getDetalleVentaPedido().getPrecioVenta()==0.0){
-					pvdw.getDetalleVentaPedido().setPrecioVenta(findDemandaProductoForAlmacen.getPrecioVenta());
-				}
-				pvdw.setAlmacenProductoDemanda(findDemandaProductoForAlmacen);
 			}
 			pvdwList.add(pvdw);
+		}
+		if(actualizarCantidades){
+			actualizarCantidades=false;
 		}
 		return pvdwList;
 	}
