@@ -93,7 +93,7 @@ public class VerPedidoEnProcesoMB {
 	private Integer cantidadAgregar;
 	private Integer cantidadCBAgregar;
 	private String productoCBPattern = "^[0-9]{4,16}$";
-	private boolean actualizarCantidades;	
+	private boolean actualizarCantidades;
 
 	/**
 	 * @return the descuentoCalculado
@@ -183,7 +183,7 @@ public class VerPedidoEnProcesoMB {
 		almacenObjetivo = null;
 		listAlmacenProductoBuscar = null;
 		cantidadCBAgregar = 1;
-		actualizarCantidades=false;
+		actualizarCantidades = false;
 		//actualizarAlmacenObjetivoDesdeModoVenta();
 	}
 
@@ -233,7 +233,7 @@ public class VerPedidoEnProcesoMB {
 		metodoDePagoId = pedidoVenta.getMetodoDePago().getId();
 		final Collection<PedidoVentaDetalle> pedidoVentaDetalleCollection = pedidoVenta.getPedidoVentaDetalleCollection();
 		agregarProductosADetalle(pedidoVentaDetalleCollection);
-		actualizarCantidades=true;
+		actualizarCantidades = true;
 		descuentoEspecial = pedidoVenta.getPorcentajeDescuentoExtra();
 
 		listAlmacenProductoBuscar = null;
@@ -347,10 +347,10 @@ public class VerPedidoEnProcesoMB {
 			} else {
 				detalleVentaPedidoAgregar = new PedidoVentaDetalleWrapper(new PedidoVentaDetalle());
 				detalleVentaPedidoAgregar.getDetalleVentaPedido().setCantidad(cantidad);
-				
+
 				int cantMaxAlmacen = 0;
 				double precioObjetivo = 0.0;
-				
+
 				Collection<AlmacenProducto> almacenProductoCollection = productoAgregar.getAlmacenProductoCollection();
 
 				for (AlmacenProducto almacenProducto : almacenProductoCollection) {
@@ -359,14 +359,14 @@ public class VerPedidoEnProcesoMB {
 						cantMaxAlmacen = almacenProducto.getCantidadActual();
 					}
 				}
-				 
+
 				if (listAlmacenProductoBuscar == null) {
 					getListAlmacenProductoBuscar();
 				}
 				AlmacenProductoDemanda prodEnDemanda = new AlmacenProductoDemanda();
 				prodEnDemanda.setCantidadActual(cantMaxAlmacen);
 				detalleVentaPedidoAgregar.setAlmacenProductoDemanda(prodEnDemanda);
-				
+
 				detalleVentaPedidoAgregar.getDetalleVentaPedido().setProducto(productoAgregar);
 				detalleVentaPedidoAgregar.getDetalleVentaPedido().setPrecioVenta(precioObjetivo);
 
@@ -400,13 +400,13 @@ public class VerPedidoEnProcesoMB {
 	}
 
 	private void agregarProductosADetalle(Collection<PedidoVentaDetalle> pedidoVentaDetalleCollection) {
-		logger.debug("## >> agregarProductosADetalle: size="+pedidoVentaDetalleCollection.size());
+		logger.debug("## >> agregarProductosADetalle: size=" + pedidoVentaDetalleCollection.size());
 		for (PedidoVentaDetalle pvdAgregar : pedidoVentaDetalleCollection) {
 			Producto productoAgregar = pvdAgregar.getProducto();
 			int cantidad = pvdAgregar.getCantidad();
 
 			PedidoVentaDetalleWrapper detalleVentaPedidoAgregar = pedidoVentaDetalleMap.get(productoAgregar.getCodigoBarras());
-			logger.debug("\t## >> agregarProductosADetalle: productoAgregar=" +cantidad+" x"+productoAgregar.getCodigoBarras()+" $"+pvdAgregar.getPrecioVenta());
+			logger.debug("\t## >> agregarProductosADetalle: productoAgregar=" + cantidad + " x" + productoAgregar.getCodigoBarras() + " $" + pvdAgregar.getPrecioVenta());
 			if (detalleVentaPedidoAgregar != null) {
 				if (detalleVentaPedidoAgregar.getDetalleVentaPedido().getCantidad() + cantidad > detalleVentaPedidoAgregar.getAlmacenProductoDemanda().getCantidadActual()) {
 					logger.warn("\t## >> agregarProductosADetalle: Cantidad Exedida, no se agregara");
@@ -439,7 +439,7 @@ public class VerPedidoEnProcesoMB {
 
 				detalleVentaPedidoAgregar.setAlmacenProductoDemanda(prodEnDemanda);
 				detalleVentaPedidoAgregar.getDetalleVentaPedido().setProducto(productoAgregar);
-				
+
 				pedidoVentaDetalleMap.put(productoAgregar.getCodigoBarras(), detalleVentaPedidoAgregar);
 
 				logger.debug("\t## >> agregarProductoADetalle: \t Ok, Add new");
@@ -455,10 +455,10 @@ public class VerPedidoEnProcesoMB {
 		}
 		return pedidoVentaDetalleMap.size();
 	}
-	
+
 	public String actualizarPedido() {
 		FacesContext context = FacesContext.getCurrentInstance();
-		
+
 		logger.debug("========================================================>>");
 		logger.debug("-->>actualizarPedido():");
 		logger.debug("========================================================>>");
@@ -562,6 +562,7 @@ public class VerPedidoEnProcesoMB {
 			return null;
 		}
 	}
+
 	public String verificarPedido() {
 		logger.debug("========================================================>>");
 		logger.debug("-->>verificarPedido():");
@@ -749,18 +750,18 @@ public class VerPedidoEnProcesoMB {
 			return null;
 		}
 	}
-	
+
 	public void cancelarCambios(ActionEvent e) {
-		FacesContext context = FacesContext.getCurrentInstance();	
+		FacesContext context = FacesContext.getCurrentInstance();
 		logger.debug("========================================================>>");
 		logger.debug("-->>cancelarCambios():");
 		logger.debug("========================================================>>");
-		
+
 		cargarPadidoVenta(pedidoVenta.getId());
-		
+
 		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Cancelar cambios: ",
-						"Se restauró correctamente el Pedido"));
+				"Cancelar cambios: ",
+				"Se restauró correctamente el Pedido"));
 	}
 
 	public String cancelarPedido() {
@@ -775,8 +776,8 @@ public class VerPedidoEnProcesoMB {
 		logger.debug("==========>>cancelarPedidoVenta():");
 		reiniciarPedido();
 	}
-	
-	public void actualizarCantidades(ActionEvent ae){
+
+	public void actualizarCantidades(ActionEvent ae) {
 		actualizarCantidades = true;
 	}
 
@@ -835,6 +836,12 @@ public class VerPedidoEnProcesoMB {
 		logger.debug("## >> eliminarProducto: productoCB=" + productoCB);
 		if (pedidoVentaDetalleMap.containsKey(productoCB)) {
 			pedidoVentaDetalleMap.remove(productoCB);
+			FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Eliminar Producto : ",
+					"OK, se eliminó el Producto :" + productoCB);
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					fm);
 		} else {
 			throw new IllegalStateException("No se puede borrar productoCB=" + productoCB);
 		}
@@ -904,13 +911,14 @@ public class VerPedidoEnProcesoMB {
 		logger.debug("## >> cantidadDetalleBtnChanged: productoCB=" + productoCB);
 		PedidoVentaDetalleWrapper dvpSelected = pedidoVentaDetalleMap.get(productoCB);
 		if (dvpSelected != null) {
-			if (dvpSelected.getDetalleVentaPedido().getCantidad() > dvpSelected.getAlmacenProductoDemanda().getCantidadActual()) {
+			final int cnt = dvpSelected.getDetalleVentaPedido().getCantidad();
+			if (cnt > dvpSelected.getAlmacenProductoDemanda().getCantidadActual()) {
 				logger.debug("## \t\t>> cantidadDetalleBtnChanged: Excede Max!");
 
 				//dvpSelected.setCantidad(dvpSelected.getCantMax());
 
 				FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_WARN,
-						"Cantidad pedida de producto : ",
+						"Cantidad actualizada a " + cnt + " del producto :" + productoCB + " :",
 						"Excede la existencia en Almacén, se actualiza pero no se podra surtir hasta que haya suficiente");
 				FacesContext.getCurrentInstance().addMessage(
 						null,
@@ -918,7 +926,7 @@ public class VerPedidoEnProcesoMB {
 
 			} else {
 				FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Cantidad pedida de producto : ",
+						"Cantidad actualizada a " + cnt + " del producto :" + productoCB + " :",
 						"OK, se actualiza la nueva cantidad");
 				FacesContext.getCurrentInstance().addMessage(
 						null,
@@ -1034,42 +1042,42 @@ public class VerPedidoEnProcesoMB {
 	}
 
 	public List<PedidoVentaDetalleWrapper> getPedidoVentaDetalleList() {
-		logger.debug("->getPedidoVentaDetalleList: pedidoVentaId="+pedidoVenta.getId());
+		logger.debug("->getPedidoVentaDetalleList: pedidoVentaId=" + pedidoVenta.getId());
 		final Collection<PedidoVentaDetalleWrapper> values = pedidoVentaDetalleMap.values();
 		List<PedidoVentaDetalleWrapper> pvdwList = new ArrayList<PedidoVentaDetalleWrapper>();
-		Integer almacenId = getAlmacenObjetivo().getId();			
-		
+		Integer almacenId = getAlmacenObjetivo().getId();
+
 		for (PedidoVentaDetalleWrapper pvdw : values) {
 			final PedidoVentaDetalle detalleVentaPedido = pvdw.getDetalleVentaPedido();
 			//logger.debug("\t->getPedidoVentaDetalleList:detalleVentaPedido="+detalleVentaPedido.getCantidad()+" x "+detalleVentaPedido.getProducto().getCodigoBarras()+" $"+detalleVentaPedido.getPrecioVenta());
 			final Producto producto = detalleVentaPedido.getProducto();
 			//logger.debug("\t->getPedidoVentaDetalleList:producto="+producto);
-			if(actualizarCantidades){
-				
-				AlmacenProductoDemanda findDemandaProductoForAlmacen = 
-						productoJPAController.findDemandaProductoForAlmacen(almacenId,producto.getId());
+			if (actualizarCantidades) {
+
+				AlmacenProductoDemanda findDemandaProductoForAlmacen =
+						productoJPAController.findDemandaProductoForAlmacen(almacenId, producto.getId());
 				//logger.debug("\t\t->getPedidoVentaDetalleList:findDemandaProductoForAlmacen="+findDemandaProductoForAlmacen);
-				boolean pedidoEnDisputa=false;
-				if(findDemandaProductoForAlmacen != null) {
-					if( findDemandaProductoForAlmacen.getOtrosPedidos() > 0 ){
+				boolean pedidoEnDisputa = false;
+				if (findDemandaProductoForAlmacen != null) {
+					if (findDemandaProductoForAlmacen.getOtrosPedidos() > 0) {
 						final List<PedidoVentaEnDemanda> pedidoVentaList = findDemandaProductoForAlmacen.getPedidoVentaList();
-						for(PedidoVentaEnDemanda ped: pedidoVentaList){
-							if(ped.getPedidoVentaId() == pedidoVenta.getId()){
+						for (PedidoVentaEnDemanda ped : pedidoVentaList) {
+							if (ped.getPedidoVentaId() == pedidoVenta.getId()) {
 								pedidoEnDisputa = true;
 								break;
 							}
 						}
 						pvdw.setAlmacenProductoDemanda(findDemandaProductoForAlmacen);
 						pvdw.getAlmacenProductoDemanda().setCantidadActual(findDemandaProductoForAlmacen.getCantidadActual());
-						if( pedidoEnDisputa ){
+						if (pedidoEnDisputa) {
 							pvdw.getAlmacenProductoDemanda().setOtrosPedidos(findDemandaProductoForAlmacen.getOtrosPedidos() - 1);
-							pvdw.getAlmacenProductoDemanda().setSumDemanda(findDemandaProductoForAlmacen.getSumDemanda() - detalleVentaPedido.getCantidad());			
+							pvdw.getAlmacenProductoDemanda().setSumDemanda(findDemandaProductoForAlmacen.getSumDemanda() - detalleVentaPedido.getCantidad());
 						} else {
 							pvdw.getAlmacenProductoDemanda().setOtrosPedidos(findDemandaProductoForAlmacen.getOtrosPedidos());
-							pvdw.getAlmacenProductoDemanda().setSumDemanda(findDemandaProductoForAlmacen.getSumDemanda());					
+							pvdw.getAlmacenProductoDemanda().setSumDemanda(findDemandaProductoForAlmacen.getSumDemanda());
 						}
 					}
-					if(pvdw.getDetalleVentaPedido().getPrecioVenta()==0.0){
+					if (pvdw.getDetalleVentaPedido().getPrecioVenta() == 0.0) {
 						pvdw.getDetalleVentaPedido().setPrecioVenta(findDemandaProductoForAlmacen.getPrecioVenta());
 					}
 					pvdw.setAlmacenProductoDemanda(findDemandaProductoForAlmacen);
@@ -1077,8 +1085,8 @@ public class VerPedidoEnProcesoMB {
 			}
 			pvdwList.add(pvdw);
 		}
-		if(actualizarCantidades){
-			actualizarCantidades=false;
+		if (actualizarCantidades) {
+			actualizarCantidades = false;
 		}
 		return pvdwList;
 	}

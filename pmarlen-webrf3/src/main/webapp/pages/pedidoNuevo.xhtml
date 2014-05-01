@@ -187,7 +187,7 @@
 						</f:facet>
 						<h:panelGroup >
 							<a4j:commandLink actionListener="#{pedidoNuevoMB.eliminarProducto}"
-											 reRender="listarPedidoNuevoForm,panelEditarCantidad"
+											 reRender="pedidoVentaDetalleListTable, panelGridResumen"
 											 ignoreDupResponses="true">
 								<h:graphicImage style="border-style:none;" value="/images/eliminar.gif" title="#{UIMessages.COMMON_DELETE}"/>
 								<f:param name="productoCB" value="#{dvp.detalleVentaPedido.producto.codigoBarras}"/>
@@ -204,7 +204,7 @@
 					<rich:column>
 						<f:facet name="header">
 							<a4j:commandLink actionListener="#{pedidoNuevoMB.actualizarCantidades}"
-											 reRender="listarPedidoNuevoForm"
+											 reRender="pedidoVentaDetalleListTable"
 											 ignoreDupResponses="true">
 								<h:outputText value="S.P./O.P. | Cant." title="Suma de Piezas EN Otros Pedidos no SURTIDOS   |   Cantidad actual en Almancén" />							
 							</a4j:commandLink>

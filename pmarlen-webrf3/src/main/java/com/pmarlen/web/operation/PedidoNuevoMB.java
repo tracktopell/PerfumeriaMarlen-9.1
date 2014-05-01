@@ -484,6 +484,12 @@ public class PedidoNuevoMB {
 		logger.debug("## >> eliminarProducto: productoCB=" + productoCB);
 		if (pedidoVentaDetalleMap.containsKey(productoCB)) {
 			pedidoVentaDetalleMap.remove(productoCB);
+			FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Eliminar Producto : ",
+					"OK, se eliminó el Producto :" + productoCB);
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					fm);
 		} else {
 			throw new IllegalStateException("No se puede borrar productoCB=" + productoCB);
 		}
@@ -553,13 +559,14 @@ public class PedidoNuevoMB {
 		logger.debug("## >> cantidadDetalleBtnChanged: productoCB=" + productoCB);
 		PedidoVentaDetalleWrapper dvpSelected = pedidoVentaDetalleMap.get(productoCB);
 		if (dvpSelected != null) {
-			if (dvpSelected.getDetalleVentaPedido().getCantidad() > dvpSelected.getAlmacenProductoDemanda().getCantidadActual()) {
+			final int cnt = dvpSelected.getDetalleVentaPedido().getCantidad();
+			if (cnt > dvpSelected.getAlmacenProductoDemanda().getCantidadActual()) {
 				logger.debug("## \t\t>> cantidadDetalleBtnChanged: Excede Max!");
 
 				//dvpSelected.setCantidad(dvpSelected.getCantMax());
 
 				FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_WARN,
-						"Cantidad pedida de producto : ",
+						"Cantidad actualizada a "+cnt+" del producto :"+productoCB+" :",
 						"Excede la existencia en Almacén, se actualiza pero no se podra surtir hasta que haya suficiente");
 				FacesContext.getCurrentInstance().addMessage(
 						null,
@@ -567,7 +574,7 @@ public class PedidoNuevoMB {
 
 			} else {
 				FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Cantidad pedida de producto : ",
+						"Cantidad actualizada a "+cnt+" del producto :"+productoCB+" :",
 						"OK, se actualiza la nueva cantidad");
 				FacesContext.getCurrentInstance().addMessage(
 						null,
