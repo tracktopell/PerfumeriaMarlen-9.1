@@ -151,7 +151,7 @@
 						<h:inputText value="#{pedidoNuevoMB.codigoBuscar}" id="codigoBuscar" size="12" maxlength="18" class="inputCant">
 
 							<a4j:support	event="onchange" actionListener="#{pedidoNuevoMB.buscarNProductoPorCodigo}"
-										 reRender="inputCant, inputCantY, panelGridResumen"
+										 reRender="panelGridResumen, pedidoVentaDetalleListTable, headerPanelGrid"
 										 oncomplete="#{rich:element('listarPedidoNuevoForm:codigoBuscar')}.text='';#{rich:element('listarPedidoNuevoForm:codigoBuscar')}.focus();"/>
 
 						</h:inputText>		
