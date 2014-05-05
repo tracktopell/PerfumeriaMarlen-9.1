@@ -359,12 +359,15 @@
 
 					<rich:column>
 						<f:facet name="header">
+							<h:outputText value="S.P./O.P. | Cant." title="Suma de Piezas EN Otros Pedidos no SURTIDOS   |   Cantidad actual en Almancén" />
+							<!--
 							<a4j:commandLink actionListener="#{verPedidoEnProcesoMB.actualizarCantidades}"
 											 reRender="pedidoVentaDetalleListTable"
 											 ignoreDupResponses="true">
 								<h:outputText value="S.P./O.P. | Cant." title="Suma de Piezas EN Otros Pedidos no SURTIDOS   |   Cantidad actual en Almancén" />
 							
 							</a4j:commandLink>
+							-->
 						</f:facet>
 						<h:panelGroup>
 							<h:panelGrid	width="100%" columns="3"
@@ -372,10 +375,11 @@
 
 								<rich:spacer	width="10" 
 											 rendered="#{dvp.almacenProductoDemanda.otrosPedidos eq 0}" />
-
+								<!--
 								<rich:panel  id="pedidosEnDisputaPanel" rendered="#{dvp.almacenProductoDemanda.otrosPedidos gt 0}" 
 											 styleClass="panelForToolTip" bodyClass="panelForToolTipBody">
-									
+								-->
+								<h:panelGroup>
 									<h:outputText	id="pedidoEnDemandaTxt"
 													rendered="#{dvp.almacenProductoDemanda.sumDemanda le dvp.almacenProductoDemanda.cantidadActual}"
 													value="#{dvp.almacenProductoDemanda.sumDemanda} / #{dvp.almacenProductoDemanda.otrosPedidos}"/>
@@ -386,7 +390,7 @@
 													title="Puede haber problemas al sutir este o los demas otros pedidos por este Producto por la demanda"
 													value="#{dvp.almacenProductoDemanda.sumDemanda} / #{dvp.almacenProductoDemanda.otrosPedidos}"/>
 									
-									
+							<!--		
 									<rich:toolTip styleClass="tooltip" layout="block" event="onclick" direction="bottom-right">
 										<f:facet name="defaultContent">
 											<strong>Recuperando Pedidos en Disputa, espere un momento ...</strong>
@@ -416,7 +420,9 @@
 										</rich:dataTable>
 									</rich:toolTip>				
 								</rich:panel>
-
+								-->
+								</h:panelGroup>
+								
 								<h:outputText   value="|"/>
 
 								<h:outputText   value="#{dvp.almacenProductoDemanda.cantidadActual}"/>
