@@ -1416,4 +1416,25 @@ public class PedidoVentaBusinessLogic {
 			em.close();
 		}
 	}
+	
+	public void actualizacionDirectaPrecioVentaAlmacenProducto(String productoCB,int almacenId,double precioVenta) {		
+		EntityManager em = null;
+		try {
+			em = emf.createEntityManager();
+			em.getTransaction().begin();
+			Query q = em.createQuery("select ap from AlmacenProducto ap where ap.producto.codigoBarras =:productoCB and ap.almacen.id=:almacenId");
+			q.setParameter("productoCB" , productoCB);
+			q.setParameter("almacenId"  , almacenId);
+			
+			AlmacenProducto ap = (AlmacenProducto)q.getSingleResult();
+			ap.setPrecioVenta(precioVenta);
+			em.getTransaction().commit();
+			logger.debug("\t->actualizacionDirectaPrecioVentaAlmacenProducto: ok");
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
+
 }

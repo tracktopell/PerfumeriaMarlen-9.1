@@ -45,17 +45,8 @@
 						<h:graphicImage value="/images/error16x16.gif" />   
 					</f:facet>
 				</rich:messages>
-				<!--
-				SELECT 
-				S.ID SUCURSAL_ID,A.ID ALMACEN_ID,A.TIPO_ALMACEN,
-				P.ID,P.CODIGO_BARRAS,P.NOMBRE,P.PRESENTACION,M.NOMBRE MARCA_NOMBRE,I.NOMBRE INDUSTRIA_NOMBRE,L.NOMBRE LINEA_NOMBRE,
-				AP.CANTIDAD_ACTUAL,AP.PRECIO_VENTA,AP.COSTO,AP.PRECIO_MAYOREO
-				
-				columnClasses="columnWidth10 centerAlign, columnWidth15 centerAlign, columnWidth20 centerAlign, columnWidth25 centerAlign, columnWidth30 rightAlign"
-				
-				-->
 				<h:panelGrid columns="2" styleClass="center" width="100%"
-									 columnClasses="columnWidth30 rightAlign, columnWidth70 leftAlign">
+							 columnClasses="columnWidth30 rightAlign, columnWidth70 leftAlign">
 
 					<h:outputText		value="#{UIEntityLabels.LABEL_ALMACEN}:" styleClass="label_bold_right"/>
 					<h:panelGroup >
@@ -66,24 +57,24 @@
 							<f:selectItems  value="#{inventariosViewMB.tipoAlmacenList}"/>
 						</h:selectOneRadio>						
 					</h:panelGroup>
-					
+
 					<h:panelGroup styleClass="label_bold_right">
 						<!--
 						<h:selectBooleanCheckbox value="#{inventariosViewMB.codigoBuscarEnabled}" id="codigoBuscarEnabled" 
 												 label="[#{UIEntityLabels.LABEL_PRODUCTO_CODIGOBARRAS}]:">
 							<a4j:support	event="onchange" 
-										    actionListener="#{inventariosViewMB.codigoBuscarEnabledChanged}"
-										    reRender="inventariosViewForm, inventarioTable, movimientoHistoricoTable"/>
+											actionListener="#{inventariosViewMB.codigoBuscarEnabledChanged}"
+											reRender="inventariosViewForm, inventarioTable, movimientoHistoricoTable"/>
 						</h:selectBooleanCheckbox>
 						-->
 						<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO_CODIGOBARRAS} :" />						
 					</h:panelGroup>
-					
+
 					<h:panelGroup >
-						
+
 						<h:outputText value="Habilitar para filtrar por Codigo de Barras"
 									  rendered="#{not inventariosViewMB.codigoBuscarEnabled}"/>
-						
+
 						<h:inputText value="#{inventariosViewMB.codigoBuscar}" 
 									 rendered="#{inventariosViewMB.codigoBuscarEnabled}"
 									 valueChangeListener="#{inventariosViewMB.codigoBuscarChanged}"
@@ -92,7 +83,7 @@
 							<a4j:support	event="onchange" 
 										 reRender="inventariosViewForm, inventarioTable, movimientoHistoricoTable"/>
 						</h:inputText>
-						
+
 						<a4j:commandLink rendered="#{inventariosViewMB.codigoBuscarEnabled}" 
 										 actionListener="#{inventariosViewMB.buscarProductoPorCodigo}"
 										 reRender="inventariosViewForm, inventarioTable, movimientoHistoricoTable"
@@ -102,7 +93,7 @@
 						</a4j:commandLink>
 
 					</h:panelGroup>
-					
+
 				</h:panelGrid>
 				<rich:dataTable		id="inventarioTable"
 								 value="#{inventariosViewMB.inventarioFastViewList}"
@@ -134,22 +125,22 @@
 						<f:facet name="header">
 							<h:outputText value="NOMBRE / PRESENTACIÓN" />
 						</f:facet>
-						
+
 						<h:panelGrid columns="1" width="100%" columnClasses="centerAlign">
-						
+
 							<h:outputText value="#{inventarioFastView.productoNombre}" />
-							
+
 							<h:outputText value="#{inventarioFastView.productoPresentacion}" />
 
 						</h:panelGrid>
-						
+
 					</rich:column>
 
 					<rich:column >
 						<f:facet name="header">
 							<h:outputText value="MARCA / LINEA / INDUSTRIA" />
 						</f:facet>
-						
+
 						<h:panelGrid columns="1" width="100%" columnClasses="centerAlign">
 
 							<h:outputText value="#{inventarioFastView.marcaNombre}" />
@@ -175,15 +166,34 @@
 							<h:outputText value="$ VENTA" />
 						</f:facet>
 
-						<h:outputText value="#{inventarioFastView.almacenProductoPrecioVenta}">
+						<h:outputText rendered="#{not sessionUserMB.adminUser}" 
+									  value="#{inventarioFastView.almacenProductoPrecioVenta}">
 							<f:convertNumber maxFractionDigits="2" pattern="###,###,##0.00" locale="es_MX"/>
 						</h:outputText>
+						
+						<h:panelGroup rendered="#{sessionUserMB.adminUser}">
+							<h:inputText value="#{inventarioFastView.almacenProductoPrecioVenta}" class="inputCant"
+										 size="4" >
+								<f:convertNumber integerOnly="false"/>
+								<f:validateDoubleRange minimum="0.1" maximum="999999.99"/>
+								
+							</h:inputText>
+							
+							<a4j:commandLink actionListener="#{inventariosViewMB.precioVentaChanged}"
+											 reRender="inventarioTable"
+											 ignoreDupResponses="true">
+								<h:graphicImage style="border-style:none;" value="/images/update.gif" 
+												title="#{UIMessages.COMMON_UPDATE}"/>
+								<f:param name="productoCodigoBarras" value="#{inventarioFastView.productoCodigoBarras}"/>
+							</a4j:commandLink>
+							
+						</h:panelGroup>
 
 					</rich:column>
 
-				
+
 				</rich:dataTable>
-				
+				<!--
 				<rich:dataTable	 id="movimientoHistoricoTable"
 								 rendered="#{inventariosViewMB.codigoBuscarEnabled and not empty inventariosViewMB.inventarioFastViewList}"
 								 value="#{inventariosViewMB.movimientoHistoricoProductoFastView}"
@@ -256,7 +266,7 @@
 					</rich:column>
 				
 				</rich:dataTable>
-				
+				-->
 			</h:panelGrid>
         </a4j:form>
     </ui:define>

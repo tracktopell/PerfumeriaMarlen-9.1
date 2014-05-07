@@ -29,7 +29,7 @@
 				
 			</rich:menuGroup>
 
-			<rich:menuGroup value="COMPRAS">
+			<rich:menuGroup value="COMPRAS" rendered="#{sessionUserMB.adminUser}">
 				<rich:menuItem value="ENTRADA DE COMPRA" action="#{navigationMB.compra}"/>				
 				<!--				
 				<rich:menuItem value="ENTRADA DE COMPRA" action="#{navigationMB.home}"/>			
@@ -73,7 +73,7 @@
 				
 				<rich:menuItem value="GENERAL / FILTRADO" action="#{navigationMB.galeriaProductos}"/>
 				
-				<rich:menuItem value="PRODUCTO / MOVIMIENTOS" action="#{navigationMB.inventariosView}" />
+				<rich:menuItem value="PRODUCTO / MOVIMIENTOS" action="#{navigationMB.inventariosView}" rendered="#{sessionUserMB.adminUser}"/>
 				
 			</rich:menuGroup>
 

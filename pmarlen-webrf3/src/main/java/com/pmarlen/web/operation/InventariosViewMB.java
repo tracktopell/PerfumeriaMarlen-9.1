@@ -279,6 +279,39 @@ public class InventariosViewMB {
 		logger.debug(">> buscarProductoPorCodigo: codigoBuscar="+codigoBuscar);
 		refrescarFiltroCodigoBarras();
 	}
+	
+	public void precioVentaChanged(ActionEvent e) {
+		FacesContext context = FacesContext.getCurrentInstance();
+        String productoCodigoBarras = context.getExternalContext().getRequestParameterMap().get("productoCodigoBarras");
+		
+		logger.debug(">> precioVentaChanged: productoCodigoBarras="+productoCodigoBarras);
+		InventarioFastView ifvUpdated=null;
+		for(InventarioFastView ifv: inventarioFastViewList){
+			if(ifv.getProductoCodigoBarras().equals(productoCodigoBarras)){
+				logger.debug(">> precioVentaChanged: actualizar precioVenta="+ifv.getAlmacenProductoPrecioVenta());		
+				ifvUpdated=ifv;
+				break;
+			}
+		}
+		
+		if(ifvUpdated != null) {
+			actualizacionDirectaPrecioVentaAlmacenProducto(ifvUpdated.getProductoCodigoBarras(), almacenObjetivo.getId(), ifvUpdated.getAlmacenProductoPrecioVenta());
+		}
+	}
+	
+	private void actualizacionDirectaPrecioVentaAlmacenProducto(String productoCB,int almacenId,double precioVenta) {
+		try{
+			pedidoVentaBusinessLogic.actualizacionDirectaPrecioVentaAlmacenProducto(productoCB, almacenId, precioVenta);
+			FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Actualziar precio Venta:", " Se actualizó correctamente el precio de venta, Producto "+productoCB));
+		}catch(Exception e){
+			logger.error(">> actualizacionDirectaPrecioVentaAlmacenProducto: ",e);
+			FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al actualizar:", e.getMessage()));
+		}
+	}
 
 	private void refrescarFiltroCodigoBarras() {
 		logger.debug(">> refrescarFiltroCodigoBarras: codigoBuscar= ->"+codigoBuscar+"<-");

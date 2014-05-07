@@ -137,12 +137,7 @@
 										 oncomplete="#{rich:element('listarCOMPRANuevoForm:codigoBuscar')}.text='';#{rich:element('listarCOMPRANuevoForm:codigoBuscar')}.focus();"/>
 
 						</h:inputText>
-						<a4j:commandButton value="+"
-										   actionListener="#{compraMB.buscarProductoPorCodigo}"
-										   reRender="listarCOMPRANuevoForm"									   
-										   ignoreDupResponses="true">
-						</a4j:commandButton>
-
+						
 					</h:panelGroup>
 				</h:panelGrid>
 
@@ -150,7 +145,7 @@
 								id="COMPRAVentaDetalleListTable"
 								var="dvp"
 								width="100%"  
-								styleClass="center" columnClasses="columnWidth5 centerAlign,columnWidth10 rightAlign,columnWidth15 centerAlign,columnWidth10 centerAlign,columnWidth40 leftAlign,columnWidth10 rightAlign,columnWidth10 rightAlign" >
+								styleClass="center" columnClasses="columnWidth5 centerAlign,columnWidth15 rightAlign,columnWidth15 centerAlign,columnWidth55 centerAlign,columnWidth10 rightAlign,columnWidth10 rightAlign" >
 
 					<f:facet name="header">
 						<h:panelGroup style="display:block; text-align:left; background-color:transparent;" >
@@ -158,7 +153,8 @@
 							<rich:spacer width="10"/>
 							<a4j:commandButton value="PROCEDER" 
 											   rendered="#{compraMB.entradaAlmacenDetalleListSize gt 0}"
-											   action="#{compraMB.confirmarCompra}"/>
+											   action="#{compraMB.confirmarCompra}"
+											   reRender="listarCOMPRANuevoForm"/>
 							<rich:spacer width="10"/>
 							<a4j:commandButton	value="CANCELAR" 
 											   actionListener="#{compraMB.cancelarCompra}" 
@@ -206,7 +202,7 @@
 						</a4j:commandLink>
 					</rich:column>
 
-					<rich:column  >
+					<rich:column>
 						<f:facet name="header">
 							<h:outputText value="#{UIEntityLabels.LABEL_PRODUCTO} / #{UIEntityLabels.LABEL_PRODUCTO_PRESENTACION}" />
 						</f:facet>

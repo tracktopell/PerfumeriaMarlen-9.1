@@ -200,8 +200,12 @@
         <managed-property>
             <property-name>sucursalJPAController</property-name>
             <value>#{sucursalJPAController}</value>
+        </managed-property>		
+		<managed-property>
+            <property-name>compraBusinessLogic</property-name>
+            <value>#{compraBusinessLogic}</value>
         </managed-property>
-		
+        
 		<managed-property>
             <property-name>sessionUserMB</property-name>
             <value>#{sessionUserMB}</value>
@@ -791,6 +795,14 @@
         <navigation-case>
             <from-outcome>pedidoCreado</from-outcome>
             <to-view-id>/pages/home.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/pages/compra.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>compraCreada</from-outcome>
+            <to-view-id>/pages/compra.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 

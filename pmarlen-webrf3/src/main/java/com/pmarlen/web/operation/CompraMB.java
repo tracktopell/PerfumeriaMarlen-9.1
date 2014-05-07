@@ -4,13 +4,12 @@
  */
 package com.pmarlen.web.operation;
 
-import com.pmarlen.businesslogic.LogicaFinaciera;
+import com.pmarlen.businesslogic.CompraBusinessLogic;
 //import com.pmarlen.businesslogic.CompraVentaBusinessLogic;
 import com.pmarlen.model.Constants;
 import com.pmarlen.model.beans.Almacen;
 import com.pmarlen.model.beans.AlmacenProducto;
 import com.pmarlen.model.beans.EntradaAlmacen;
-import com.pmarlen.model.beans.EntradaAlmacenDetalle;
 import com.pmarlen.model.beans.EntradaAlmacenDetalle;
 import com.pmarlen.model.beans.Producto;
 import com.pmarlen.model.beans.Sucursal;
@@ -71,6 +70,7 @@ public class CompraMB {
 	
 	private Integer cantidadAgregar;
 	
+	private CompraBusinessLogic compraBusinessLogic;	
 	/**
 	 * @return the descuentoCalculado
 	 */
@@ -78,6 +78,10 @@ public class CompraMB {
 		return descuentoCalculado;
 	}
 
+	public void setCompraBusinessLogic(CompraBusinessLogic compraBusinessLogic) {
+		this.compraBusinessLogic = compraBusinessLogic;
+	}
+	
 	private Hashtable<Integer,String> tipoAlmacenHashTable;	
 	private List<SelectItem> resultTipoAlmacenList;
 
@@ -133,6 +137,7 @@ public class CompraMB {
     }
 
     private void reiniciarCompra() {
+		logger.debug("## >> reiniciarCompra: ");
         entradaAlmacenSeleccionado = new EntradaAlmacenDetalle();
         entradaAlmacenDetalleList = new ArrayList<EntradaAlmacenDetalle>();
         entradaAlmacen = new EntradaAlmacen();
@@ -284,11 +289,11 @@ public class CompraMB {
 				double descuentoAplicar = descuentoCalculado/100.0 + descuentoEspecial /100.0;
 				entradaAlmacen.setDescuentoAplicado(descuentoAplicar);
 				
-                //entradaAlmacen = entradaAlmacenBusinessLogic.crearCompraCapturado(entradaAlmacen, sessionUserMB.getUsuarioAuthenticated());
+                entradaAlmacen = compraBusinessLogic.crearCompraCapturada(entradaAlmacen, sessionUserMB.getUsuarioAuthenticated());
 				logger.debug("<<===================== OK crearCompraCapturado =======================");
-				//entradaAlmacenBusinessLogic.sincronizarCompra(entradaAlmacen, sessionUserMB.getUsuarioAuthenticated());
-                logger.debug("<<===================== OK sincronizarCompra =======================");
-                return "CompraCreado";
+				FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO, "Confirmar Compra :", "Se confirmo correctamente");
+				FacesContext.getCurrentInstance().addMessage(null,fm);
+				return null;
             } catch (Exception ex) {
                 logger.debug("<<++++++++++++++++++++++++++++++++++++++++++++++++++");
                 ex.printStackTrace(System.err);
@@ -323,15 +328,6 @@ public class CompraMB {
     
 	private void dataValidation() throws ValidatorException {
         logger.debug("\t## >> dataValidation: clienteId=" + clienteId + ", formaDePagoId=" + formaDePagoId);
-
-        if (clienteId == null || (clienteId != null && clienteId.intValue() == 0)) {
-            logger.debug("\t\t## >> throw new ValidatorException Cliente!");
-            throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error de Validación:", "¡ Debe seleccionar el Cliente !"));
-        }
-        if (formaDePagoId == null || (formaDePagoId != null && formaDePagoId.intValue() == 0)) {
-            logger.debug("\t\t## >> throw new ValidatorException FormaDePago!");
-            throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error de Validación:", "¡Debe seleccionalr la Forma de Pago !"));
-        }
     }
 
     public void seleccionarProducto(ActionEvent e) {

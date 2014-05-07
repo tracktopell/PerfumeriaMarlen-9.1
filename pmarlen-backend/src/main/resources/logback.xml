@@ -2,10 +2,18 @@
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>%d{yyyy/MM/dd HH:mm:ss} %-5p %c - %msg%n</Pattern>
+            <Pattern>CO %d{yyyy/MM/dd HH:mm:ss} %-5p %c - %msg%n</Pattern>
         </layout>
     </appender>
-
+	
+    <appender name="LOG_FILE" class="ch.qos.logback.core.FileAppender">
+		<file>${user.home}/PMarlen.log</file>
+        <append>true</append>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>LF %d{yyyy/MM/dd HH:mm:ss} %-5p %c - %msg%n</Pattern>
+        </layout>
+    </appender>
+	
 	<logger name="com.pmarlen" additivity="false">
 		<level value="DEBUG" />
 		

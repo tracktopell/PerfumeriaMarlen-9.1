@@ -51,7 +51,8 @@ public class EntradaAlmacen implements java.io.Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "ID"   )
-    private Integer id;
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private Integer id;
     
     /**
     * almacen id

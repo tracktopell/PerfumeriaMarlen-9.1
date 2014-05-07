@@ -24,8 +24,6 @@ public class UpdateSessionInfoTask {
 	
 	private SessionInfoController sessionInfoController;
 	
-	private JndiObjectFactoryBean datasourceX;
-	
 	public UpdateSessionInfoTask() {
 		logger = LoggerFactory.getLogger(UpdateSessionInfoTask.class);
 		logger.trace("->UpdateSessionInfoTask, created");
@@ -48,11 +46,4 @@ public class UpdateSessionInfoTask {
 		this.sessionInfoController = sessionInfoController;
 	}
 
-	/**
-	 * @param datasourceX the datasourceX to set
-	 */
-	@Autowired
-	public void setDatasourceX(JndiObjectFactoryBean datasourceX) {
-		this.datasourceX = datasourceX;
-	}
 }
