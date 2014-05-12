@@ -13,6 +13,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.*;
 import java.util.Date;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -121,26 +122,28 @@ public class TurboImportFromXLSX {
 			while (iteratorXSSFSheet.hasNext()) {
 				XSSFSheet xssfSheet = iteratorXSSFSheet.next();
 				System.err.println("==>>> SheetName: \\_" + xssfSheet.getSheetName() + "_/  rows: [" + xssfSheet.getFirstRowNum() + ", " + xssfSheet.getLastRowNum() + "]");
+				if (xssfSheet.getSheetName().equalsIgnoreCase("PRODUCTOS-INVENTARIOS")) {
+					for (int rowNum = xssfSheet.getFirstRowNum() + 2; rowNum <= xssfSheet.getLastRowNum(); rowNum++) {
+						Row row = xssfSheet.getRow(rowNum);
+						//System.err.println("\t==>>> row:"+rowNum);
+					
+						try {
+							if (row == null) {
+								continue;
+							} else if(row.getLastCellNum()==28 && row.getFirstCellNum() == 0){
+								//System.err.println("\t==>>> process row:"+rowNum);
+								processRowProductos(row);
+							}
+						} catch (Exception ex) {
+							System.err.println("-->> " + ex + ": rowNum=" + rowNum);
+							ex.printStackTrace(System.err);
 
-				Iterator<Row> rowIterator = xssfSheet.rowIterator();
-
-				for (int rowNum = xssfSheet.getFirstRowNum() + 2; rowNum <= xssfSheet.getLastRowNum(); rowNum++) {
-					Row row = xssfSheet.getRow(rowNum);
-					try {
-						if (row == null) {
-							continue;
-						} else if (xssfSheet.getSheetName().equalsIgnoreCase("PRODUCTOS-INVENTARIOS")) {
-							processRowProductos(row);
+							break;
 						}
-					} catch (Exception ex) {
-						System.err.println("-->> " + ex + ": rowNum=" + rowNum);
-						ex.printStackTrace(System.err);
-						
-						break;
 					}
-
+					System.err.println("END process sheet.");
 				}
-
+				
 			}
 
 			Connection connQuery = getConnection(driver, url, user, psswd);
@@ -412,8 +415,11 @@ public class TurboImportFromXLSX {
 		int cells = row.getPhysicalNumberOfCells();
 		//----------------------------------------------------------------------
 		ProveedorEXCELValue pev = null;
-
-		pev = proveedorHT.get(row.getCell(excelColumnNames.get("A")).toString());
+		Cell cell = row.getCell(excelColumnNames.get("A"));
+		if(cell == null){
+			return;
+		}
+		pev = proveedorHT.get(cell.toString());
 		if (pev == null) {
 			//System.err.println("PROVEDOR ? "+row.getCell(0)+" ROW:"+row.getRowNum());
 			pev = new ProveedorEXCELValue();
