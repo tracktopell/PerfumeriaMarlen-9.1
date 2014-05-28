@@ -119,30 +119,31 @@ public class TurboImportFromXLSX {
 		try {
 			XSSFWorkbook workbook = new XSSFWorkbook(fileName);
 			Iterator<XSSFSheet> iteratorXSSFSheet = workbook.iterator();
+			String regExpCodigoBarras ="^[#]([0-9]){3,18}$";
+			
 			while (iteratorXSSFSheet.hasNext()) {
 				XSSFSheet xssfSheet = iteratorXSSFSheet.next();
 				System.err.println("==>>> SheetName: \\_" + xssfSheet.getSheetName() + "_/  rows: [" + xssfSheet.getFirstRowNum() + ", " + xssfSheet.getLastRowNum() + "]");
-				if (xssfSheet.getSheetName().equalsIgnoreCase("PRODUCTOS-INVENTARIOS")) {
-					for (int rowNum = xssfSheet.getFirstRowNum() + 2; rowNum <= xssfSheet.getLastRowNum(); rowNum++) {
-						Row row = xssfSheet.getRow(rowNum);
-						//System.err.println("\t==>>> row:"+rowNum);
-					
-						try {
-							if (row == null) {
-								continue;
-							} else if(row.getLastCellNum()==28 && row.getFirstCellNum() == 0){
-								//System.err.println("\t==>>> process row:"+rowNum);
-								processRowProductos(row);
-							}
-						} catch (Exception ex) {
-							System.err.println("-->> " + ex + ": rowNum=" + rowNum);
-							ex.printStackTrace(System.err);
+				for (int rowNum = xssfSheet.getFirstRowNum() + 2; rowNum <= xssfSheet.getLastRowNum(); rowNum++) {
+					Row row = xssfSheet.getRow(rowNum);
+					//System.err.println("\t==>>> rowNum:"+rowNum+", row.getFirstCellNum()="+row.getFirstCellNum()+", row.getLastCellNum()="+row.getLastCellNum());						
+					try {
+						if (row == null) {
+							continue;
+						} else if(row.getFirstCellNum() >= 0 && 28<=row.getLastCellNum() && row.getCell(5)!=null && row.getCell(5).getStringCellValue().matches(regExpCodigoBarras)){
 
-							break;
+							System.err.println("\t==>>> process row with BarCode ("+row.getCell(5)+"):"+rowNum);
+							processRowProductos(row);
 						}
+					} catch (Exception ex) {
+						System.err.println("-->> " + ex + ": rowNum=" + rowNum);
+						ex.printStackTrace(System.err);
+
+						break;
 					}
-					System.err.println("END process sheet.");
 				}
+				System.err.println("END process sheet.");
+
 				
 			}
 
@@ -153,6 +154,10 @@ public class TurboImportFromXLSX {
 
 			int t = productoHT.size();
 			int r = 0;
+			if(t == 0){
+				System.out.println("========>> NO SE ESCANEARON PRODUCTOS !");
+				System.exit(1);
+			}
 			int p = (r * 100) / t;
 			System.out.println("========>> REVIEW");
 			System.out.println();

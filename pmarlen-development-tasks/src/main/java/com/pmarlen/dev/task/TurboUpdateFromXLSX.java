@@ -75,8 +75,8 @@ public class TurboUpdateFromXLSX {
 
 	public static void main(String[] args) {
 
-		if (args.length != 6) {
-			System.err.println("Usage: file.xlsx classNameDriver JDBC_URL user password [-cantidad|-precio]");
+		if (args.length != 5) {
+			System.err.println("Usage: file.xlsx classNameDriver JDBC_URL user password");
 			System.exit(1);
 		}
 
@@ -85,16 +85,11 @@ public class TurboUpdateFromXLSX {
 		String url = args[2];
 		String usr = args[3];
 		String pwd = args[4];
-		String fld = args[5];
 		
-		if(!fld.equals("-cantidad")&&!fld.equals("-precio")){
-			System.err.println("field selection to update must be [-cantidad|-precio]");
-			System.exit(2);
-		}
-
+		
 		TurboUpdateFromXLSX ipreX = new TurboUpdateFromXLSX();
 		try {
-			ipreX.importFromDataXLSX(fileName, driver, url, usr, pwd,fld);
+			ipreX.importFromDataXLSX(fileName, driver, url, usr, pwd);
 		} catch (UnsupportedEncodingException ex) {
 			ex.printStackTrace(System.err);
 		} catch (FileNotFoundException ex) {
@@ -103,7 +98,7 @@ public class TurboUpdateFromXLSX {
 
 	}
 
-	private void importFromDataXLSX(String fileName, String driver, String url, String user, String psswd,String fld)
+	private void importFromDataXLSX(String fileName, String driver, String url, String user, String psswd)
 			throws UnsupportedEncodingException,
 			FileNotFoundException {
 
@@ -116,14 +111,18 @@ public class TurboUpdateFromXLSX {
 				System.err.println("==>>> SheetName: \\_" + xssfSheet.getSheetName() + "_/  rows: [" + xssfSheet.getFirstRowNum() + ", " + xssfSheet.getLastRowNum() + "]");
 
 				Iterator<Row> rowIterator = xssfSheet.rowIterator();
-
-				for (int rowNum = xssfSheet.getFirstRowNum() + 1; rowNum <= xssfSheet.getLastRowNum(); rowNum++) {
+				String regExpCodigoBarras ="^[#]([0-9]){3,18}$";
+			
+				for (int rowNum = xssfSheet.getFirstRowNum() + 2; rowNum <= xssfSheet.getLastRowNum(); rowNum++) {
 					Row row = xssfSheet.getRow(rowNum);
+					//System.err.println("\t==>>> rowNum:"+rowNum+", row.getFirstCellNum()="+row.getFirstCellNum()+", row.getLastCellNum()="+row.getLastCellNum());						
+					
 					try {
 						if (row == null) {
 							continue;
-						} else if (xssfSheet.getSheetName().startsWith("PRODUCTOS")) {
-							processRowProductos(row,fld);
+						} else if(row.getFirstCellNum() >= 0 && 13<=row.getLastCellNum() && row.getCell(5)!=null && row.getCell(5).getStringCellValue().matches(regExpCodigoBarras)){
+							System.err.println("\t==>>> process row with BarCode ("+row.getCell(5)+"):"+rowNum);
+							processRowProductos(row);
 						}
 					} catch (Exception ex) {
 						System.err.println("-->> " + ex + ": rowNum=" + rowNum);
@@ -143,7 +142,10 @@ public class TurboUpdateFromXLSX {
 
 			int t = productoHT.size();
 			int r = 0;
-			int p = (r * 100) / t;
+			if(t == 0){
+				System.out.println("========>> NO SE ESCANEARON PRODUCTOS !");
+				System.exit(1);
+			}int p = (r * 100) / t;
 			System.out.println("========>> REVIEW");
 			System.out.println();
 			for (ProductoEXCELValue productoEV : productoHT.values()) {
@@ -152,8 +154,9 @@ public class TurboUpdateFromXLSX {
 			//System.exit(0);
 			System.out.println("=======>> DB");
 			System.out.println();
-			int tipoMov =	fld.equals("-cantidad") ? 20 :
-							fld.equals("-precio")   ? 50 :  0;
+			int tipoMov;
+			tipoMov		= 20 ;
+			//tipoMov		= 50;
 			
 			for (ProductoEXCELValue productoEV : productoHT.values()) {
 
@@ -205,7 +208,7 @@ public class TurboUpdateFromXLSX {
 
 	}
 
-	private void processRowProductos(Row row,String fld) throws ParseException {
+	private void processRowProductos(Row row) throws ParseException {
 		int cells = row.getPhysicalNumberOfCells();
 		//----------------------------------------------------------------------
 		ProveedorEXCELValue pev = null;
@@ -216,14 +219,11 @@ public class TurboUpdateFromXLSX {
 		ProductoEXCELValue productoEV = new ProductoEXCELValue();
 		productoEV.id  = 0;
 		productoEV.pev = pev;
-		productoEV.codigoBarras = row.getCell(excelColumnNames.get("A")).toString().replace("#", ""); // A
+		productoEV.codigoBarras = row.getCell(excelColumnNames.get("F")).toString().replace("#", ""); // F
 		//======================================================================
 		try {
-			if(fld.equals("-cantidad")){
-				productoEV.cantidadAlmacen = new Double(row.getCell(excelColumnNames.get("B")).toString()).intValue();
-			} else if(fld.equals("-precio")){
-				productoEV.precioVenta = Double.parseDouble(row.getCell(excelColumnNames.get("B")).toString());
-			}
+			productoEV.cantidadAlmacen = new Double(row.getCell(excelColumnNames.get("M")).toString()).intValue();
+			//productoEV.precioVenta = Double.parseDouble(row.getCell(excelColumnNames.get("B")).toString());			
 			
 		} catch (Exception e) {
 			System.err.println("X -->> " + e.getMessage() + " ROW:" + row.getRowNum());
@@ -277,7 +277,6 @@ public class TurboUpdateFromXLSX {
 				} else {
 					ps.setObject(1, param);
 				}
-
 			}
 
 			ResultSet rs = ps.executeQuery();
