@@ -349,6 +349,7 @@ CREATE TABLE CLIENTE (
 	EMAIL		VARCHAR (64)	 ,
 	URL		VARCHAR (255)	 ,
 	OBSERVACIONES		VARCHAR (255)	 ,
+	DIRECCION_FACTURACION		VARCHAR (255)	 ,
 	PRIMARY KEY (ID)
 );
 -- ===============================================================================

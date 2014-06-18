@@ -101,13 +101,17 @@ public class GeneradorDeFactura {
             
             parameters.put("cliente",pedidoVenta.getCliente().getRazonSocial());
             parameters.put("rfc",pedidoVenta.getCliente().getRfc());
-			String direccionValue = pedidoVenta.getCliente().getCalle()+
-					", Num. Ext. "+(pedidoVenta.getCliente().getNumExterior()!=null&&pedidoVenta.getCliente().getNumExterior().length()>0?pedidoVenta.getCliente().getNumExterior():"S/N")+
-					", Num. Int. "+(pedidoVenta.getCliente().getNumInterior()!=null&&pedidoVenta.getCliente().getNumInterior().length()>0?pedidoVenta.getCliente().getNumInterior():"S/N")+					
-					", "+pedidoVenta.getCliente().getPoblacion().getTipoAsentamiento()+" "+pedidoVenta.getCliente().getPoblacion().getNombre()+
-					", "+pedidoVenta.getCliente().getPoblacion().getMunicipioODelegacion()+
-					", "+pedidoVenta.getCliente().getPoblacion().getEntidadFederativa()+
-					", C.P. "+pedidoVenta.getCliente().getPoblacion().getCodigoPostal();
+			String direccionValue = null;
+			direccionValue = pedidoVenta.getCliente().getDireccionFacturacion();
+			if(direccionValue == null){
+				direccionValue = pedidoVenta.getCliente().getCalle()+
+						", Num. Ext. "+(pedidoVenta.getCliente().getNumExterior()!=null&&pedidoVenta.getCliente().getNumExterior().length()>0?pedidoVenta.getCliente().getNumExterior():"S/N")+
+						", Num. Int. "+(pedidoVenta.getCliente().getNumInterior()!=null&&pedidoVenta.getCliente().getNumInterior().length()>0?pedidoVenta.getCliente().getNumInterior():"S/N")+					
+						", "+pedidoVenta.getCliente().getPoblacion().getTipoAsentamiento()+" "+pedidoVenta.getCliente().getPoblacion().getNombre()+
+						", "+pedidoVenta.getCliente().getPoblacion().getMunicipioODelegacion()+
+						", "+pedidoVenta.getCliente().getPoblacion().getEntidadFederativa()+
+						", C.P. "+pedidoVenta.getCliente().getPoblacion().getCodigoPostal();
+			}
             parameters.put("direccion" , direccionValue.toUpperCase());
 			
 			if(pedidoVenta.getComentarios()!=null && pedidoVenta.getComentarios().trim().length()>1){

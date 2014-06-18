@@ -34,11 +34,11 @@ import javax.persistence.TemporalType;
  * 
  * @author Tracktopell::jpa-builder @see  https://github.com/tracktopell/UtilProjects/tree/master/jpa-builder
  * @version 0.8.5
- * @date 2014/01/15 02:39
+ * @date 2014/06/18 02:23
  */
 
 public class Linea implements java.io.Serializable {
-    private static final long serialVersionUID = 1396764521;
+    private static final long serialVersionUID = 1561354273;
     
     /**
     * id

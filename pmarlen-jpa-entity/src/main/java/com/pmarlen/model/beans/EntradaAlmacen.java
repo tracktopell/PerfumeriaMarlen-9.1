@@ -35,7 +35,7 @@ import javax.persistence.TemporalType;
  * m2m
  * @author Tracktopell::jpa-builder @see  https://github.com/tracktopell/UtilProjects/tree/master/jpa-builder
  * @version 0.8.5
- * @date 2014/01/15 02:39
+ * @date 2014/06/18 02:23
  */
 
 
@@ -43,7 +43,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "ENTRADA_ALMACEN")
 public class EntradaAlmacen implements java.io.Serializable {
-    private static final long serialVersionUID = 2105286989;
+    private static final long serialVersionUID = 1768442745;
     
     /**
     * id
@@ -51,8 +51,7 @@ public class EntradaAlmacen implements java.io.Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "ID"   )
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Integer id;
+    private Integer id;
     
     /**
     * almacen id

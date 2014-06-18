@@ -35,7 +35,7 @@ import javax.persistence.TemporalType;
  * m2m
  * @author Tracktopell::jpa-builder @see  https://github.com/tracktopell/UtilProjects/tree/master/jpa-builder
  * @version 0.8.5
- * @date 2014/01/15 02:39
+ * @date 2014/06/18 02:23
  */
 
 
@@ -43,7 +43,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "CLIENTE")
 public class Cliente implements java.io.Serializable {
-    private static final long serialVersionUID = 1834050610;
+    private static final long serialVersionUID = 101408113;
     
     /**
     * id
@@ -145,6 +145,13 @@ public class Cliente implements java.io.Serializable {
     @Basic(optional = true)
     @Column(name = "OBSERVACIONES" , length=255  )
     private String observaciones;
+    
+    /**
+    * direccion facturacion
+    */
+    @Basic(optional = true)
+    @Column(name = "DIRECCION_FACTURACION" , length=255  )
+    private String direccionFacturacion;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cliente")
     private Collection<PedidoVenta> pedidoVentaCollection;
@@ -281,6 +288,14 @@ public class Cliente implements java.io.Serializable {
 
     public void setObservaciones(String v) {
         this.observaciones = v;
+    }
+
+    public String getDireccionFacturacion() {
+        return this.direccionFacturacion;
+    }
+
+    public void setDireccionFacturacion(String v) {
+        this.direccionFacturacion = v;
     }
 
     

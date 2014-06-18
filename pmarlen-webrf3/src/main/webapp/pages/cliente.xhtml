@@ -4,7 +4,7 @@
                 xmlns:a4j="http://richfaces.org/a4j"
                 xmlns:rich="http://richfaces.org/rich"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                
+
 				template="/templates/mainWithMenu.xhtml">
 
     <ui:define name="title">
@@ -52,7 +52,7 @@
 
 				<rich:dataTable id="entitiListTable"
 								columnClasses="columnWidth5 centerAlign,columnWidth5 centerAlign, 
-								columnWidth30 centerAlign, columnWidth30 centerAlign, columnWidth30 centerAlign"
+								columnWidth30 centerAlign, columnWidth20 centerAlign, columnWidth20 centerAlign, columnWidth20 centerAlign"
 								value="#{clienteMB.entityList}"
 								var="cliente"
 								rows="#{clienteMB.numRecShow}"
@@ -138,8 +138,8 @@
 							<h:outputText value="DATOS"/>
 						</f:facet>
 						<h:panelGrid	id="panelGridRazonSocialNombreEstablecimiento"
-										width="100%" columnClasses="columnWidth35 rightAlign,columnWidth65 leftAlign"
-									    columns="2">
+									 width="100%" columnClasses="columnWidth35 rightAlign,columnWidth65 leftAlign"
+									 columns="2">
 							<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_RFC}:"  class="common_component_bold" />
 							<h:outputText  value="#{cliente.rfc}"/>
 							<h:outputText value="#{UIEntityLabels.LABEL_CLIENTE_RAZONSOCIAL}:"  class="common_component_bold" />
@@ -161,10 +161,21 @@
 						<h:panelGrid	id="panelGridDireccion"
 									 width="100%" columnClasses="centerAlign"
 									 columns="1">
-						
+
 							<h:outputText value="#{cliente.calle}, #{cliente.numExterior} #{cliente.numInterior}, "/>
 							<h:outputText value="#{cliente.poblacion.nombre}, #{cliente.poblacion.municipioODelegacion}, "/>
 							<h:outputText value="#{cliente.poblacion.entidadFederativa}, C.P. #{cliente.poblacion.codigoPostal}"/>
+						</h:panelGrid>
+					</rich:column>
+
+					<rich:column >
+						<f:facet name="header">
+							<h:outputText value="DIR. FACT."/>
+						</f:facet>
+						<h:panelGrid	id="panelGridDireccionFacturacion"
+									 width="100%" columnClasses="centerAlign"
+									 columns="1">
+							<h:outputText value="#{cliente.direccionFacturacion}"/>
 						</h:panelGrid>
 					</rich:column>
 
@@ -452,7 +463,7 @@
 								</f:facet>
 							</rich:message>
 						</h:panelGroup>
-				
+
 						<h:outputLabel value="#{UIEntityLabels.LABEL_POBLACION_MUNICIPIOODELEGACION}:" 
 									   class="input-required-true"/>
 
@@ -462,8 +473,8 @@
 						<h:inputText   id="inputTextMunicipioODelegacion_empty" rendered="#{empty clienteMB.entity.poblacion}"
 									   value="-" 
 									   readonly="true" size="35"/>
-						
-						
+
+
 						<h:outputLabel value="#{UIEntityLabels.LABEL_POBLACION_ENTIDADFEDERATIVA}:" 
 									   class="input-required-true"/>
 
@@ -473,7 +484,7 @@
 						<h:inputText   id="inputTextEntidadFederativa_empty" rendered="#{empty clienteMB.entity.poblacion}"
 									   value="-" 
 									   readonly="true" size="35"/>
-						
+
 						<h:outputLabel value="#{UIEntityLabels.LABEL_POBLACION_CODIGOPOSTAL}:" 
 									   class="input-required-true"/>
 
@@ -484,7 +495,7 @@
 									   value="-" 
 									   readonly="true" size="4"/>
 
-						
+
 						<h:outputLabel value="#{UIEntityLabels.LABEL_CLIENTE_TELEFONOS}:" for="inputTextTelefonos" 
 									   class="input-required-#{UIEntityLabels.INPUT_REQUIRED_CLIENTE_TELEFONOS}"/>
 						<h:panelGroup>
@@ -495,9 +506,9 @@
 										 size="25"
 										 maxlength="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_TELEFONOS}">
 								<f:validateLength minimum="5" maximum="#{UIEntityLabels.TEXT_MAXCHARS_CLIENTE_TELEFONOS}"/>
-								
+
 								<f:validator validatorId="TelephoneValidator"/>
-								
+
 							</h:inputText>
 							<rich:message for="inputTextTelefonos" errorClass="littleErrorMessage_bold">
 								<f:facet name="errorMarker">
@@ -545,6 +556,24 @@
 							</rich:message>
 						</h:panelGroup>
 
+						<h:outputLabel  value="DIRECCIÓN DE FACTURACIÓN:" for="inputTextDireccionFacturacion"
+										class="input-required-false"/>
+						<h:panelGroup>
+							<h:inputText id="inputTextDireccionFacturacion"
+										 value="#{clienteMB.entity.direccionFacturacion}" 
+										 label="DIRECCIÓN DE FACTURACIÓN:"
+										 required="false"
+										 size="65"
+										 maxlength="255">
+								<f:validateLength minimum="3" maximum="255"/>								
+							</h:inputText>
+							<rich:message for="inputTextDireccionFacturacion" errorClass="littleErrorMessage_bold">
+								<f:facet name="errorMarker">
+									<h:graphicImage value="/images/error16x16.gif" />   
+								</f:facet>
+							</rich:message>
+						</h:panelGroup>
+						
 					</h:panelGrid>
 
 					<br/>

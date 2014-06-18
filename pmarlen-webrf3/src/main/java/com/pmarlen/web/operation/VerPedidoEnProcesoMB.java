@@ -215,8 +215,7 @@ public class VerPedidoEnProcesoMB {
 
 		pedidoVenta = pedidoVentaJPAController.findPedidoVenta(pedidoVentaId);
 		logger.debug("## >> cargarPadidoVenta: pedidoVenta=" + pedidoVenta);
-
-
+				
 		detalleVentaPedidoSeleccionado = null;
 		pedidoVentaDetalleMap = new LinkedHashMap<String, PedidoVentaDetalleWrapper>();
 		almacenObjetivo = pedidoVenta.getAlmacen();
@@ -331,8 +330,8 @@ public class VerPedidoEnProcesoMB {
 
 					throw new ValidatorException(
 							new FacesMessage(FacesMessage.SEVERITY_WARN,
-							"Agregar Producto : ",
-							"Excede la existencia en Almacén, se agregará pero no se podra surtir hasta que haya suficiente"));
+									"Agregar Producto : ",
+									"Excede la existencia en Almacén, se agregará pero no se podra surtir hasta que haya suficiente"));
 				} else {
 					final int nuevoTotal = detalleVentaPedidoAgregar.getDetalleVentaPedido().getCantidad() + cantidad;
 
@@ -376,8 +375,8 @@ public class VerPedidoEnProcesoMB {
 					logger.warn("## >> agregarProductoADetalleMap: Cantidad Exedida, No hay existencia en Almacenes");
 					throw new ValidatorException(
 							new FacesMessage(FacesMessage.SEVERITY_WARN,
-							"Agregar Producto : ",
-							"Excede la existencia en Almacén, se agregará pero no se podra surtir hasta que haya suficiente"));
+									"Agregar Producto : ",
+									"Excede la existencia en Almacén, se agregará pero no se podra surtir hasta que haya suficiente"));
 				} else {
 					FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO,
 							"Agregar Producto : ",
@@ -916,7 +915,6 @@ public class VerPedidoEnProcesoMB {
 				logger.debug("## \t\t>> cantidadDetalleBtnChanged: Excede Max!");
 
 				//dvpSelected.setCantidad(dvpSelected.getCantMax());
-
 				FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_WARN,
 						"Cantidad actualizada a " + cnt + " del producto :" + productoCB + " :",
 						"Excede la existencia en Almacén, se actualiza pero no se podra surtir hasta que haya suficiente");
@@ -1054,8 +1052,8 @@ public class VerPedidoEnProcesoMB {
 			//logger.debug("\t->getPedidoVentaDetalleList:producto="+producto);
 			if (actualizarCantidades) {
 
-				AlmacenProductoDemanda findDemandaProductoForAlmacen =
-						productoJPAController.findDemandaProductoForAlmacen(almacenId, producto.getId());
+				AlmacenProductoDemanda findDemandaProductoForAlmacen
+						= productoJPAController.findDemandaProductoForAlmacen(almacenId, producto.getId());
 				//logger.debug("\t\t->getPedidoVentaDetalleList:findDemandaProductoForAlmacen="+findDemandaProductoForAlmacen);
 				boolean pedidoEnDisputa = false;
 				if (findDemandaProductoForAlmacen != null) {

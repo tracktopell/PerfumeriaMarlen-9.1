@@ -34,11 +34,11 @@ import javax.persistence.TemporalType;
  * 
  * @author Tracktopell::jpa-builder @see  https://github.com/tracktopell/UtilProjects/tree/master/jpa-builder
  * @version 0.8.5
- * @date 2014/01/15 02:39
+ * @date 2014/06/18 02:23
  */
 
 public class Cliente implements java.io.Serializable {
-    private static final long serialVersionUID = 899486570;
+    private static final long serialVersionUID = 1351561298;
     
     /**
     * id
@@ -109,6 +109,11 @@ public class Cliente implements java.io.Serializable {
     * observaciones
     */
     private String observaciones;
+    
+    /**
+    * direccion facturacion
+    */
+    private String direccionFacturacion;
     
     private Collection<PedidoVenta> pedidoVentaCollection;
     
@@ -243,6 +248,14 @@ public class Cliente implements java.io.Serializable {
 
     public void setObservaciones(String v) {
         this.observaciones = v;
+    }
+
+    public String getDireccionFacturacion() {
+        return this.direccionFacturacion;
+    }
+
+    public void setDireccionFacturacion(String v) {
+        this.direccionFacturacion = v;
     }
 
     

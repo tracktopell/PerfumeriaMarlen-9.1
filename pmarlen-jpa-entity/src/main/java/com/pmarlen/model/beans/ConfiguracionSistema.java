@@ -35,7 +35,7 @@ import javax.persistence.TemporalType;
  * m2m
  * @author Tracktopell::jpa-builder @see  https://github.com/tracktopell/UtilProjects/tree/master/jpa-builder
  * @version 0.8.5
- * @date 2014/01/15 02:39
+ * @date 2014/06/18 02:23
  */
 
 
@@ -43,7 +43,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "CONFIGURACION_SISTEMA")
 public class ConfiguracionSistema implements java.io.Serializable {
-    private static final long serialVersionUID = 206933874;
+    private static final long serialVersionUID = 341284117;
     
     /**
     * llave

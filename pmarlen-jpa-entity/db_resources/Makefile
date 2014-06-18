@@ -37,15 +37,15 @@ create_DB_PROD : sql/CREATE_SCHEMA_PROD.MySQL.SQL sql/CREATE_SCHEMA_TEST.MySQL.S
 regenerate_scripts_DB : run_regenerate_scripts_DB clean_results
 	cp sql/CREATE_SCHEMA.DERBY.SQL ../../pmarlen-desktop-client/src/main/resources/scripts
 	
-run_regenerate_scripts_DB : model/exported/project.xml model/jpa-builder-0.9.4.jar
-	java -cp model/jpa-builder-0.9.4.jar com.tracktopell.dao.builder.dbschema.VPModel2SQL model/exported/project.xml mysql PMARLEN_DB_PROD sql/CREATE_SCHEMA_PROD.MySQL.SQL  "{all}" > resultsgen_mysql.txt 2> debug_resultsgen_mysql.txt
-	java -cp model/jpa-builder-0.9.4.jar com.tracktopell.dao.builder.dbschema.VPModel2SQL model/exported/project.xml mysql PMARLEN_DB_TEST sql/CREATE_SCHEMA_TEST.MySQL.SQL  "{all}" > resultsgen_mysql.txt 2> debug_resultsgen_mysql.txt
-	java -cp model/jpa-builder-0.9.4.jar com.tracktopell.dao.builder.dbschema.VPModel2SQL model/exported/project.xml derby PMARLEN_DB      sql/CREATE_SCHEMA.DERBY.SQL       "{all}" > resultsgen_mysql.txt 2> debug_resultsgen_mysql.txt
+run_regenerate_scripts_DB : model/exported/project.xml model/jpa-builder-0.9.5.jar
+	java -cp model/jpa-builder-0.9.5.jar com.tracktopell.dao.builder.dbschema.VPModel2SQL model/exported/project.xml mysql PMARLEN_DB_PROD sql/CREATE_SCHEMA_PROD.MySQL.SQL  "{all}" > resultsgen_mysql.txt 2> debug_resultsgen_mysql.txt
+	java -cp model/jpa-builder-0.9.5.jar com.tracktopell.dao.builder.dbschema.VPModel2SQL model/exported/project.xml mysql PMARLEN_DB_TEST sql/CREATE_SCHEMA_TEST.MySQL.SQL  "{all}" > resultsgen_mysql.txt 2> debug_resultsgen_mysql.txt
+	java -cp model/jpa-builder-0.9.5.jar com.tracktopell.dao.builder.dbschema.VPModel2SQL model/exported/project.xml derby PMARLEN_DB      sql/CREATE_SCHEMA.DERBY.SQL       "{all}" > resultsgen_mysql.txt 2> debug_resultsgen_mysql.txt
 
-run_regenerate_JPABeans : model/exported/project.xml model/jpa-builder-0.9.4.jar
-	java -cp model/jpa-builder-0.9.4.jar com.tracktopell.dao.builder.jpa.VPModel2JPA model/exported/project.xml PMARLEN_DB com.pmarlen.model.beans ../src/main/java "{all}"
-	java -cp model/jpa-builder-0.9.4.jar com.tracktopell.dao.builder.jpa.VPModel2DTO model/exported/project.xml PMARLEN_DB com.pmarlen.wscommons.services.dto ../src/main/java "{all}"
-	java -cp model/jpa-builder-0.9.4.jar com.tracktopell.dao.builder.jpa.UpdatePersistenceXML model/exported/project.xml model/persistence.xml com.pmarlen.model.beans "{all}" > ../src/main/resources/META-INF/persistence.xml
+run_regenerate_JPABeans : model/exported/project.xml model/jpa-builder-0.9.5.jar
+	java -cp model/jpa-builder-0.9.5.jar com.tracktopell.dao.builder.jpa.VPModel2JPA model/exported/project.xml PMARLEN_DB com.pmarlen.model.beans ../src/main/java "{all}"
+	java -cp model/jpa-builder-0.9.5.jar com.tracktopell.dao.builder.jpa.VPModel2DTO model/exported/project.xml PMARLEN_DB com.pmarlen.wscommons.services.dto ../src/main/java "{all}"
+	java -cp model/jpa-builder-0.9.5.jar com.tracktopell.dao.builder.jpa.UpdatePersistenceXML model/exported/project.xml model/persistence.xml com.pmarlen.model.beans "{all}" > ../src/main/resources/META-INF/persistence.xml
 
 # sudo aptitude install librsvg2-bin
 create_png: /usr/bin/rsvg model/exported/ER1.svg

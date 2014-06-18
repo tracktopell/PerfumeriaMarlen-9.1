@@ -53,7 +53,17 @@ public class ClienteMB extends EntityCRUDMB<Cliente>{
 	@Override
 	public void editarRegistro(ActionEvent e) {
 		super.editarRegistro(e);
-		
+		if(entity.getDireccionFacturacion() == null){
+			String direccionValue = null;
+			direccionValue = entity.getCalle()+
+							", Num. Ext. "+(entity.getNumExterior()!=null&&entity.getNumExterior().length()>0?entity.getNumExterior():"S/N")+
+							", Num. Int. "+(entity.getNumInterior()!=null&&entity.getNumInterior().length()>0?entity.getNumInterior():"S/N")+					
+							", "+entity.getPoblacion().getTipoAsentamiento()+" "+entity.getPoblacion().getNombre()+
+							", "+entity.getPoblacion().getMunicipioODelegacion()+
+							", "+entity.getPoblacion().getEntidadFederativa()+
+							", C.P. "+entity.getPoblacion().getCodigoPostal();
+			entity.setDireccionFacturacion(direccionValue);
+		}
 		preparaDialogoPoblacion(e);
 	}
 
