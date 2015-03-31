@@ -1,22 +1,20 @@
 package com.pmarlen.web.security.managedbean;
 
-import java.util.*;
-import java.text.*;
+import com.pmarlen.model.Constants;
+import com.pmarlen.model.beans.Perfil;
+import com.pmarlen.model.beans.Usuario;
+import com.pmarlen.model.controller.UsuarioJPAController;
+import com.pmarlen.web.servlet.ContextAndSessionListener;
+import com.pmarlen.web.servlet.SessionInfo;
 import java.io.*;
 
+import java.text.*;
+import java.util.*;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.pmarlen.model.beans.Usuario;
-import com.pmarlen.model.beans.Perfil;
-import com.pmarlen.model.controller.UsuarioJPAController;
-import com.pmarlen.model.Constants;
-import com.pmarlen.web.servlet.ContextAndSessionListener;
-import com.pmarlen.web.servlet.SessionInfo;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
